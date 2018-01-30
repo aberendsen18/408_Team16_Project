@@ -46,6 +46,7 @@ public class ListActivity extends AppCompatActivity
                 if (response == null) {
                     // User pressed back button
                     showSnackbar(R.string.sign_in_cancelled);
+                    return;
                 }
 
                 if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
@@ -56,7 +57,6 @@ public class ListActivity extends AppCompatActivity
 //                    showSnackbar(R.string.unknown_error);
                 }
 
-                startSignin();
             }
 
             showSnackbar(R.string.unknown_sign_in_response);

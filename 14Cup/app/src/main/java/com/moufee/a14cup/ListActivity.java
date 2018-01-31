@@ -87,6 +87,7 @@ public class ListActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.my_lists);
         setSupportActionBar(toolbar);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -152,7 +153,7 @@ public class ListActivity extends AppCompatActivity
                         startSignin();
                     }
                 });
-                break;
+                return true;
 
         }
 

@@ -1,8 +1,13 @@
 package com.moufee.a14cup;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -11,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,16 +27,25 @@ import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.ui.list.ListViewModel;
+import com.moufee.a14cup.util.FirestoreQueryLiveData;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int RC_SIGN_IN = 123;
+    private ListViewModel viewModel;
+    private static final String TAG = "LIST_ACTIVITY";
 
 
-    //
+    //todo: should probably move sign in to different activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -99,6 +114,18 @@ public class ListActivity extends AppCompatActivity
             // not signed in
             startSignin();
         }
+
+        viewModel = ViewModelProviders.of(this).get(ListViewModel.class);
+        LiveData<List<ShoppingList>> listLiveData = viewModel.getLists();
+
+        listLiveData.observe(this, new Observer<List<ShoppingList>>() {
+            @Override
+            public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
+                Log.d(TAG, "onChanged: " + shoppingLists);
+            }
+        });
+
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

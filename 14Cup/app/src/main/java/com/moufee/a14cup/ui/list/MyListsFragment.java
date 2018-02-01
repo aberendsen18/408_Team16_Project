@@ -1,7 +1,10 @@
 package com.moufee.a14cup.ui.list;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,8 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.moufee.a14cup.R;
+import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.ui.list.dummy.DummyContent;
 import com.moufee.a14cup.ui.list.dummy.DummyContent.DummyItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Shows all of the users lists
@@ -24,6 +31,8 @@ public class MyListsFragment extends Fragment {
 
     private OnListFragmentInteractionListener mListener;
     private ListViewModel viewModel;
+    private RecyclerView recyclerView;
+    private MyListsRecyclerViewAdapter recyclerViewAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -42,6 +51,8 @@ public class MyListsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        viewModel = ViewModelProviders.of(this).get(ListViewModel.class);
+        recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), mListener);
 
     }
 
@@ -53,11 +64,24 @@ public class MyListsFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new MyListsRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(recyclerViewAdapter);
         }
+        setListeners();
         return view;
+    }
+
+    private void setListeners() {
+        viewModel.getLists().observe(this, new Observer<List<ShoppingList>>() {
+            @Override
+            public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
+                if (shoppingLists != null)
+                    recyclerViewAdapter.setLists(shoppingLists);
+                else
+                    recyclerViewAdapter.setLists(new ArrayList<ShoppingList>());
+            }
+        });
     }
 
 
@@ -90,6 +114,6 @@ public class MyListsFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(ShoppingList list);
     }
 }

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.moufee.a14cup.R;
+import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.ui.list.MyListsFragment.OnListFragmentInteractionListener;
 import com.moufee.a14cup.ui.list.dummy.DummyContent.DummyItem;
 
@@ -19,12 +20,17 @@ import java.util.List;
  */
 public class MyListsRecyclerViewAdapter extends RecyclerView.Adapter<MyListsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private List<ShoppingList> lists;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyListsRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public MyListsRecyclerViewAdapter(List<ShoppingList> lists, OnListFragmentInteractionListener listener) {
+        this.lists = lists;
         mListener = listener;
+    }
+
+    public void setLists(List<ShoppingList> lists){
+        this.lists = lists;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -36,9 +42,9 @@ public class MyListsRecyclerViewAdapter extends RecyclerView.Adapter<MyListsRecy
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mItem = lists.get(position);
+        holder.mIdView.setText("");
+        holder.mContentView.setText(lists.get(position).name);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,14 +60,14 @@ public class MyListsRecyclerViewAdapter extends RecyclerView.Adapter<MyListsRecy
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return lists.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public ShoppingList mItem;
 
         public ViewHolder(View view) {
             super(view);

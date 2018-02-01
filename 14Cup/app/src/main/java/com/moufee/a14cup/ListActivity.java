@@ -50,7 +50,7 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
     private static final String TAG = "LIST_ACTIVITY";
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(ShoppingList list) {
 
     }
 
@@ -136,7 +136,7 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        MyListsFragment fragment = MyListsFragment.newInstance(1);
+        MyListsFragment fragment = MyListsFragment.newInstance();
         transaction.add(R.id.fragment_container, fragment).commit();
 
 

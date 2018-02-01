@@ -11,6 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,19 +34,25 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.ui.list.ListViewModel;
+import com.moufee.a14cup.ui.list.MyListsFragment;
+import com.moufee.a14cup.ui.list.dummy.DummyContent;
 import com.moufee.a14cup.util.FirestoreQueryLiveData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ListActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class ListActivity extends AppCompatActivity implements MyListsFragment.OnListFragmentInteractionListener,
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final int RC_SIGN_IN = 123;
     private ListViewModel viewModel;
     private static final String TAG = "LIST_ACTIVITY";
 
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+
+    }
 
     //todo: should probably move sign in to different activity
     @Override
@@ -125,7 +134,10 @@ public class ListActivity extends AppCompatActivity
             }
         });
 
-
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        MyListsFragment fragment = MyListsFragment.newInstance(1);
+        transaction.add(R.id.fragment_container, fragment).commit();
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -145,6 +157,8 @@ public class ListActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        navigationView.setCheckedItem(R.id.nav_lists);
     }
 
     @Override
@@ -197,10 +211,10 @@ public class ListActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_lists) {
+        } else if (id == R.id.nav_recipes) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_share) {
 

@@ -2,7 +2,6 @@ package com.moufee.a14cup;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -30,15 +28,10 @@ import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
-import com.moufee.a14cup.ui.list.dummy.DummyContent;
-import com.moufee.a14cup.util.FirestoreQueryLiveData;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -88,8 +81,11 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
     }
 
     void showSnackbar(int resourceID) {
-        Snackbar snackbar = Snackbar.make(findViewById(R.id.list_constraint_layout), resourceID, Snackbar.LENGTH_LONG);
-        snackbar.show();
+        View constraintLayout = findViewById(R.id.list_constraint_layout);
+        if (constraintLayout != null) {
+            Snackbar snackbar = Snackbar.make(constraintLayout, resourceID, Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
     }
 
     void startSignin() {
@@ -101,7 +97,7 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
                                 new AuthUI.IdpConfig.PhoneBuilder().build(),
                                 new AuthUI.IdpConfig.GoogleBuilder().build()
                                 )
-                        )
+                        ).setIsSmartLockEnabled(false)
                         .build(),
                 RC_SIGN_IN);
     }

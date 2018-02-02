@@ -1,12 +1,8 @@
 package com.moufee.a14cup;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -23,8 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,13 +28,9 @@ import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class ListActivity extends AppCompatActivity implements MyListsFragment.OnListFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int RC_SIGN_IN = 123;
     private ListViewModel viewModel;
     private static final String TAG = "LIST_ACTIVITY";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -51,59 +41,44 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
 
     }
 
-    //todo: should probably move sign in to different activity
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (!isSignedIn() || !checkPlayServices()) {
+            startActivity(new Intent(this, WelcomeActivity.class));
+            finish();
+        }
+        setContentView(R.layout.activity_list);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.my_lists);
+        setSupportActionBar(toolbar);
 
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        MyListsFragment fragment = MyListsFragment.newInstance();
+        transaction.add(R.id.fragment_container, fragment).commit();
 
-            // Successfully signed in
-            if (resultCode == RESULT_OK) {
-                return;
-            } else {
-                // Sign in failed
-                if (response == null) {
-                    // User pressed back button
-                    showSnackbar(R.string.sign_in_cancelled);
-                    return;
-                }
 
-                if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    showSnackbar(R.string.no_network);
-                }
-
-                if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-//                    showSnackbar(R.string.unknown_error);
-                }
-
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
+        });
 
-            showSnackbar(R.string.unknown_sign_in_response);
-        }
-    }
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
-    void showSnackbar(int resourceID) {
-        View constraintLayout = findViewById(R.id.list_constraint_layout);
-        if (constraintLayout != null) {
-            Snackbar snackbar = Snackbar.make(constraintLayout, resourceID, Snackbar.LENGTH_LONG);
-            snackbar.show();
-        }
-    }
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
-    void startSignin() {
-        startActivityForResult(
-                // Get an instance of AuthUI based on the default app
-                AuthUI.getInstance().createSignInIntentBuilder()
-                        .setAvailableProviders(Arrays.asList(
-                                new AuthUI.IdpConfig.EmailBuilder().build(),
-                                new AuthUI.IdpConfig.PhoneBuilder().build(),
-                                new AuthUI.IdpConfig.GoogleBuilder().build()
-                                )
-                        ).setIsSmartLockEnabled(false)
-                        .build(),
-                RC_SIGN_IN);
+        navigationView.setCheckedItem(R.id.nav_lists);
     }
 
     private boolean checkPlayServices() {
@@ -122,65 +97,14 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
         return true;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.my_lists);
-        setSupportActionBar(toolbar);
-
+    boolean isSignedIn() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            // already signed in
-
-
-        } else {
-            // not signed in
-            if (checkPlayServices())
-                startSignin();
-        }
-
-        viewModel = ViewModelProviders.of(this).get(ListViewModel.class);
-        LiveData<List<ShoppingList>> listLiveData = viewModel.getLists();
-
-        listLiveData.observe(this, new Observer<List<ShoppingList>>() {
-            @Override
-            public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
-                Log.d(TAG, "onChanged: " + shoppingLists);
-            }
-        });
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        MyListsFragment fragment = MyListsFragment.newInstance();
-        transaction.add(R.id.fragment_container, fragment).commit();
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        navigationView.setCheckedItem(R.id.nav_lists);
+        return auth.getCurrentUser() != null;
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -208,15 +132,13 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
                 AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        startSignin();
+                        startActivity(WelcomeActivity.getIntent(getApplicationContext()));
+                        finish();
                     }
                 });
                 return true;
-
-        }
-
-        if (id == R.id.action_settings) {
-            return true;
+            case R.id.action_settings:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -239,7 +161,7 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

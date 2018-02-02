@@ -25,6 +25,8 @@ import android.view.View;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +43,8 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
     private static final int RC_SIGN_IN = 123;
     private ListViewModel viewModel;
     private static final String TAG = "LIST_ACTIVITY";
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
 
     @Override
     public void onListFragmentInteraction(ShoppingList list) {
@@ -102,6 +106,22 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
                 RC_SIGN_IN);
     }
 
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +129,8 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.my_lists);
         setSupportActionBar(toolbar);
+
+        checkPlayServices();
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {

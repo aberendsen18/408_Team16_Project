@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.ui.list.MyListsFragment.OnListFragmentInteractionListener;
-import com.moufee.a14cup.ui.list.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 

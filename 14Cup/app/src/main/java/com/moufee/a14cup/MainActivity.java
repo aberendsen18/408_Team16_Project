@@ -28,7 +28,7 @@ import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 
-public class ListActivity extends AppCompatActivity implements MyListsFragment.OnListFragmentInteractionListener,
+public class MainActivity extends AppCompatActivity implements MyListsFragment.OnListFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener {
 
     private ListViewModel viewModel;
@@ -49,7 +49,7 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
             startActivity(new Intent(this, WelcomeActivity.class));
             finish();
         }
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.my_lists);
         setSupportActionBar(toolbar);

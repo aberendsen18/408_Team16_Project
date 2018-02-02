@@ -24,7 +24,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
 
     public static Intent getIntent(Context packageContext) {
-        return new Intent(packageContext, ListActivity.class);
+        return new Intent(packageContext, MainActivity.class);
     }
 
 
@@ -55,7 +55,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
             // Successfully signed in
             if (resultCode == RESULT_OK) {
-                startActivity(new Intent(this, ListActivity.class));
+                startActivity(new Intent(this, MainActivity.class));
                 finish();
             } else {
                 // Sign in failed

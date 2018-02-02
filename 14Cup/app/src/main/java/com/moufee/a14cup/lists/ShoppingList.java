@@ -3,7 +3,7 @@ package com.moufee.a14cup.lists;
 import java.util.List;
 
 /**
- * Created by Ben on 1/31/18.
+ * Represents one shopping list
  */
 
 public class ShoppingList {

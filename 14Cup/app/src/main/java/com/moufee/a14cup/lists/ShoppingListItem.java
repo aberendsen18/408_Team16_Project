@@ -1,7 +1,7 @@
 package com.moufee.a14cup.lists;
 
 /**
- * Created by Ben on 1/31/18.
+ * An item on a shopping list
  */
 
 public class ShoppingListItem {

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A ViewModel for ListActivity
+ * A ViewModel for MainActivity
  */
 
 public class ListViewModel extends ViewModel {

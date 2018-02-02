@@ -24,7 +24,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
 
     public static Intent getIntent(Context packageContext) {
-        return new Intent(packageContext, MainActivity.class);
+        return new Intent(packageContext, WelcomeActivity.class);
     }
 
 

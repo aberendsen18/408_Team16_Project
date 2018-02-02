@@ -19,7 +19,15 @@ public class UserRepository {
         mCurrentUser = auth.getCurrentUser();
     }
 
-    public UserRepository get() {
+    public FirebaseUser getCurrentUser() {
+        return mCurrentUser;
+    }
+
+    public FirebaseAuth getFirebaseAuth() {
+        return mFirebaseAuth;
+    }
+
+    public static UserRepository get() {
         if (sUserRepository == null) {
             //we could do this with dependency injection instead
             sUserRepository = new UserRepository(FirebaseAuth.getInstance());

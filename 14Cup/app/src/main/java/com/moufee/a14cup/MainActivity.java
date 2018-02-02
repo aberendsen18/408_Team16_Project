@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements MyListsFragment.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!isSignedIn() || !checkPlayServices()) {
-            startActivity(new Intent(this, WelcomeActivity.class));
+            startActivity(WelcomeActivity.getIntent(this));
             finish();
         }
         setContentView(R.layout.activity_main);

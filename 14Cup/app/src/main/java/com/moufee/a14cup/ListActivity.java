@@ -130,8 +130,6 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
         toolbar.setTitle(R.string.my_lists);
         setSupportActionBar(toolbar);
 
-        checkPlayServices();
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             // already signed in
@@ -139,7 +137,8 @@ public class ListActivity extends AppCompatActivity implements MyListsFragment.O
 
         } else {
             // not signed in
-            startSignin();
+            if (checkPlayServices())
+                startSignin();
         }
 
         viewModel = ViewModelProviders.of(this).get(ListViewModel.class);

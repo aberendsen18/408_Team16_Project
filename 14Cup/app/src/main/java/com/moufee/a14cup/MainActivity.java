@@ -5,10 +5,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -25,8 +23,6 @@ import android.view.View;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
@@ -39,8 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements MyListsFragment.OnListFragmentInteractionListener,
-        NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements MyListsFragment.OnListFragmentInteractionListener {
 
     private ListViewModel mViewModel;
     private static final String TAG = "LIST_ACTIVITY";
@@ -48,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements MyListsFragment.O
 
 
     private RecyclerView mRecyclerView;
+    private DrawerLayout mDrawerLayout;
+    private Toolbar mToolbar;
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
     private ActivityMainBinding mBinding;
 
@@ -56,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements MyListsFragment.O
         Log.d(TAG, "onListFragmentInteraction: Selected List" + list);
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
+        mToolbar.setTitle(list.name);
+        mViewModel.setSelectedListID(list.id);
     }
 
 
@@ -67,21 +66,13 @@ public class MainActivity extends AppCompatActivity implements MyListsFragment.O
             finish();
         }
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-//        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.my_lists);
-        setSupportActionBar(toolbar);
+        mToolbar = findViewById(R.id.toolbar);
+        mToolbar.setTitle(R.string.my_lists);
+        setSupportActionBar(mToolbar);
 
 
         mViewModel = ViewModelProviders.of(this).get(ListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
-
-
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction transaction = fragmentManager.beginTransaction();
-//        MyListsFragment fragment = MyListsFragment.newInstance();
-//        transaction.add(R.id.fragment_container, fragment).commit();
-
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -92,14 +83,11 @@ public class MainActivity extends AppCompatActivity implements MyListsFragment.O
             }
         });
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         // Set the adapter
         mRecyclerView = findViewById(R.id.my_lists_recycler_view);
@@ -125,7 +113,11 @@ public class MainActivity extends AppCompatActivity implements MyListsFragment.O
         mViewModel.getCurrentUser().observe(this, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(@Nullable FirebaseUser firebaseUser) {
-                mBinding.setUser(firebaseUser);
+                if (firebaseUser == null) {
+                    startActivity(WelcomeActivity.getIntent(getApplicationContext()));
+                    finish();
+                } else
+                    mBinding.setUser(firebaseUser);
             }
         });
     }
@@ -178,40 +170,12 @@ public class MainActivity extends AppCompatActivity implements MyListsFragment.O
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_logout:
-                AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        startActivity(WelcomeActivity.getIntent(getApplicationContext()));
-                        finish();
-                    }
-                });
+                AuthUI.getInstance().signOut(this);
                 return true;
             case R.id.action_settings:
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_lists) {
-        } else if (id == R.id.nav_recipes) {
-
-        } else if (id == R.id.nav_settings) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 }

@@ -1,6 +1,7 @@
 package com.moufee.a14cup.ui.list;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -20,6 +21,7 @@ public class ListViewModel extends ViewModel {
     private final UserRepository mUserRepository = UserRepository.get();
     private LiveData<List<ShoppingList>> mListLiveData;
     private LiveData<FirebaseUser> mCurrentUser;
+    private MutableLiveData<String> mSelectedListID = new MutableLiveData<>();
 
     public ListViewModel() {
         mListLiveData = mShoppingListRepository.getShoppingLists();
@@ -33,4 +35,9 @@ public class ListViewModel extends ViewModel {
     public LiveData<FirebaseUser> getCurrentUser() {
         return mCurrentUser;
     }
+
+    public void setSelectedListID(String ID) {
+        mSelectedListID.setValue(ID);
+    }
+
 }

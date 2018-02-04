@@ -24,7 +24,7 @@ public class MyListsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         mListener = listener;
     }
 
-    public void setLists(List<ShoppingList> lists){
+    public void setLists(List<ShoppingList> lists) {
         this.lists = lists;
         notifyDataSetChanged();
     }

@@ -12,7 +12,9 @@ import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.util.FirestoreQueryLiveData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A repository for ShoppingLists
@@ -31,6 +33,25 @@ public class ShoppingListRepository {
         if (sShoppingListRepository == null)
             sShoppingListRepository = new ShoppingListRepository(FirebaseFirestore.getInstance().collection("lists"));
         return sShoppingListRepository;
+    }
+
+    public LiveData<Map<String, ShoppingList>> getShoppingListsHashMap()
+
+    {
+        return Transformations.map(new FirestoreQueryLiveData(listsCollection), new Function<QuerySnapshot, Map<String, ShoppingList>>() {
+            @Override
+            public Map<String, ShoppingList> apply(QuerySnapshot input) {
+                Map<String, ShoppingList> lists = new HashMap<>();
+                if (input != null)
+                    for (DocumentSnapshot doc : input) {
+                        if (doc.get("name") != null) {
+                            ShoppingList list = doc.toObject(ShoppingList.class);
+                            lists.put(doc.getId(), list);
+                        }
+                    }
+                return lists;
+            }
+        });
     }
 
     public LiveData<List<ShoppingList>> getShoppingLists() {

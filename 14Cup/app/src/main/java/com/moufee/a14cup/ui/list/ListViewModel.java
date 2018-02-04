@@ -1,32 +1,48 @@
 package com.moufee.a14cup.ui.list;
 
-import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Transformations;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.repository.ShoppingListRepository;
-import com.moufee.a14cup.util.FirestoreQueryLiveData;
+import com.moufee.a14cup.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A ViewModel for MainActivity
  */
 
 public class ListViewModel extends ViewModel {
-    private static final CollectionReference LISTS_REF =
-            FirebaseFirestore.getInstance().collection("lists");
-    private static final ShoppingListRepository sShoppingListRepository = ShoppingListRepository.get();
 
+    private final ShoppingListRepository mShoppingListRepository = ShoppingListRepository.get();
+    private final UserRepository mUserRepository = UserRepository.get();
+    private LiveData<List<ShoppingList>> mListLiveData;
+    private LiveData<FirebaseUser> mCurrentUser;
+    private MutableLiveData<String> mSelectedListID = new MutableLiveData<>();
+
+    public ListViewModel() {
+        mListLiveData = mShoppingListRepository.getShoppingLists();
+        mCurrentUser = mUserRepository.getCurrentUser();
+    }
 
     public LiveData<List<ShoppingList>> getLists() {
-        return sShoppingListRepository.getShoppingLists();
+        return mListLiveData;
     }
+
+    public LiveData<Map<String, ShoppingList>> getHashLists() {
+        return mShoppingListRepository.getShoppingListsHashMap();
+    }
+
+    public LiveData<FirebaseUser> getCurrentUser() {
+        return mCurrentUser;
+    }
+
+    public void setSelectedListID(String ID) {
+        mSelectedListID.setValue(ID);
+    }
+
 }

@@ -27,6 +27,25 @@
             <include layout="@layout/nav_header_main"
                 />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:drawableLeft="@drawable/ic_add_black_24dp"
+                    android:drawableStart="@drawable/ic_add_black_24dp"
+                    android:text="@string/action_new_list"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+
             <include
                 layout="@layout/fragment_mylists_list"
                 />

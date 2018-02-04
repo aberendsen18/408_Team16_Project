@@ -3,6 +3,7 @@ package com.moufee.a14cup;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +28,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
@@ -34,6 +37,7 @@ import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity implements MyListsFragment.OnListFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener {
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements MyListsFragment.O
 
     private RecyclerView mRecyclerView;
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
+    private ActivityMainBinding mBinding;
 
     @Override
     public void onListFragmentInteraction(ShoppingList list) {
@@ -61,10 +66,12 @@ public class MainActivity extends AppCompatActivity implements MyListsFragment.O
             startActivity(WelcomeActivity.getIntent(this));
             finish();
         }
-        setContentView(R.layout.activity_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.my_lists);
         setSupportActionBar(toolbar);
+
 
         mViewModel = ViewModelProviders.of(this).get(ListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
@@ -113,6 +120,12 @@ public class MainActivity extends AppCompatActivity implements MyListsFragment.O
                     recyclerViewAdapter.setLists(shoppingLists);
                 else
                     recyclerViewAdapter.setLists(new ArrayList<ShoppingList>());
+            }
+        });
+        mViewModel.getCurrentUser().observe(this, new Observer<FirebaseUser>() {
+            @Override
+            public void onChanged(@Nullable FirebaseUser firebaseUser) {
+                mBinding.setUser(firebaseUser);
             }
         });
     }

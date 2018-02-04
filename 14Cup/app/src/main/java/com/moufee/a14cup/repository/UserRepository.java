@@ -1,7 +1,10 @@
 package com.moufee.a14cup.repository;
 
+import android.arch.lifecycle.LiveData;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.moufee.a14cup.util.FirebaseUserLiveData;
 
 /**
  * A repository for Users
@@ -19,12 +22,8 @@ public class UserRepository {
         mCurrentUser = auth.getCurrentUser();
     }
 
-    public FirebaseUser getCurrentUser() {
-        return mCurrentUser;
-    }
-
-    public FirebaseAuth getFirebaseAuth() {
-        return mFirebaseAuth;
+    public LiveData<FirebaseUser> getCurrentUser() {
+        return new FirebaseUserLiveData(mFirebaseAuth);
     }
 
     public static UserRepository get() {

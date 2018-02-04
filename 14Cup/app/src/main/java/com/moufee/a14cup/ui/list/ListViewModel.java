@@ -10,6 +10,7 @@ import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.repository.UserRepository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A ViewModel for MainActivity
@@ -30,6 +31,10 @@ public class ListViewModel extends ViewModel {
 
     public LiveData<List<ShoppingList>> getLists() {
         return mListLiveData;
+    }
+
+    public LiveData<Map<String, ShoppingList>> getHashLists() {
+        return mShoppingListRepository.getShoppingListsHashMap();
     }
 
     public LiveData<FirebaseUser> getCurrentUser() {

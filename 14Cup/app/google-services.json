@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1033444667739",
+    "firebase_url": "https://grocery-list-de049.firebaseio.com",
+    "project_id": "grocery-list-de049",
+    "storage_bucket": "grocery-list-de049.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1033444667739:android:5090fcd4ac284a3c",
+        "android_client_info": {
+          "package_name": "com.moufee.a14cup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1033444667739-6f1i8105vh53348j6f199v26hfeham6e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moufee.a14cup",
+            "certificate_hash": "0c5e3140f72f8b9cbcc7d3f0f83f7ce42b40b4b7"
+          }
+        },
+        {
+          "client_id": "1033444667739-rkv0a2f32adeg6vhhggb6864j3qgn4ta.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDutzdTZfRkJ1hefaLRfSvc5cPwPMADQyY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1033444667739-rkv0a2f32adeg6vhhggb6864j3qgn4ta.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

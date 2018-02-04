@@ -2,11 +2,8 @@ package com.moufee.a14cup.ui.list;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.moufee.a14cup.R;
 import com.moufee.a14cup.databinding.FragmentListTitleBinding;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.ui.list.MyListsFragment.OnListFragmentInteractionListener;
@@ -41,28 +38,11 @@ public class MyListsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        ((ListTitleHolder) holder).bind(lists.get(position));
+        ((ListTitleHolder) holder).bind(lists.get(position), mListener);
     }
 
     @Override
     public int getItemCount() {
         return lists.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mContentView;
-        public ShoppingList mItem;
-
-        public ViewHolder(View view) {
-            super(view);
-            mView = view;
-            mContentView = (TextView) view.findViewById(R.id.content);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
-        }
     }
 }

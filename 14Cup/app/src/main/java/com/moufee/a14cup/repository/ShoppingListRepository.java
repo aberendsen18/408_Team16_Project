@@ -41,7 +41,9 @@ public class ShoppingListRepository {
                 if (input != null)
                     for (DocumentSnapshot doc : input) {
                         if (doc.get("name") != null) {
-                            lists.add(doc.toObject(ShoppingList.class));
+                            ShoppingList list = doc.toObject(ShoppingList.class);
+                            list.id = doc.getId();
+                            lists.add(list);
                         }
                     }
                 return lists;

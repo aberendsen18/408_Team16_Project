@@ -6,6 +6,7 @@ package com.moufee.a14cup.lists;
 
 public class ShoppingListItem {
     public String name;
+    public String id;
     public String category;
 
     public ShoppingListItem() {

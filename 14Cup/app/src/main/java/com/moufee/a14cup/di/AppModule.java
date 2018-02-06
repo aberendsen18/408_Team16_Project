@@ -12,8 +12,8 @@ import dagger.Provides;
  * Created by Ben on 2/6/18.
  */
 
-@Module
-public class AppModule {
+@Module(includes = {ViewModelModule.class})
+class AppModule {
     @Singleton
     @Provides
     FirebaseAuth provideFirebaseAuth() {

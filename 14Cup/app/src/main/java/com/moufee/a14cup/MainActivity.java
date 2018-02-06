@@ -1,6 +1,7 @@
 package com.moufee.a14cup;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -37,6 +38,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
@@ -47,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     @Inject
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidInjector;
 
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     private ListViewModel mViewModel;
     private static final String TAG = "LIST_ACTIVITY";
@@ -71,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         if (!isSignedIn() || !checkPlayServices()) {
             startActivity(WelcomeActivity.getIntent(this));
@@ -82,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         setSupportActionBar(mToolbar);
 
 
-        mViewModel = ViewModelProviders.of(this).get(ListViewModel.class);
+        mViewModel = ViewModelProviders.of(this, viewModelFactory).get(ListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
 
         FloatingActionButton fab = findViewById(R.id.fab);

@@ -12,19 +12,24 @@ import com.moufee.a14cup.repository.UserRepository;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * A ViewModel for MainActivity
  */
 
 public class ListViewModel extends ViewModel {
 
-    private final ShoppingListRepository mShoppingListRepository = ShoppingListRepository.get();
-    private final UserRepository mUserRepository = UserRepository.get();
+    private ShoppingListRepository mShoppingListRepository;
+    private UserRepository mUserRepository;
     private LiveData<List<ShoppingList>> mListLiveData;
     private LiveData<FirebaseUser> mCurrentUser;
     private MutableLiveData<String> mSelectedListID = new MutableLiveData<>();
 
-    public ListViewModel() {
+    @Inject
+    public ListViewModel(ShoppingListRepository shoppingListRepository, UserRepository userRepository) {
+        mShoppingListRepository = shoppingListRepository;
+        mUserRepository = userRepository;
         mListLiveData = mShoppingListRepository.getShoppingLists();
         mCurrentUser = mUserRepository.getCurrentUser();
     }

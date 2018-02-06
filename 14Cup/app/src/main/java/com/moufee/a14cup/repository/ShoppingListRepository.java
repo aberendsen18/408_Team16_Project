@@ -16,24 +16,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * A repository for ShoppingLists
  */
-
+@Singleton
 public class ShoppingListRepository {
     private final CollectionReference listsCollection;
 
-    private static ShoppingListRepository sShoppingListRepository;
 
-    public ShoppingListRepository(CollectionReference listsCollection) {
-        this.listsCollection = listsCollection;
+    @Inject
+    public ShoppingListRepository(FirebaseFirestore firebaseFirestore) {
+        this.listsCollection = firebaseFirestore.collection("lists");
     }
 
-    public static ShoppingListRepository get() {
-        if (sShoppingListRepository == null)
-            sShoppingListRepository = new ShoppingListRepository(FirebaseFirestore.getInstance().collection("lists"));
-        return sShoppingListRepository;
-    }
+
 
     public LiveData<Map<String, ShoppingList>> getShoppingListsHashMap()
 

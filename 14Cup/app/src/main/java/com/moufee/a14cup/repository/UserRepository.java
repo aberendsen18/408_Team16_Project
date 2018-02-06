@@ -8,17 +8,20 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.util.FirebaseAuthLiveData;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * A repository for Users
  * Allows the current FirebaseUser to be retrieved
  */
-
+@Singleton
 public class UserRepository {
     private FirebaseAuth mFirebaseAuth;
 
-    private static UserRepository sUserRepository;
 
-    private UserRepository(FirebaseAuth auth) {
+    @Inject
+    public UserRepository(FirebaseAuth auth) {
         this.mFirebaseAuth = auth;
     }
 
@@ -31,11 +34,5 @@ public class UserRepository {
         });
     }
 
-    public static UserRepository get() {
-        if (sUserRepository == null) {
-            //we could do this with dependency injection instead
-            sUserRepository = new UserRepository(FirebaseAuth.getInstance());
-        }
-        return sUserRepository;
-    }
+
 }

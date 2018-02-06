@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -34,8 +35,18 @@ import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity implements MyListsFragment.OnListFragmentInteractionListener {
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
+
+
+public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector, MyListsFragment.OnListFragmentInteractionListener {
+
+    @Inject
+    DispatchingAndroidInjector<Fragment> mDispatchingAndroidInjector;
+
 
     private ListViewModel mViewModel;
     private static final String TAG = "LIST_ACTIVITY";
@@ -177,5 +188,10 @@ public class MainActivity extends AppCompatActivity implements MyListsFragment.O
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return mDispatchingAndroidInjector;
     }
 }

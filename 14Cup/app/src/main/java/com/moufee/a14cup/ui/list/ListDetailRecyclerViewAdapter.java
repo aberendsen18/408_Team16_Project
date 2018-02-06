@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.moufee.a14cup.R;
-import com.moufee.a14cup.ui.list.ShoppingListItemFragment.OnListFragmentInteractionListener;
+import com.moufee.a14cup.ui.list.ShoppingListDetailFragment.OnListFragmentInteractionListener;
 import com.moufee.a14cup.ui.list.dummy.DummyContent.DummyItem;
 
 import java.util.List;

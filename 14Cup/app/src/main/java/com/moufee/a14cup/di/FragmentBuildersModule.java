@@ -6,7 +6,7 @@ import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
 /**
- * Created by Ben on 2/6/18.
+ * Defines the Fragments that may be injected
  */
 
 @Module

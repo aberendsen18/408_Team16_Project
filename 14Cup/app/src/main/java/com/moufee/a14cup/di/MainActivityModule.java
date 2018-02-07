@@ -6,7 +6,8 @@ import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
 /**
- * Created by Ben on 2/6/18.
+ * The Dagger Module for MainActivity
+ * Allows MainActivity and Fragments it hosts to use dependency injection
  */
 @Module
 public abstract class MainActivityModule {

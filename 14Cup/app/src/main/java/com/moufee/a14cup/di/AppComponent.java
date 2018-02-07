@@ -11,7 +11,7 @@ import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 
 /**
- * Created by Ben on 2/6/18.
+ * Provides access to DI graph for the app
  */
 
 @Singleton

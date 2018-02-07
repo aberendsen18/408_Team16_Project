@@ -11,7 +11,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 
 /**
- * Created by Ben on 2/6/18.
+ * The Application class, permits Dagger Android injection
  */
 
 public class ShoppingListApp extends Application implements HasActivityInjector {

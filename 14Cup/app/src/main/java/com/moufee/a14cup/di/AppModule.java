@@ -9,7 +9,7 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * Created by Ben on 2/6/18.
+ * Provides dependencies that cannot be annotated with @Inject
  */
 
 @Module(includes = {ViewModelModule.class})

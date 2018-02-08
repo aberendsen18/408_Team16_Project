@@ -4,6 +4,7 @@ import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents one shopping list
@@ -15,8 +16,8 @@ public class ShoppingList {
     public String owner;
     @ServerTimestamp
     public Date createdDate;
-    public List<String> sharedUsers;
-    public List<ShoppingListItem> items;
+    public Map<String, Boolean> sharedWith;
+    public Map<String, ShoppingListItem> items;
 
     @Override
     public String toString() {

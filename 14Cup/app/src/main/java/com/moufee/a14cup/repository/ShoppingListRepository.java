@@ -54,8 +54,8 @@ public class ShoppingListRepository {
         });
     }
 
-    public LiveData<List<ShoppingList>> getShoppingLists() {
-        return Transformations.map(new FirestoreQueryLiveData(listsCollection), new Function<QuerySnapshot, List<ShoppingList>>() {
+    public LiveData<List<ShoppingList>> getShoppingLists(String userID) {
+        return Transformations.map(new FirestoreQueryLiveData(listsCollection.whereEqualTo("owner", userID)), new Function<QuerySnapshot, List<ShoppingList>>() {
             @Override
             public List<ShoppingList> apply(QuerySnapshot input) {
                 List<ShoppingList> lists = new ArrayList<>();

@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * Shows all of the users lists
+ * Only the OnInteraction listener is currently used
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.

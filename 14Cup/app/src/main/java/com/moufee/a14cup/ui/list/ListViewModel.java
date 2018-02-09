@@ -1,7 +1,9 @@
 package com.moufee.a14cup.ui.list;
 
+import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -30,8 +32,15 @@ public class ListViewModel extends ViewModel {
     public ListViewModel(ShoppingListRepository shoppingListRepository, UserRepository userRepository) {
         mShoppingListRepository = shoppingListRepository;
         mUserRepository = userRepository;
-        mListLiveData = mShoppingListRepository.getShoppingLists();
         mCurrentUser = mUserRepository.getCurrentUser();
+        mListLiveData = Transformations.switchMap(mCurrentUser, new Function<FirebaseUser, LiveData<List<ShoppingList>>>() {
+            @Override
+            public LiveData<List<ShoppingList>> apply(FirebaseUser input) {
+                if (input == null)
+                    return null;
+                return mShoppingListRepository.getShoppingLists(input.getUid());
+            }
+        });
     }
 
     public LiveData<List<ShoppingList>> getLists() {

@@ -1,5 +1,6 @@
 package com.moufee.a14cup.repository;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -9,6 +10,7 @@ import javax.inject.Singleton;
 public class RecipeRepository {
     private static RecipeRepository sRecipeRepository;
 
+    @Inject
     public RecipeRepository() {
 
     }

@@ -55,6 +55,7 @@
                         android:drawableLeft="@drawable/ic_add_black_24dp"
                         android:drawableStart="@drawable/ic_add_black_24dp"
                         android:text="@string/action_new_list"
+                        android:id="@+id/newListButton"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         android:textSize="18sp"/>
                 </LinearLayout>

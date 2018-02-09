@@ -2,77 +2,47 @@ package com.moufee.a14cup.ui.list;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.moufee.a14cup.R;
-import com.moufee.a14cup.ui.list.ShoppingListDetailFragment.OnListFragmentInteractionListener;
-import com.moufee.a14cup.ui.list.dummy.DummyContent.DummyItem;
+import com.moufee.a14cup.databinding.FragmentShoppinglistitemBinding;
+import com.moufee.a14cup.lists.ShoppingListItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * Adapter for list items
+ * TODO: Create an abstract version of this to reduce duplicated code
  */
-public class ListDetailRecyclerViewAdapter extends RecyclerView.Adapter<ListDetailRecyclerViewAdapter.ViewHolder> {
+public class ListDetailRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private List<ShoppingListItem> items;
+//    private final MyListsFragment.OnListFragmentInteractionListener mListener;
 
-    public ListDetailRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
-        mListener = listener;
+    public ListDetailRecyclerViewAdapter() {
+        this.items = new ArrayList<>();
+
+    }
+
+    public void setItems(List<ShoppingListItem> items) {
+        this.items = items;
+        notifyDataSetChanged();
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_shoppinglistitem, parent, false);
-        return new ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        FragmentShoppinglistitemBinding binding = FragmentShoppinglistitemBinding.inflate(inflater, parent, false);
+        return new ListItemHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+        ((ListItemHolder) holder).bind(items.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
-
-        public ViewHolder(View view) {
-            super(view);
-            mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
-        }
+        return items.size();
     }
 }

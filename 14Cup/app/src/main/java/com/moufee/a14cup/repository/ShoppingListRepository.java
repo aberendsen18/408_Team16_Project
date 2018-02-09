@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.util.FirestoreQueryLiveData;
 
 import java.util.ArrayList;
@@ -32,30 +33,13 @@ public class ShoppingListRepository {
         this.listsCollection = firebaseFirestore.collection("lists");
     }
 
-
-
-    public LiveData<Map<String, ShoppingList>> getShoppingListsHashMap()
-
-    {
-        return Transformations.map(new FirestoreQueryLiveData(listsCollection), new Function<QuerySnapshot, Map<String, ShoppingList>>() {
-            @Override
-            public Map<String, ShoppingList> apply(QuerySnapshot input) {
-                Map<String, ShoppingList> lists = new HashMap<>();
-                if (input != null)
-                    for (DocumentSnapshot doc : input) {
-                        if (doc.get("name") != null) {
-                            ShoppingList list = doc.toObject(ShoppingList.class);
-                            list.id = doc.getId();
-                            lists.put(doc.getId(), list);
-                        }
-                    }
-                return lists;
-            }
-        });
+    public void addList(ShoppingList list){
+        listsCollection.add(list);
     }
 
-    public LiveData<List<ShoppingList>> getShoppingLists() {
-        return Transformations.map(new FirestoreQueryLiveData(listsCollection), new Function<QuerySnapshot, List<ShoppingList>>() {
+
+    public LiveData<List<ShoppingList>> getShoppingLists(String userID) {
+        return Transformations.map(new FirestoreQueryLiveData(listsCollection.whereEqualTo("owner", userID)), new Function<QuerySnapshot, List<ShoppingList>>() {
             @Override
             public List<ShoppingList> apply(QuerySnapshot input) {
                 List<ShoppingList> lists = new ArrayList<>();
@@ -68,6 +52,24 @@ public class ShoppingListRepository {
                         }
                     }
                 return lists;
+            }
+        });
+    }
+
+    public LiveData<List<ShoppingListItem>> getItemsForList(String listID) {
+        return Transformations.map(new FirestoreQueryLiveData(listsCollection.document(listID).collection("items")), new Function<QuerySnapshot, List<ShoppingListItem>>() {
+            @Override
+            public List<ShoppingListItem> apply(QuerySnapshot input) {
+                List<ShoppingListItem> items = new ArrayList<>();
+                if (input != null)
+                    for (DocumentSnapshot doc : input) {
+                        if (doc.get("name") != null) {
+                            ShoppingListItem item = doc.toObject(ShoppingListItem.class);
+                            item.id = doc.getId();
+                            items.add(item);
+                        }
+                    }
+                return items;
             }
         });
     }

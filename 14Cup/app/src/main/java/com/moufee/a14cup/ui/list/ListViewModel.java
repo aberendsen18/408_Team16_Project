@@ -1,11 +1,14 @@
 package com.moufee.a14cup.ui.list;
 
+import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.repository.UserRepository;
 
@@ -25,21 +28,33 @@ public class ListViewModel extends ViewModel {
     private LiveData<List<ShoppingList>> mListLiveData;
     private LiveData<FirebaseUser> mCurrentUser;
     private MutableLiveData<String> mSelectedListID = new MutableLiveData<>();
+    private LiveData<List<ShoppingListItem>> mCurrentListItems;
 
     @Inject
     public ListViewModel(ShoppingListRepository shoppingListRepository, UserRepository userRepository) {
         mShoppingListRepository = shoppingListRepository;
         mUserRepository = userRepository;
-        mListLiveData = mShoppingListRepository.getShoppingLists();
         mCurrentUser = mUserRepository.getCurrentUser();
+        mListLiveData = Transformations.switchMap(mCurrentUser, new Function<FirebaseUser, LiveData<List<ShoppingList>>>() {
+            @Override
+            public LiveData<List<ShoppingList>> apply(FirebaseUser input) {
+                if (input == null)
+                    return null;
+                return mShoppingListRepository.getShoppingLists(input.getUid());
+            }
+        });
+        mCurrentListItems = Transformations.switchMap(mSelectedListID, new Function<String, LiveData<List<ShoppingListItem>>>() {
+            @Override
+            public LiveData<List<ShoppingListItem>> apply(String input) {
+                if (input == null)
+                    return null;
+                return mShoppingListRepository.getItemsForList(input);
+            }
+        });
     }
 
     public LiveData<List<ShoppingList>> getLists() {
         return mListLiveData;
-    }
-
-    public LiveData<Map<String, ShoppingList>> getHashLists() {
-        return mShoppingListRepository.getShoppingListsHashMap();
     }
 
     public LiveData<FirebaseUser> getCurrentUser() {
@@ -50,4 +65,11 @@ public class ListViewModel extends ViewModel {
         mSelectedListID.setValue(ID);
     }
 
+    public LiveData<List<ShoppingListItem>> getCurrentListItems() {
+        return mCurrentListItems;
+    }
+
+    public LiveData<String> getSelectedListID() {
+        return mSelectedListID;
+    }
 }

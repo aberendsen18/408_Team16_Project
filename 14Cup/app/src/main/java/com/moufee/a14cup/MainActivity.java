@@ -29,9 +29,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
+import com.moufee.a14cup.ui.list.ShoppingListDetailFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +54,11 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
+    @Inject
+    ShoppingListRepository mListRepository;
 
     private ListViewModel mViewModel;
-    private static final String TAG = "LIST_ACTIVITY";
+    private static final String TAG = "MAIN_ACTIVITY";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
 
@@ -66,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
     @Override
     public void onListFragmentInteraction(ShoppingList list) {
-        Log.d(TAG, "onListFragmentInteraction: Selected List" + list);
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
         mToolbar.setTitle(list.name);
@@ -91,14 +94,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel = ViewModelProviders.of(this, viewModelFactory).get(ListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -115,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         }
         setListeners();
 
+        ShoppingListDetailFragment fragment = ShoppingListDetailFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
     }
 
     private void setListeners() {

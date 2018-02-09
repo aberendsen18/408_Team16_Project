@@ -1,9 +1,13 @@
 package com.moufee.a14cup.ui.list;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,8 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.moufee.a14cup.R;
-import com.moufee.a14cup.ui.list.dummy.DummyContent;
-import com.moufee.a14cup.ui.list.dummy.DummyContent.DummyItem;
+import com.moufee.a14cup.lists.ShoppingListItem;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import dagger.android.support.AndroidSupportInjection;
 
 /**
  * A fragment representing a list of Items.
@@ -22,11 +31,11 @@ import com.moufee.a14cup.ui.list.dummy.DummyContent.DummyItem;
  */
 public class ShoppingListDetailFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private ListViewModel mViewModel;
+    private ListDetailRecyclerViewAdapter mRecyclerViewAdapter = new ListDetailRecyclerViewAdapter();
+    @Inject
+    ViewModelProvider.Factory mFactory;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -35,23 +44,15 @@ public class ShoppingListDetailFragment extends Fragment {
     public ShoppingListDetailFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ShoppingListDetailFragment newInstance(int columnCount) {
+    public static ShoppingListDetailFragment newInstance() {
         ShoppingListDetailFragment fragment = new ShoppingListDetailFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -63,12 +64,8 @@ public class ShoppingListDetailFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new ListDetailRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setAdapter(mRecyclerViewAdapter);
         }
         return view;
     }
@@ -76,13 +73,29 @@ public class ShoppingListDetailFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
+        if (context instanceof AppCompatActivity) {
+            mViewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(ListViewModel.class);
+            setListeners();
+        }
+        /*if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
-        }
+        }*/
+    }
+
+    private void setListeners() {
+        mViewModel.getCurrentListItems().observe(this, new Observer<List<ShoppingListItem>>() {
+            @Override
+            public void onChanged(@Nullable List<ShoppingListItem> shoppingListItems) {
+                if (shoppingListItems != null) {
+                    mRecyclerViewAdapter.setItems(shoppingListItems);
+                }
+            }
+        });
     }
 
     @Override
@@ -102,7 +115,6 @@ public class ShoppingListDetailFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(ShoppingListItem item);
     }
 }

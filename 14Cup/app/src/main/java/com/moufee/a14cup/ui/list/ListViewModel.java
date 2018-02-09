@@ -68,4 +68,8 @@ public class ListViewModel extends ViewModel {
     public LiveData<List<ShoppingListItem>> getCurrentListItems() {
         return mCurrentListItems;
     }
+
+    public LiveData<String> getSelectedListID() {
+        return mSelectedListID;
+    }
 }

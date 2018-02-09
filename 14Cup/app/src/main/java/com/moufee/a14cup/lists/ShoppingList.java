@@ -20,6 +20,18 @@ public class ShoppingList {
     // this might not actually be used
     public Map<String, ShoppingListItem> items;
 
+    public ShoppingList() {
+    }
+
+    public ShoppingList(String name) {
+        this.name = name;
+    }
+
+    public ShoppingList(String name, String owner) {
+        this.name = name;
+        this.owner = owner;
+    }
+
     @Override
     public String toString() {
         return id + " : " + name + ": " + items;

@@ -32,6 +32,7 @@ import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
+import com.moufee.a14cup.ui.list.ShoppingListDetailFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +115,9 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             mRecyclerView.setAdapter(recyclerViewAdapter);
         }
         setListeners();
+
+        ShoppingListDetailFragment fragment = ShoppingListDetailFragment.newInstance(1);
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
 
     }
 

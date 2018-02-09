@@ -14,6 +14,8 @@ import com.moufee.a14cup.R;
 import com.moufee.a14cup.ui.list.dummy.DummyContent;
 import com.moufee.a14cup.ui.list.dummy.DummyContent.DummyItem;
 
+import dagger.android.support.AndroidSupportInjection;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -76,6 +78,7 @@ public class ShoppingListDetailFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;

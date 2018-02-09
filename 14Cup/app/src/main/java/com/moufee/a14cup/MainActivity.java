@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel.getLists().observe(this, new Observer<List<ShoppingList>>() {
             @Override
             public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
+                Log.d(TAG, "onChanged: "+ shoppingLists);
                 if (shoppingLists != null)
                     recyclerViewAdapter.setLists(shoppingLists);
                 else

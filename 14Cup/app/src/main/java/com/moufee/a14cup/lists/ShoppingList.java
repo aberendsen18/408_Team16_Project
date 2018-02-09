@@ -17,6 +17,7 @@ public class ShoppingList {
     @ServerTimestamp
     public Date createdDate;
     public Map<String, Boolean> sharedWith;
+    // this might not actually be used
     public Map<String, ShoppingListItem> items;
 
     @Override

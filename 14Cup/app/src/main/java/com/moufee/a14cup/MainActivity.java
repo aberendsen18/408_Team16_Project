@@ -1,9 +1,11 @@
 package com.moufee.a14cup;
 
+import android.app.Dialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,14 +15,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
@@ -29,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
@@ -74,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         drawerLayout.closeDrawer(GravityCompat.START);
         mToolbar.setTitle(list.name);
         mViewModel.setSelectedListID(list.id);
+        mViewModel.CurrentList = list;
     }
 
 
@@ -94,6 +102,40 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel = ViewModelProviders.of(this, viewModelFactory).get(ListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
 
+        TextView newListButton = findViewById(R.id.newListButton);
+        newListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view = (LayoutInflater.from(MainActivity.this)).inflate(R.layout.add_new_list, null);
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
+                alertBuilder.setView(view);
+                final EditText ListName = (EditText) view.findViewById(R.id.list_name);
+
+                alertBuilder.setCancelable(true)
+                        .setPositiveButton("Add New List", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ShoppingList NewList = new ShoppingList();
+                                NewList.name = ListName.getText().toString();
+                                NewList.owner = mViewModel.USERID;
+                                mListRepository.addList(NewList);
+                                onListFragmentInteraction(NewList);
+                            }
+                        })
+                        .setNegativeButton(
+                                "cancel",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }
+                        );
+                Dialog dialog = alertBuilder.create();
+                dialog.show();
+            }
+        });
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -118,8 +160,21 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel.getLists().observe(this, new Observer<List<ShoppingList>>() {
             @Override
             public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
-                if (shoppingLists != null)
+                if (shoppingLists != null) {
                     recyclerViewAdapter.setLists(shoppingLists);
+
+                    ShoppingList firstlist = mViewModel.getLists().getValue().get(0);
+                    if (mViewModel.CurrentList == null) {
+                        if (firstlist == null) {
+                            //TODO NO LISTS DISPLAY MESSAGE
+                        } else {
+                            mViewModel.CurrentList = firstlist;
+                            onListFragmentInteraction(firstlist);
+                        }
+                    } else {
+                        onListFragmentInteraction(mViewModel.CurrentList);
+                    }
+                }
                 else
                     recyclerViewAdapter.setLists(new ArrayList<ShoppingList>());
             }

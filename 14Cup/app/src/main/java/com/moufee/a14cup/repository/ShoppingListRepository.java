@@ -4,6 +4,7 @@ import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,11 +33,6 @@ public class ShoppingListRepository {
     public ShoppingListRepository(FirebaseFirestore firebaseFirestore) {
         this.listsCollection = firebaseFirestore.collection("lists");
     }
-
-    public void addList(ShoppingList list){
-        listsCollection.add(list);
-    }
-
 
     public LiveData<List<ShoppingList>> getShoppingLists(String userID) {
         return Transformations.map(new FirestoreQueryLiveData(listsCollection.whereEqualTo("owner", userID)), new Function<QuerySnapshot, List<ShoppingList>>() {
@@ -72,5 +68,9 @@ public class ShoppingListRepository {
                 return items;
             }
         });
+    }
+
+    public void addList(ShoppingList Item) {
+        FirebaseFirestore.getInstance().collection("lists").add(Item);
     }
 }

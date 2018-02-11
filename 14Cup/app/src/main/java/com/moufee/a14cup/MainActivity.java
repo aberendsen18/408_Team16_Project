@@ -43,6 +43,7 @@ import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
 import com.moufee.a14cup.ui.list.ShoppingListDetailFragment;
+import com.moufee.a14cup.validation.DataValidation;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
     private RecyclerView mRecyclerView;
     private DrawerLayout mDrawerLayout;
+    private DataValidation validator;
     private Toolbar mToolbar;
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
     private ActivityMainBinding mBinding;
@@ -114,9 +116,27 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     ShoppingListItem NewItem = new ShoppingListItem();
                     NewItem.name = newItemEdit.getText().toString();
-                    mListRepository.updateList(mViewModel.CurrentList, NewItem);
-                    newItemEdit.setText("");
-                    return true;
+                    //call for validation
+                    String str = validator.valid_shopping_list_item(NewItem.name);
+                    if (str.equals("valid")) {
+                        mListRepository.updateList(mViewModel.CurrentList, NewItem);
+                        newItemEdit.setText("");
+                        return true;
+                    } else {
+                        //print the error to the screen
+                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
+
+                        alertBuilder.setCancelable(true)
+                                .setMessage(str)
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                });
+                        Dialog dialog = alertBuilder.create();
+                        dialog.show();
+                    }
                 }
                 return false;
             }

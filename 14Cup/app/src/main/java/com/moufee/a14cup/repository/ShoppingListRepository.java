@@ -73,4 +73,8 @@ public class ShoppingListRepository {
     public void addList(ShoppingList Item) {
         FirebaseFirestore.getInstance().collection("lists").add(Item);
     }
+
+    public void updateList(ShoppingList list, ShoppingListItem item) {
+        FirebaseFirestore.getInstance().collection("lists").document(list.id).collection("items").add(item);
+    }
 }

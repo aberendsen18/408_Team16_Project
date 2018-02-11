@@ -29,9 +29,12 @@ public class ListViewModel extends ViewModel {
     private LiveData<FirebaseUser> mCurrentUser;
     private MutableLiveData<String> mSelectedListID = new MutableLiveData<>();
     private LiveData<List<ShoppingListItem>> mCurrentListItems;
+    public ShoppingList CurrentList;
+    public String USERID;
 
     @Inject
     public ListViewModel(ShoppingListRepository shoppingListRepository, UserRepository userRepository) {
+        CurrentList = null;
         mShoppingListRepository = shoppingListRepository;
         mUserRepository = userRepository;
         mCurrentUser = mUserRepository.getCurrentUser();
@@ -40,6 +43,7 @@ public class ListViewModel extends ViewModel {
             public LiveData<List<ShoppingList>> apply(FirebaseUser input) {
                 if (input == null)
                     return null;
+                USERID = input.getUid();
                 return mShoppingListRepository.getShoppingLists(input.getUid());
             }
         });

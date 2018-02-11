@@ -4,6 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+
     tools:context="com.moufee.a14cup.MainActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -17,6 +21,18 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        <EditText android:id="@+id/add_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="&lt;ADD ITEM&gt;"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            android:inputType="text"
+            android:layout_margin="10dp"
+            android:drawableBottom="@color/colorPrimary"
+            android:shadowColor="@color/colorPrimaryDark"
+            android:cursorVisible="false" />
 
     </android.support.design.widget.AppBarLayout>
 

@@ -8,6 +8,7 @@ import android.arch.lifecycle.ViewModelProvider;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.lists.ShoppingListItem;
@@ -25,6 +26,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,15 +42,9 @@ public class ShoppingListRepositoryTest {
     private FirebaseFirestore mFirebaseFirestore;
     private CollectionReference mCollectionReference;
     private ShoppingListRepository mShoppingListRepository;
+    private DocumentReference mDocumentReference;
     private UserRepository mUserRepository;
-    private LiveData<List<ShoppingList>> mListLiveData;
-    private LiveData<FirebaseUser> mCurrentUser;
-    //private MutableLiveData<String> mSelectedListID = new MutableLiveData<>();
-    //private LiveData<List<ShoppingListItem>> mCurrentListItems;
 
-    public LiveData<List<ShoppingList>> getLists() {
-        return mListLiveData;
-    }
 
     @Before
     public void setup(){
@@ -71,7 +67,20 @@ public class ShoppingListRepositoryTest {
 
     @Test
     public void addItemToShoppingList() throws Exception{
-        
+
+        ShoppingListItem testItem = new ShoppingListItem();
+        testItem.name = "test_item";
+        testItem.category = "test_cat";
+
+        DocumentReference documentReference = mock(DocumentReference.class);
+        CollectionReference collectionReference = mock(CollectionReference.class);
+        when(mCollectionReference.document(anyString())).thenReturn(documentReference);
+        when(documentReference.collection("items")).thenReturn(collectionReference);
+
+        mShoppingListRepository.addItem("test_id", testItem);
+        verify(mCollectionReference).document("test_id");
+        verify(collectionReference).add(testItem);
+
 
     }
 }

@@ -17,8 +17,9 @@ public class ListTitleHolder extends RecyclerView.ViewHolder {
         mBinding = binding;
     }
 
-    public void bind(ShoppingList list) {
+    public void bind(ShoppingList list, MyListsFragment.OnListFragmentInteractionListener listener) {
         mBinding.setShoppingList(list);
+        mBinding.setListener(listener);
         mBinding.executePendingBindings();
     }
 }

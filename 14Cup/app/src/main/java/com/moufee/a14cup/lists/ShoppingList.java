@@ -1,6 +1,10 @@
 package com.moufee.a14cup.lists;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents one shopping list
@@ -8,12 +12,28 @@ import java.util.List;
 
 public class ShoppingList {
     public String name;
+    public String id;
     public String owner;
-    public List<String> sharedUsers;
-    public List<ShoppingListItem> items;
+    @ServerTimestamp
+    public Date createdDate;
+    public Map<String, Boolean> sharedWith;
+    // this might not actually be used
+    public Map<String, ShoppingListItem> items;
+
+    public ShoppingList() {
+    }
+
+    public ShoppingList(String name) {
+        this.name = name;
+    }
+
+    public ShoppingList(String name, String owner) {
+        this.name = name;
+        this.owner = owner;
+    }
 
     @Override
     public String toString() {
-        return name + ": " + items;
+        return id + " : " + name + ": " + items;
     }
 }

@@ -14,7 +14,8 @@
         android:id="@+id/list_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="&lt;List Name&gt;"
-        android:text="" />
+        android:hint="@string/list_name_hint"
+        android:inputType="textCapWords"
+        android:text=""/>
 
 </LinearLayout>

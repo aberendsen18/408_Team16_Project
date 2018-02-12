@@ -11,4 +11,4 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="com.moufee.a14cup.ui.categorySorting.CategorySortingListFragment"
-    tools:listitem="@layout/fragment_categorysortingitem"/>
+    tools:listitem="@layout/fragment_categorysorting_title"/>

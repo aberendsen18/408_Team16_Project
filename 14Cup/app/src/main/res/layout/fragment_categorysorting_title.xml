@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="categorySortItem"
-            type="com.moufee.a14cup.categorySorts.CategorySortingItem"/>
+            name="categorySortList"
+            type="com.moufee.a14cup.categorySorts.CategorySortingList"/>
 
         <!--<variable
             name="listener"
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:text="@{categorySortItem.name}"
+            android:text="@{categorySortList.name}"
             android:textAppearance="@style/TextAppearance.AppCompat.Menu"
             android:textSize="18sp"
             tools:text="Sort Title"/>

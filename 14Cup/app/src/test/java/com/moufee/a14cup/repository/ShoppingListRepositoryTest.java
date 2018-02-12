@@ -79,4 +79,10 @@ public class ShoppingListRepositoryTest {
 
         assertEquals( (getLists().getValue().contains(TestList)), true);
     }
+
+    @Test
+    public void addItemToShoppingList() throws Exception{
+
+
+    }
 }

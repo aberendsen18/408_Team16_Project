@@ -7,6 +7,8 @@ import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModelProvider;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.lists.ShoppingListItem;
 
@@ -23,6 +25,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by tyler on 2/11/18.
@@ -32,16 +37,14 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public class ShoppingListRepositoryTest {
 
-    @Inject
-    ShoppingListRepository mShoppingListRepository;
-
-    @Inject
-    UserRepository mUserRepository;
-
+    private FirebaseFirestore mFirebaseFirestore;
+    private CollectionReference mCollectionReference;
+    private ShoppingListRepository mShoppingListRepository;
+    private UserRepository mUserRepository;
     private LiveData<List<ShoppingList>> mListLiveData;
     private LiveData<FirebaseUser> mCurrentUser;
-    private MutableLiveData<String> mSelectedListID = new MutableLiveData<>();
-    private LiveData<List<ShoppingListItem>> mCurrentListItems;
+    //private MutableLiveData<String> mSelectedListID = new MutableLiveData<>();
+    //private LiveData<List<ShoppingListItem>> mCurrentListItems;
 
     public LiveData<List<ShoppingList>> getLists() {
         return mListLiveData;
@@ -49,40 +52,26 @@ public class ShoppingListRepositoryTest {
 
     @Before
     public void setup(){
-        mCurrentUser = mUserRepository.getCurrentUser();
-        mListLiveData = Transformations.switchMap(mCurrentUser, new Function<FirebaseUser, LiveData<List<ShoppingList>>>() {
-            @Override
-            public LiveData<List<ShoppingList>> apply(FirebaseUser input) {
-                if (input == null)
-                    return null;
-                return mShoppingListRepository.getShoppingLists(input.getUid());
-            }
-        });
-        mCurrentListItems = Transformations.switchMap(mSelectedListID, new Function<String, LiveData<List<ShoppingListItem>>>() {
-            @Override
-            public LiveData<List<ShoppingListItem>> apply(String input) {
-                if (input == null)
-                    return null;
-                return mShoppingListRepository.getItemsForList(input);
-            }
-        });
+        mCollectionReference = mock(CollectionReference.class);
+        //mUserRepository = mock(UserRepository.class);
+        mFirebaseFirestore = mock(FirebaseFirestore.class);
+        when(mFirebaseFirestore.collection("lists")).thenReturn(mCollectionReference);
+        mShoppingListRepository = new ShoppingListRepository(mFirebaseFirestore);
     }
 
     @Test
     public void createNewShoppingList() throws Exception{
-        String TestName = "New List";
-        ShoppingList TestList = new ShoppingList();
-        TestList.name = TestName;
-        TestList.owner = mUserRepository.getCurrentUser().getValue().getUid();
+        // add new shopping list
+        ShoppingList TestList = new ShoppingList("test_name","test_user" );
 
+        // verfiy shopping addList calls add method of Firebase CollectionReference
         mShoppingListRepository.addList(TestList);
-
-        assertEquals( (getLists().getValue().contains(TestList)), true);
+        verify(mCollectionReference).add(TestList);
     }
 
     @Test
     public void addItemToShoppingList() throws Exception{
-
+        
 
     }
 }

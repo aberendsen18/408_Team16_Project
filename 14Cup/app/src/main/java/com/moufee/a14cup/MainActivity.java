@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
     private RecyclerView mRecyclerView;
     private DrawerLayout mDrawerLayout;
-    private DataValidation validator;
+    private DataValidation validator = new DataValidation();
     private Toolbar mToolbar;
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
     private ActivityMainBinding mBinding;
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                     NewItem.name = newItemEdit.getText().toString();
                     //call for validation
                     String str = validator.valid_shopping_list_item(NewItem.name);
+
                     if (str.equals("valid")) {
                         mListRepository.updateList(mViewModel.CurrentList, NewItem);
                         newItemEdit.setText("");

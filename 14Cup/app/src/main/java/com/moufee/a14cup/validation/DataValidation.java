@@ -37,7 +37,7 @@ public class DataValidation {
             return "the string that you entered is blank!";
         } else if (s.length() > 256) {
             return "the string that you entered is too long!";
-        } else if (s.equals("")) {
+        } else if (s.isEmpty()) {
             return "the string that you entered is blank!";
         }
 

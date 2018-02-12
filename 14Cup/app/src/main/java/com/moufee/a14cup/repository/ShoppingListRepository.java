@@ -4,7 +4,6 @@ import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -14,9 +13,7 @@ import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.util.FirestoreQueryLiveData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -71,10 +68,10 @@ public class ShoppingListRepository {
     }
 
     public void addList(ShoppingList Item) {
-        FirebaseFirestore.getInstance().collection("lists").add(Item);
+        listsCollection.add(Item);
     }
 
-    public void updateList(ShoppingList list, ShoppingListItem item) {
-        FirebaseFirestore.getInstance().collection("lists").document(list.id).collection("items").add(item);
+    public void addItem(String listID, ShoppingListItem item) {
+        listsCollection.document(listID).collection("items").add(item);
     }
 }

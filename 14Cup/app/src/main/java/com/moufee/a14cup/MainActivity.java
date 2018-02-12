@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         drawerLayout.closeDrawer(GravityCompat.START);
         mToolbar.setTitle(list.name);
         mViewModel.setSelectedListID(list.id);
-        mViewModel.CurrentList = list;
     }
 
 
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     ShoppingListItem NewItem = new ShoppingListItem();
                     NewItem.name = newItemEdit.getText().toString();
-                    mListRepository.updateList(mViewModel.CurrentList, NewItem);
+                    mListRepository.addItem(mViewModel.getSelectedListID().getValue(), NewItem);
                     newItemEdit.setText("");
                     return true;
                 }
@@ -122,8 +121,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             }
         });
 
-        TextView newListButton = findViewById(R.id.newListButton);
-        newListButton.setOnClickListener(new View.OnClickListener() {
+        mBinding.newListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 view = (LayoutInflater.from(MainActivity.this)).inflate(R.layout.add_new_list, null);
@@ -138,7 +136,9 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                             public void onClick(DialogInterface dialog, int which) {
                                 ShoppingList NewList = new ShoppingList();
                                 NewList.name = ListName.getText().toString();
-                                NewList.owner = mViewModel.USERID;
+                                // should probably check for null but
+                                // if nobody is logged in at this point, something is seriously wrong
+                                NewList.owner = mViewModel.getCurrentUser().getValue().getUid();
 
                                 mListRepository.addList(NewList);
                                 onListFragmentInteraction(NewList);
@@ -183,13 +183,13 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
                 if (shoppingLists != null) {
                     recyclerViewAdapter.setLists(shoppingLists);
-                    if (mViewModel.getLists().getValue().size() != 0) {
-                        ShoppingList firstlist = mViewModel.getLists().getValue().get(0);
-                        if (mViewModel.CurrentList == null) {
-                            mViewModel.CurrentList = firstlist;
-                            onListFragmentInteraction(firstlist);
+                    if (shoppingLists.size() != 0) {
+                        ShoppingList firstList = shoppingLists.get(0);
+                        if (mViewModel.getSelectedListID().getValue() == null) {
+                            mViewModel.setSelectedListID(firstList.id);
+                            onListFragmentInteraction(firstList);
                         } else {
-                            onListFragmentInteraction(mViewModel.CurrentList);
+//                            onListFragmentInteraction(mViewModel.CurrentList);
                         }
                     }
                     else {

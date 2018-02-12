@@ -39,6 +39,7 @@ import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
+import com.moufee.a14cup.ui.categorySorting.CategorySortingListFragment;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
@@ -84,6 +85,11 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     public void onListFragmentInteraction(ShoppingList list) {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
+
+        // Resets fragment if on a different fragment, IE SortOrders/Settings/etc
+        ShoppingListDetailFragment fragment = ShoppingListDetailFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
+
         mToolbar.setTitle(list.name);
         mViewModel.setSelectedListID(list.id);
         mViewModel.CurrentList = list;
@@ -263,6 +269,10 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 AuthUI.getInstance().signOut(this);
                 return true;
             case R.id.action_settings:
+                return true;
+            case R.id.action_sort_categories:
+                CategorySortingListFragment fragment = CategorySortingListFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
                 return true;
         }
 

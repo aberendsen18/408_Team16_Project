@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+        <variable
+            name="categorySortItem"
+            type="com.moufee.a14cup.categorySorts.CategorySortingItem"/>
+
+        <!--<variable
+            name="listener"
+            type="com.moufee.a14cup.ui.list.MyListsFragment.OnListFragmentInteractionListener"/>
+            -->
+    </data>
+
+    <LinearLayout
+        android:id="@+id/list_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:focusable="true"
+
+        >
+
+        <TextView
+            android:id="@+id/sort_item_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="@{categorySortItem.name}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+            android:textSize="18sp"
+            tools:text="Sort Title"/>
+    </LinearLayout>
+</layout>

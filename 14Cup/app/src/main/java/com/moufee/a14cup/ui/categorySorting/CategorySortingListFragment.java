@@ -1,10 +1,8 @@
 package com.moufee.a14cup.ui.categorySorting;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +14,6 @@ import com.moufee.a14cup.R;
 import com.moufee.a14cup.categorySorts.CategorySortingList;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Travis Kovacic on 2/12/2018.
@@ -31,6 +28,7 @@ public class CategorySortingListFragment extends Fragment{
 
     public CategorySortingListFragment(){
     }
+
 
     public static  CategorySortingListFragment newInstance() { return new CategorySortingListFragment(); }
 
@@ -61,14 +59,21 @@ public class CategorySortingListFragment extends Fragment{
 
     private void setListeners() {
         // viewmodel
+        ArrayList<CategorySortingList> sortList = viewModel.getSorts();
+
+        if(sortList != null){
+            recyclerViewAdapter.setLists(sortList);
+        }else{
+            recyclerViewAdapter.setLists(new ArrayList<CategorySortingList>());
+        }
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*if (context instanceof CategorySortingListFragment.OnListFragmentInteractionListener) {
-            mListener = (CategorySortingListFragment.OnListFragmentInteractionListener) context;
+        /*if (context instanceof OnListFragmentInteractionListener) {
+            mListener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");

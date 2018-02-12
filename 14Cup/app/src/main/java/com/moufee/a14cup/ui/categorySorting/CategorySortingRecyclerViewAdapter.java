@@ -8,24 +8,23 @@ import com.moufee.a14cup.categorySorts.CategorySortingList;
 import com.moufee.a14cup.databinding.FragmentCategorysortingTitleBinding;
 import com.moufee.a14cup.ui.categorySorting.CategorySortingListFragment.OnListFragmentInteractionListener;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Travis Kovacic on 2/12/2018.
  */
 
 public class CategorySortingRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-    private List<CategorySortingList> lists;
+    private ArrayList<CategorySortingList> lists;
     private final OnListFragmentInteractionListener mListener;
 
-    public CategorySortingRecyclerViewAdapter(List<CategorySortingList> lists, OnListFragmentInteractionListener listener) {
+    public CategorySortingRecyclerViewAdapter(ArrayList<CategorySortingList> lists, OnListFragmentInteractionListener listener) {
         this.lists = lists;
         mListener = listener;
     }
 
-    public void setLists(List<CategorySortingList> lists) {
+    public void setLists(ArrayList<CategorySortingList> lists) {
         this.lists = lists;
-        notifyDataSetChanged();
     }
 
     @Override

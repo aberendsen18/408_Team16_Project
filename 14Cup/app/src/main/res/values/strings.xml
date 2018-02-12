@@ -10,6 +10,7 @@
     <string name="sign_in_cancelled">Sign-in cancelled.</string>
     <string name="unknown_sign_in_response">Unknown response.</string>
     <string name="my_lists">My Lists</string>
+    <string name="my_sort_orders">My Sort Orders</string>
     <string name="nav_lists">Lists</string>
     <string name="nav_recipes">Recipes</string>
     <string name="nav_settings">Settings</string>

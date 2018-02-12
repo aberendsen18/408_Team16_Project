@@ -8,10 +8,10 @@
             name="categorySortList"
             type="com.moufee.a14cup.categorySorts.CategorySortingList"/>
 
-        <!--<variable
+        <variable
             name="listener"
-            type="com.moufee.a14cup.ui.list.MyListsFragment.OnListFragmentInteractionListener"/>
-            -->
+            type="com.moufee.a14cup.ui.categorySorting.CategorySortingListFragment.OnListFragmentInteractionListener"/>
+
     </data>
 
     <LinearLayout
@@ -22,7 +22,7 @@
         android:clickable="true"
         android:orientation="horizontal"
         android:focusable="true"
-
+        android:onClick="@{() -> listener.onListFragmentInteraction(categorySortList)}"
         >
 
         <TextView

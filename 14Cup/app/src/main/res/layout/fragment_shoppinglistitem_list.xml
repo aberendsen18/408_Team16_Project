@@ -10,5 +10,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.moufee.a14cup.ui.list.ShoppingListDetailFragment"
+    tools:context="com.moufee.a14cup.ui.list.ListDetailFragment"
     tools:listitem="@layout/fragment_shoppinglistitem"/>

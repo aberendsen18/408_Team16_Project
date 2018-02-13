@@ -29,7 +29,7 @@ import dagger.android.support.AndroidSupportInjection;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ShoppingListDetailFragment extends Fragment {
+public class ListDetailFragment extends Fragment {
 
     private OnListFragmentInteractionListener mListener;
     private ListViewModel mViewModel;
@@ -41,12 +41,12 @@ public class ShoppingListDetailFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ShoppingListDetailFragment() {
+    public ListDetailFragment() {
     }
 
     @SuppressWarnings("unused")
-    public static ShoppingListDetailFragment newInstance() {
-        ShoppingListDetailFragment fragment = new ShoppingListDetailFragment();
+    public static ListDetailFragment newInstance() {
+        ListDetailFragment fragment = new ListDetailFragment();
         return fragment;
     }
 

@@ -9,8 +9,6 @@ import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -39,15 +37,12 @@ import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
+import com.moufee.a14cup.ui.list.ListDetailFragment;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
-import com.moufee.a14cup.ui.list.ShoppingListDetailFragment;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -173,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         }
         setListeners();
 
-        ShoppingListDetailFragment fragment = ShoppingListDetailFragment.newInstance();
+        ListDetailFragment fragment = ListDetailFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
     }
 

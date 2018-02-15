@@ -9,8 +9,6 @@ import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,14 +19,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
@@ -37,17 +32,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
-import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
+import com.moufee.a14cup.ui.list.ListDetailFragment;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
-import com.moufee.a14cup.ui.list.ShoppingListDetailFragment;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -106,20 +97,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel = ViewModelProviders.of(this, viewModelFactory).get(ListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
 
-        final TextView newItemEdit = findViewById(R.id.add_item);
-        newItemEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || event == null) {
-                    ShoppingListItem NewItem = new ShoppingListItem();
-                    NewItem.name = newItemEdit.getText().toString();
-                    mListRepository.addItem(mViewModel.getSelectedListID().getValue(), NewItem);
-                    newItemEdit.setText("");
-                    return true;
-                }
-                return false;
-            }
-        });
 
         mBinding.newListButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         }
         setListeners();
 
-        ShoppingListDetailFragment fragment = ShoppingListDetailFragment.newInstance();
+        ListDetailFragment fragment = ListDetailFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
     }
 

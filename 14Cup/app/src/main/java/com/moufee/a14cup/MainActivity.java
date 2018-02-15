@@ -27,7 +27,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -43,6 +45,7 @@ import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
 import com.moufee.a14cup.ui.list.ShoppingListDetailFragment;
+import com.moufee.a14cup.ui.recipes.RecipeFragment;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -171,6 +174,19 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             mRecyclerView.setAdapter(recyclerViewAdapter);
         }
+
+        // Set the recipes link in nav bar to open the recipies fragment
+        LinearLayout recipeButton = findViewById(R.id.recipeButton);
+        recipeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RecipeFragment fragment = RecipeFragment.newInstance(1);
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                mToolbar.setTitle("Search For Recipes");
+            }
+        });
+
         setListeners();
 
         ShoppingListDetailFragment fragment = ShoppingListDetailFragment.newInstance();

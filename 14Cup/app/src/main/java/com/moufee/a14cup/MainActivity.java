@@ -63,7 +63,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
 
-public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector, MyListsFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector, MyListsFragment.OnListFragmentInteractionListener, CategorySortingListFragment.OnListFragmentInteractionListener{
 
     @Inject
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidInjector;
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel.CurrentList = list;
     }
 
-    public void onListFragmentInteraction(CategorySortingList sort) {
+    public void onSortFragmentInteraction(CategorySortingList sort) {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
 
@@ -306,9 +306,9 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                         CategorySortingList firstSort = sortList.get(0);
                         if (sViewModel.CurrentSort == null) {
                             sViewModel.CurrentSort = firstSort;
-                            onListFragmentInteraction(firstSort);
+                            onSortFragmentInteraction(firstSort);
                         } else {
-                            onListFragmentInteraction(sViewModel.CurrentSort);
+                            onSortFragmentInteraction(sViewModel.CurrentSort);
                         }
                     }
                 }

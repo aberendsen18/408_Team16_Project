@@ -20,7 +20,7 @@ public class CategorySortHolder extends RecyclerView.ViewHolder{
 
     public void bind(CategorySortingList list, CategorySortingListFragment.OnListFragmentInteractionListener listener) {
         mBinding.setCategorySortList(list);
-        //mBinding.setListener(listener);
+        mBinding.setListener(listener);
         mBinding.executePendingBindings();
     }
 

@@ -22,7 +22,7 @@
         android:clickable="true"
         android:orientation="horizontal"
         android:focusable="true"
-        android:onClick="@{() -> listener.onListFragmentInteraction(categorySortList)}"
+        android:onClick="@{() -> listener.onSortFragmentInteraction(categorySortList)}"
         >
 
         <TextView

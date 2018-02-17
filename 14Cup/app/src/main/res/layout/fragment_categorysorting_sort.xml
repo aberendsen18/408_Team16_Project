@@ -5,34 +5,34 @@
 
     <data>
         <variable
-            name="categorySortTitle"
-            type="com.moufee.a14cup.categorySorts.CategorySortingList"/>
+            name="categorySortListCategory"
+            type="com.moufee.a14cup.categorySorts.CategorySortingListCategory"/>
 
         <variable
-            name="listener"
-            type="com.moufee.a14cup.ui.categorySorting.CategorySortListFragment.OnListFragmentInteractionListener"/>
+            name="listener1"
+            type="com.moufee.a14cup.ui.categorySorting.CategorySortFragment.OnListFragmentInteractionListener"/>
 
     </data>
 
     <LinearLayout
-        android:id="@+id/list_title_layout"
+        android:id="@+id/category_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:orientation="horizontal"
         android:focusable="true"
-        android:onClick="@{() -> listener.onSortTitleFragmentInteraction(categorySortTitle)}"
+        android:onClick="@{() -> listener1.onSortCategoryFragmentInteraction(categorySortListCategory)}"
         >
 
         <TextView
-            android:id="@+id/sort_title_text_view"
+            android:id="@+id/sort_category_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:text="@{categorySortTitle.name}"
+            android:text="@{categorySortListCategory.name}"
             android:textAppearance="@style/TextAppearance.AppCompat.Menu"
             android:textSize="18sp"
-            tools:text="Sort Title"/>
+            tools:text="Category Name"/>
     </LinearLayout>
 </layout>

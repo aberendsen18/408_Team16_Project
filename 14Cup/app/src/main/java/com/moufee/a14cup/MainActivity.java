@@ -9,8 +9,6 @@ import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -36,23 +34,23 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.categorySorts.CategorySortingList;
+import com.moufee.a14cup.categorySorts.CategorySortingListCategory;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
-import com.moufee.a14cup.ui.categorySorting.CategorySortingListFragment;
-import com.moufee.a14cup.ui.categorySorting.CategorySortingRecyclerViewAdapter;
-import com.moufee.a14cup.ui.categorySorting.SortListViewModel;
+import com.moufee.a14cup.ui.categorySorting.CategorySortFragment;
+import com.moufee.a14cup.ui.categorySorting.CategorySortListFragment;
+import com.moufee.a14cup.ui.categorySorting.CategorySortListRecyclerViewAdapter;
+import com.moufee.a14cup.ui.categorySorting.CategorySortListViewModel;
+import com.moufee.a14cup.ui.categorySorting.CategorySortRecyclerViewAdapter;
+import com.moufee.a14cup.ui.categorySorting.CategorySortViewModel;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
 import com.moufee.a14cup.ui.list.ShoppingListDetailFragment;
 
-import java.lang.reflect.Array;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -63,7 +61,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
 
-public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector, MyListsFragment.OnListFragmentInteractionListener, CategorySortingListFragment.OnListFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector, MyListsFragment.OnListFragmentInteractionListener, CategorySortFragment.OnListFragmentInteractionListener, CategorySortListFragment.OnListFragmentInteractionListener{
 
     @Inject
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidInjector;
@@ -75,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     ShoppingListRepository mListRepository;
 
     private ListViewModel mViewModel;
-    private SortListViewModel sViewModel;
+    private CategorySortListViewModel sListViewModel;
+    private CategorySortViewModel sViewModel;
     private static final String TAG = "MAIN_ACTIVITY";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -84,7 +83,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
-    private CategorySortingRecyclerViewAdapter sortingRecyclerViewAdapter;
+    private CategorySortListRecyclerViewAdapter sortingListRecyclerViewAdapter;
+    private CategorySortRecyclerViewAdapter sortRecyclerViewAdapter;
     private ActivityMainBinding mBinding;
 
     @Override
@@ -104,12 +104,27 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel.CurrentList = list;
     }
 
-    public void onSortFragmentInteraction(CategorySortingList sort) {
+    public void onSortTitleFragmentInteraction(CategorySortingList sort) {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
 
         mToolbar.setTitle(sort.name);
-        sViewModel.CurrentSort = sort;
+        sListViewModel.CurrentSort = sort;
+
+        CategorySortFragment fragment = CategorySortFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
+
+        sortRecyclerViewAdapter.setCategories(sViewModel.getCategories());
+    }
+
+    public void onSortCategoryFragmentInteraction(CategorySortingListCategory category) {
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
+
+        //CategorySortListFragment fragment = CategorySortListFragment.newInstance();
+        //getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
+
+        //CategorySortingList sortList = sListViewModel.CurrentSort;
     }
 
 
@@ -128,9 +143,13 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
 
         mViewModel = ViewModelProviders.of(this, viewModelFactory).get(ListViewModel.class);
-        sViewModel = ViewModelProviders.of(this, viewModelFactory).get(SortListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
-        sortingRecyclerViewAdapter = new CategorySortingRecyclerViewAdapter(new ArrayList<CategorySortingList>(), null);
+
+        sListViewModel = ViewModelProviders.of(this, viewModelFactory).get(CategorySortListViewModel.class);
+        sortingListRecyclerViewAdapter = new CategorySortListRecyclerViewAdapter(new ArrayList<CategorySortingList>(), this);
+
+        sViewModel = ViewModelProviders.of(this, viewModelFactory).get(CategorySortViewModel.class);
+        sortRecyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<CategorySortingListCategory>(),this);
 
         final TextView newItemEdit = findViewById(R.id.add_item);
         newItemEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -295,22 +314,17 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 mToolbar = findViewById(R.id.toolbar);
                 mToolbar.setTitle(R.string.my_sort_orders);
 
-                CategorySortingListFragment fragment = CategorySortingListFragment.newInstance();
+                CategorySortListFragment fragment = CategorySortListFragment.newInstance();
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
-
-                ArrayList<CategorySortingList> sortList = sViewModel.getSorts();
-
+                ArrayList<CategorySortingList> sortList = sListViewModel.getSorts();
                 if (sortList != null) {
-                    sortingRecyclerViewAdapter.setLists(sortList);
-                    if (sortList.size() != 0) {
-                        CategorySortingList firstSort = sortList.get(0);
-                        if (sViewModel.CurrentSort == null) {
-                            sViewModel.CurrentSort = firstSort;
-                            onSortFragmentInteraction(firstSort);
-                        } else {
-                            onSortFragmentInteraction(sViewModel.CurrentSort);
-                        }
-                    }
+                    sortingListRecyclerViewAdapter.setSortList(sortList);
+                    CategorySortingList firstSort = sortList.get(0);
+                    sListViewModel.CurrentSort = firstSort;
+                    sViewModel.CurrentSort = firstSort;
+                    sViewModel.setListOfCategories(firstSort.categories);
+                } else {
+                    Log.d(TAG,"SORTLIST IS NULLLLLL");
                 }
 
                 return true;

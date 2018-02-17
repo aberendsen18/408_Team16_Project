@@ -2,25 +2,25 @@ package com.moufee.a14cup.ui.categorySorting;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.moufee.a14cup.categorySorts.CategorySortingList;
-import com.moufee.a14cup.databinding.FragmentCategorysortingTitleBinding;
+import com.moufee.a14cup.categorySorts.CategorySortingListCategory;
+import com.moufee.a14cup.databinding.FragmentCategorysortingSortBinding;
 
 /**
- * Created by Travis Kovacic on 2/12/2018.
+ * Created by Travis Kovacic on 2/15/2018.
  */
 
 public class CategorySortHolder extends RecyclerView.ViewHolder{
 
-    public FragmentCategorysortingTitleBinding mBinding;
+    public FragmentCategorysortingSortBinding mBinding;
 
-    public CategorySortHolder(FragmentCategorysortingTitleBinding binding) {
+    public CategorySortHolder( FragmentCategorysortingSortBinding binding) {
         super(binding.getRoot());
         mBinding = binding;
     }
 
-    public void bind(CategorySortingList list, CategorySortingListFragment.OnListFragmentInteractionListener listener) {
-        mBinding.setCategorySortList(list);
-        mBinding.setListener(listener);
+    public void bind(CategorySortingListCategory category, CategorySortFragment.OnListFragmentInteractionListener listener) {
+        mBinding.setCategorySortListCategory(category);
+        mBinding.setListener1(listener);
         mBinding.executePendingBindings();
     }
 

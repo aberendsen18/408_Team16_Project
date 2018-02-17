@@ -3,7 +3,8 @@ package com.moufee.a14cup.di;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
-import com.moufee.a14cup.ui.categorySorting.SortListViewModel;
+import com.moufee.a14cup.ui.categorySorting.CategorySortListViewModel;
+import com.moufee.a14cup.ui.categorySorting.CategorySortViewModel;
 import com.moufee.a14cup.ui.list.ListViewModel;
 
 import dagger.Binds;
@@ -23,8 +24,13 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(SortListViewModel.class)
-    abstract ViewModel bindSortListViewModel(SortListViewModel sortListViewModel);
+    @ViewModelKey(CategorySortListViewModel.class)
+    abstract ViewModel bindSortListViewModel(CategorySortListViewModel categorySortListViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CategorySortViewModel.class)
+    abstract ViewModel bindSortViewModel(CategorySortViewModel categorySortViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(ShoppingListAppViewModelFactory factory);

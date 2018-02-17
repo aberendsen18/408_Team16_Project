@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.categorySorts.CategorySortingList;
+import com.moufee.a14cup.categorySorts.CategorySortingListCategory;
 
 import java.util.ArrayList;
 
@@ -19,32 +21,32 @@ import java.util.ArrayList;
  * Created by Travis Kovacic on 2/12/2018.
  */
 
-public class CategorySortingListFragment extends Fragment{
+public class CategorySortListFragment extends Fragment{
 
     private OnListFragmentInteractionListener mListener;
-    private SortListViewModel viewModel;
+    private CategorySortListViewModel viewModel;
     private RecyclerView recyclerView;
-    private CategorySortingRecyclerViewAdapter recyclerViewAdapter;
+    private CategorySortListRecyclerViewAdapter recyclerViewAdapter;
 
-    public CategorySortingListFragment(){
+    public CategorySortListFragment(){
     }
 
 
-    public static  CategorySortingListFragment newInstance() { return new CategorySortingListFragment(); }
+    public static CategorySortListFragment newInstance() { return new CategorySortListFragment(); }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        viewModel = ViewModelProviders.of(this).get(SortListViewModel.class);
-        recyclerViewAdapter = new CategorySortingRecyclerViewAdapter(new ArrayList<CategorySortingList>(), mListener);
+        viewModel = ViewModelProviders.of(this).get(CategorySortListViewModel.class);
+        recyclerViewAdapter = new CategorySortListRecyclerViewAdapter(new ArrayList<CategorySortingList>(), mListener);
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mylists_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_categorysorting_title_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -62,9 +64,10 @@ public class CategorySortingListFragment extends Fragment{
         ArrayList<CategorySortingList> sortList = viewModel.getSorts();
 
         if(sortList != null){
-            recyclerViewAdapter.setLists(sortList);
+            viewModel.CurrentSort = sortList.get(0);
+            recyclerViewAdapter.setSortList(sortList);
         }else{
-            recyclerViewAdapter.setLists(new ArrayList<CategorySortingList>());
+            recyclerViewAdapter.setSortList(new ArrayList<CategorySortingList>());
         }
     }
 
@@ -98,7 +101,7 @@ public class CategorySortingListFragment extends Fragment{
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onSortFragmentInteraction(CategorySortingList list);
+        void onSortTitleFragmentInteraction(CategorySortingList list);
     }
 
 }

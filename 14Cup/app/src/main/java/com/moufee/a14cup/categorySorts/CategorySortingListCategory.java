@@ -4,13 +4,14 @@ package com.moufee.a14cup.categorySorts;
  * Created by Travis Kovacic on 2/12/2018.
  */
 
-public class CategorySortingListItem {
+public class CategorySortingListCategory {
 
     public String name;
-    public String id;
-    public String category;
+    public int rank;
 
-    public CategorySortingListItem() {
+    public CategorySortingListCategory(String name, int rank) {
+        this.name = name;
+        this.rank = rank;
     }
 
     @Override

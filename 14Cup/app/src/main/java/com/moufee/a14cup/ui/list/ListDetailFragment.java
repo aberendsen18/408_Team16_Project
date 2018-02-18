@@ -18,7 +18,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.moufee.a14cup.MainActivity;
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
@@ -41,7 +40,6 @@ public class ListDetailFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private ListViewModel mViewModel;
     private ListDetailRecyclerViewAdapter mRecyclerViewAdapter = new ListDetailRecyclerViewAdapter();
-    private DataValidation validator = new DataValidation();
     @Inject
     ViewModelProvider.Factory mFactory;
     @Inject
@@ -86,7 +84,7 @@ public class ListDetailFragment extends Fragment {
                     NewItem.name = newItemEdit.getText().toString();
 
                     //do the data validation
-                    String str = validator.valid_shopping_list_item(NewItem);
+                    String str = DataValidation.validateShoppingListItem(NewItem);
                     if (str.equals("valid")) {
                         mListRepository.addItem(mViewModel.getSelectedListID().getValue(), NewItem);
                         newItemEdit.setText("");

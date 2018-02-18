@@ -17,7 +17,7 @@ public abstract class DataValidation {
             return "The title that you entered is too long!";
         }
 
-        return "";
+        return "valid";
     }
 
     //private method that validates a shopping list item

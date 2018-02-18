@@ -33,8 +33,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.moufee.a14cup.categorySorts.CategorySortingList;
-import com.moufee.a14cup.categorySorts.CategorySortingListCategory;
+import com.moufee.a14cup.categorySorts.CategorySortList;
+import com.moufee.a14cup.categorySorts.SortCategory;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.lists.ShoppingListItem;
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel.CurrentList = list;
     }
 
-    public void onSortTitleFragmentInteraction(CategorySortingList sort) {
+    public void onSortTitleFragmentInteraction(CategorySortList sort) {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
 
@@ -117,14 +117,14 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         sortRecyclerViewAdapter.setCategories(sViewModel.getCategories());
     }
 
-    public void onSortCategoryFragmentInteraction(CategorySortingListCategory category) {
+    public void onSortCategoryFragmentInteraction(SortCategory category) {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
 
         //CategorySortListFragment fragment = CategorySortListFragment.newInstance();
         //getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
 
-        //CategorySortingList sortList = sListViewModel.CurrentSort;
+        //CategorySortList sortList = sListViewModel.CurrentSort;
     }
 
 
@@ -146,10 +146,10 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
 
         sListViewModel = ViewModelProviders.of(this, viewModelFactory).get(CategorySortListViewModel.class);
-        sortingListRecyclerViewAdapter = new CategorySortListRecyclerViewAdapter(new ArrayList<CategorySortingList>(), this);
+        sortingListRecyclerViewAdapter = new CategorySortListRecyclerViewAdapter(new ArrayList<CategorySortList>(), this);
 
         sViewModel = ViewModelProviders.of(this, viewModelFactory).get(CategorySortViewModel.class);
-        sortRecyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<CategorySortingListCategory>(),this);
+        sortRecyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>(),this);
 
         final TextView newItemEdit = findViewById(R.id.add_item);
         newItemEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -316,10 +316,10 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
                 CategorySortListFragment fragment = CategorySortListFragment.newInstance();
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
-                ArrayList<CategorySortingList> sortList = sListViewModel.getSorts();
+                ArrayList<CategorySortList> sortList = sListViewModel.getSorts();
                 if (sortList != null) {
                     sortingListRecyclerViewAdapter.setSortList(sortList);
-                    CategorySortingList firstSort = sortList.get(0);
+                    CategorySortList firstSort = sortList.get(0);
                     sListViewModel.CurrentSort = firstSort;
                     sViewModel.CurrentSort = firstSort;
                     sViewModel.setListOfCategories(firstSort.categories);

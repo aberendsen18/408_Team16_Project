@@ -2,8 +2,8 @@ package com.moufee.a14cup.ui.categorySorting;
 
 import android.arch.lifecycle.ViewModel;
 
-import com.moufee.a14cup.categorySorts.CategorySortingList;
-import com.moufee.a14cup.categorySorts.CategorySortingListCategory;
+import com.moufee.a14cup.categorySorts.CategorySortList;
+import com.moufee.a14cup.categorySorts.SortCategory;
 
 import java.util.ArrayList;
 
@@ -17,8 +17,8 @@ public class CategorySortListViewModel extends ViewModel {
 
     // Temporary setup for sort orders. Don't really know how to set up livedata stuff
     // Mocking repo for sort orders
-    private ArrayList<CategorySortingList> listOfSorts;
-    public CategorySortingList CurrentSort;
+    private ArrayList<CategorySortList> listOfSorts;
+    public CategorySortList CurrentSort;
 
 
     @Inject
@@ -27,22 +27,22 @@ public class CategorySortListViewModel extends ViewModel {
         listOfSorts = initMockSorts();
     }
 
-    public ArrayList<CategorySortingList> getSorts() { return listOfSorts;}
+    public ArrayList<CategorySortList> getSorts() { return listOfSorts;}
 
-    public ArrayList<CategorySortingListCategory> getCategories(CategorySortingList sort) {return sort.categories;}
+    public ArrayList<SortCategory> getCategories(CategorySortList sort) {return sort.categories;}
 
-    public ArrayList<CategorySortingList> initMockSorts(){
-        ArrayList<CategorySortingList> toReturn = new ArrayList<CategorySortingList>();
-        ArrayList<CategorySortingListCategory> categories = new ArrayList<>();
+    public ArrayList<CategorySortList> initMockSorts(){
+        ArrayList<CategorySortList> toReturn = new ArrayList<CategorySortList>();
+        ArrayList<SortCategory> categories = new ArrayList<>();
 
         for(int j = 0; j < 5; j++){
-            CategorySortingListCategory tempC = new CategorySortingListCategory("Category"+j, j);
+            SortCategory tempC = new SortCategory("Category"+j, j);
             categories.add(tempC);
         }
 
         for(int i = 0; i<5; i++){
 
-            CategorySortingList temp = new CategorySortingList("Sort "+i, categories);
+            CategorySortList temp = new CategorySortList("Sort "+i, categories);
             toReturn.add(temp);
         }
 

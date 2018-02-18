@@ -6,7 +6,7 @@
     <data>
         <variable
             name="categorySortListCategory"
-            type="com.moufee.a14cup.categorySorts.CategorySortingListCategory"/>
+            type="com.moufee.a14cup.categorySorts.SortCategory"/>
 
         <variable
             name="listener1"

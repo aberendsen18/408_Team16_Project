@@ -1,11 +1,10 @@
 package com.moufee.a14cup.ui.categorySorting;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.moufee.a14cup.categorySorts.CategorySortingListCategory;
+import com.moufee.a14cup.categorySorts.SortCategory;
 import com.moufee.a14cup.databinding.FragmentCategorysortingSortBinding;
 
 import java.util.ArrayList;
@@ -15,15 +14,15 @@ import java.util.ArrayList;
  */
 
 public class CategorySortRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ArrayList<CategorySortingListCategory> categories;
+    private ArrayList<SortCategory> categories;
     private final CategorySortFragment.OnListFragmentInteractionListener mListener;
 
-    public CategorySortRecyclerViewAdapter(ArrayList<CategorySortingListCategory> categories, CategorySortFragment.OnListFragmentInteractionListener listener) {
+    public CategorySortRecyclerViewAdapter(ArrayList<SortCategory> categories, CategorySortFragment.OnListFragmentInteractionListener listener) {
         this.categories = categories;
         mListener = listener;
     }
 
-    public void setCategories(ArrayList<CategorySortingListCategory> categories) {
+    public void setCategories(ArrayList<SortCategory> categories) {
         this.categories = categories;
     }
 

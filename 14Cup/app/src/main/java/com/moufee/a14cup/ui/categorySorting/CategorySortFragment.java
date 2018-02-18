@@ -6,13 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.moufee.a14cup.R;
-import com.moufee.a14cup.categorySorts.CategorySortingListCategory;
+import com.moufee.a14cup.categorySorts.SortCategory;
 
 import java.util.ArrayList;
 
@@ -38,7 +37,7 @@ public class CategorySortFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         viewModel = ViewModelProviders.of(this).get(CategorySortViewModel.class);
-        recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<CategorySortingListCategory>(), mListener);
+        recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>(), mListener);
 
     }
 
@@ -60,11 +59,11 @@ public class CategorySortFragment extends Fragment {
 
     private void setListeners() {
         // viewmodel
-        ArrayList<CategorySortingListCategory> categories = viewModel.getCategories();
+        ArrayList<SortCategory> categories = viewModel.getCategories();
         if(categories != null){
             recyclerViewAdapter.setCategories(categories);
         } else {
-            recyclerViewAdapter.setCategories(new ArrayList<CategorySortingListCategory>());
+            recyclerViewAdapter.setCategories(new ArrayList<SortCategory>());
         }
 
     }
@@ -99,7 +98,7 @@ public class CategorySortFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onSortCategoryFragmentInteraction(CategorySortingListCategory category);
+        void onSortCategoryFragmentInteraction(SortCategory category);
     }
 
 }

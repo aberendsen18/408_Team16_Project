@@ -6,18 +6,18 @@ import java.util.ArrayList;
  * Created by Travis Kovacic on 2/12/2018.
  */
 
-public class CategorySortingList {
+public class CategorySortList {
 
     public String name;
     public String id;
-    public ArrayList<CategorySortingListCategory> categories;
+    public ArrayList<SortCategory> categories;
 
-    public CategorySortingList(String name, ArrayList<CategorySortingListCategory> categories) {
+    public CategorySortList(String name, ArrayList<SortCategory> categories) {
         this.name = name;
         this.categories = categories;
     }
 
-    public CategorySortingList(String name) {
+    public CategorySortList(String name) {
         this.name = name;
     }
 

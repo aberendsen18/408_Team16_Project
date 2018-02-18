@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.moufee.a14cup.categorySorts.CategorySortingList;
+import com.moufee.a14cup.categorySorts.CategorySortList;
 import com.moufee.a14cup.databinding.FragmentCategorysortingTitleBinding;
 import com.moufee.a14cup.ui.categorySorting.CategorySortListFragment.OnListFragmentInteractionListener;
 
@@ -15,15 +15,15 @@ import java.util.ArrayList;
  */
 
 public class CategorySortListRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-    private ArrayList<CategorySortingList> lists;
+    private ArrayList<CategorySortList> lists;
     private final OnListFragmentInteractionListener mListener;
 
-    public CategorySortListRecyclerViewAdapter(ArrayList<CategorySortingList> lists, OnListFragmentInteractionListener listener) {
+    public CategorySortListRecyclerViewAdapter(ArrayList<CategorySortList> lists, OnListFragmentInteractionListener listener) {
         this.lists = lists;
         mListener = listener;
     }
 
-    public void setSortList(ArrayList<CategorySortingList> lists) {
+    public void setSortList(ArrayList<CategorySortList> lists) {
         this.lists = lists;
     }
 

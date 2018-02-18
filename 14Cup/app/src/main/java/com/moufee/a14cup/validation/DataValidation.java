@@ -24,7 +24,7 @@ public class DataValidation {
             return "The string that you entered is too long!";
         }
 
-        return "";
+        return "valid";
     }
 
     //private method that validates a shopping list item

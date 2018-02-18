@@ -18,6 +18,7 @@ public class CategorySortListViewModel extends ViewModel {
     // Temporary setup for sort orders. Don't really know how to set up livedata stuff
     // Mocking repo for sort orders
     private ArrayList<CategorySortList> listOfSorts;
+    private ArrayList<SortCategory> listOfCategories;
     public CategorySortList CurrentSort;
 
 
@@ -36,7 +37,8 @@ public class CategorySortListViewModel extends ViewModel {
         ArrayList<SortCategory> categories = new ArrayList<>();
 
         for(int j = 0; j < 5; j++){
-            SortCategory tempC = new SortCategory("Category"+j, j);
+            int r = (int)(Math.random()*10);
+            SortCategory tempC = new SortCategory("Category"+r, j);
             categories.add(tempC);
         }
 

@@ -39,7 +39,6 @@ import com.moufee.a14cup.ui.list.ListDetailFragment;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
-import com.moufee.a14cup.ui.list.ShoppingListDetailFragment;
 import com.moufee.a14cup.validation.DataValidation;
 
 import java.util.ArrayList;
@@ -102,29 +101,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel = ViewModelProviders.of(this, viewModelFactory).get(ListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
 
-        final TextView newItemEdit = findViewById(R.id.add_item);
-        newItemEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    ShoppingListItem NewItem = new ShoppingListItem();
-                    NewItem.name = newItemEdit.getText().toString();
-                    //call for validation
-                    String str = validator.valid_shopping_list_item(NewItem);
-
-                    if (str.equals("valid")) {
-                        mListRepository.updateList(mViewModel.CurrentList, NewItem);
-                        newItemEdit.setText("");
-                        return true;
-                    } else {
-                        //print the error to the screen
-                        Toast.makeText(MainActivity.this, str,
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-                return false;
-            }
-        });
 
         mBinding.newListButton.setOnClickListener(new View.OnClickListener() {
             @Override

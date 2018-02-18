@@ -16,10 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
+import com.moufee.a14cup.validation.DataValidation;
 
 import java.util.List;
 
@@ -80,9 +82,19 @@ public class ListDetailFragment extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     ShoppingListItem NewItem = new ShoppingListItem();
                     NewItem.name = newItemEdit.getText().toString();
-                    mListRepository.addItem(mViewModel.getSelectedListID().getValue(), NewItem);
-                    newItemEdit.setText("");
-                    return true;
+
+                    //do the data validation
+                    String str = DataValidation.validateShoppingListItem(NewItem);
+                    if (str.equals("valid")) {
+                        mListRepository.addItem(mViewModel.getSelectedListID().getValue(), NewItem);
+                        newItemEdit.setText("");
+                        return true;
+                    } else {
+                        //print the error to the screen
+                        Toast.makeText(getActivity(), str,
+                                Toast.LENGTH_LONG).show();
+                    }
+
                 }
                 return false;
             }

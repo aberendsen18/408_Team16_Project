@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
@@ -37,6 +38,7 @@ import com.moufee.a14cup.ui.list.ListDetailFragment;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
+import com.moufee.a14cup.validation.DataValidation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,9 +118,16 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                                 // should probably check for null but
                                 // if nobody is logged in at this point, something is seriously wrong
                                 NewList.owner = mViewModel.getCurrentUser().getValue().getUid();
+                                String str = DataValidation.validateShoppingList(NewList);
 
-                                mListRepository.addList(NewList);
-                                onListFragmentInteraction(NewList);
+                                if (str.equals("valid")) {
+                                    mListRepository.addList(NewList);
+                                    onListFragmentInteraction(NewList);
+                                } else {
+                                    //print the error to the screen
+                                    Toast.makeText(MainActivity.this, str,
+                                            Toast.LENGTH_LONG).show();
+                                }
                             }
                         })
                         .setNegativeButton(

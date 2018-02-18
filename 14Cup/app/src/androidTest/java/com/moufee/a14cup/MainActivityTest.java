@@ -22,7 +22,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 /**
  * Created by Ben on 2/15/18.
  * This class will probably need to be modified to mock the data source (ViewModel)
- * to verify that is correctly displays and updates data as the data source changes
+ * to verify that data is correctly displayed and the view updates as the data changes
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest

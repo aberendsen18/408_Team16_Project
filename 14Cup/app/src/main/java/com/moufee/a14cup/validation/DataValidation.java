@@ -18,27 +18,21 @@ public class DataValidation {
 
     //private method that validates a shopping list
     public String valid_shopping_list(ShoppingList s) {
-        if (s.name == null) {
-            return "the string that you entered is null!";
-        } else if (s.name.length() == 0) {
-            return "the string that you entered is blank!";
+        if (s.name == null || s.name.length() == 0 || s.name.isEmpty()) {
+            return "The string that you entered is blank!";
         } else if (s.name.length() > 256) {
-            return "the string that you entered is too long!";
+            return "The string that you entered is too long!";
         }
 
         return "";
     }
 
     //private method that validates a shopping list item
-    public String valid_shopping_list_item(String s) {
-        if (s == null) {
-            return "the string that you entered is null!";
-        } else if (s.length() == 0) {
-            return "the string that you entered is blank!";
-        } else if (s.length() > 256) {
-            return "the string that you entered is too long!";
-        } else if (s.isEmpty()) {
-            return "the string that you entered is blank!";
+    public String valid_shopping_list_item(ShoppingListItem s) {
+        if (s.name == null || s.name.length() == 0 || s.name.isEmpty()) {
+            return "The string that you entered is blank!";
+        } else if (s.name.length() > 256) {
+            return "The string that you entered is too long!";
         }
 
         return "valid";

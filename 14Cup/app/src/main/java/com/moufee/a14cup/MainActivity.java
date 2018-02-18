@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                     ShoppingListItem NewItem = new ShoppingListItem();
                     NewItem.name = newItemEdit.getText().toString();
                     //call for validation
-                    String str = validator.valid_shopping_list_item(NewItem.name);
+                    String str = validator.valid_shopping_list_item(NewItem);
 
                     if (str.equals("valid")) {
                         mListRepository.updateList(mViewModel.CurrentList, NewItem);
@@ -125,18 +126,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                         return true;
                     } else {
                         //print the error to the screen
-                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
-
-                        alertBuilder.setCancelable(true)
-                                .setMessage(str)
-                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                    }
-                                });
-                        Dialog dialog = alertBuilder.create();
-                        dialog.show();
+                        Toast.makeText(MainActivity.this, str,
+                                Toast.LENGTH_LONG).show();
                     }
                 }
                 return false;
@@ -160,9 +151,16 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                                 ShoppingList NewList = new ShoppingList();
                                 NewList.name = ListName.getText().toString();
                                 NewList.owner = mViewModel.USERID;
+                                String str = validator.valid_shopping_list(NewList);
 
-                                mListRepository.addList(NewList);
-                                onListFragmentInteraction(NewList);
+                                if (str.equals("valid")) {
+                                    mListRepository.addList(NewList);
+                                    onListFragmentInteraction(NewList);
+                                } else {
+                                    //print the error to the screen
+                                    Toast.makeText(MainActivity.this, str,
+                                            Toast.LENGTH_LONG).show();
+                                }
                             }
                         })
                         .setNegativeButton(

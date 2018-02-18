@@ -7,6 +7,8 @@ import com.moufee.a14cup.validation.DataValidation;
 
 import org.junit.Test;
 
+import static com.moufee.a14cup.validation.DataValidation.validateShoppingList;
+import static com.moufee.a14cup.validation.DataValidation.validateShoppingListItem;
 import static org.junit.Assert.*;
 /**
  * Created by andrewberendsen on 2/18/18.
@@ -14,22 +16,22 @@ import static org.junit.Assert.*;
 
 public class TestValidation {
 
-    DataValidation validation = new DataValidation();
+
 
 
     @Test
     public void null_string_list() throws Exception {
         ShoppingList newList = new ShoppingList();
-        String str = validation.valid_shopping_list(newList);
-        assertEquals("The string that you entered is blank!", str);
+        String str = validateShoppingList(newList);
+        assertEquals("Please enter a list title!", str);
     }
 
     @Test
     public void empty_string_list() throws Exception {
         ShoppingList newList = new ShoppingList();
         newList.name = "";
-        String str = validation.valid_shopping_list(newList);
-        assertEquals("The string that you entered is blank!", str);
+        String str = validateShoppingList(newList);
+        assertEquals("Please enter a list title!", str);
     }
 
     @Test
@@ -40,15 +42,15 @@ public class TestValidation {
             too_long += 'a';
         }
         newList.name = too_long;
-        String str = validation.valid_shopping_list(newList);
-        assertEquals("The string that you entered is too long!", str);
+        String str = validateShoppingList(newList);
+        assertEquals("The title that you entered is too long!", str);
     }
 
     @Test
     public void valid_string_list() throws Exception {
         ShoppingList newList = new ShoppingList();
         newList.name = "list01";
-        String str = validation.valid_shopping_list(newList);
+        String str = validateShoppingList(newList);
         assertEquals("valid", str);
     }
 
@@ -56,16 +58,16 @@ public class TestValidation {
     @Test
     public void null_string_list_item() throws Exception {
         ShoppingListItem newListItem = new ShoppingListItem();
-        String str = validation.valid_shopping_list_item(newListItem);
-        assertEquals("The string that you entered is blank!", str);
+        String str = validateShoppingListItem(newListItem);
+        assertEquals("Please enter an item name!", str);
     }
 
     @Test
     public void empty_string_list_item() throws Exception {
         ShoppingListItem newListItem = new ShoppingListItem();
         newListItem.name = "";
-        String str = validation.valid_shopping_list_item(newListItem);
-        assertEquals("The string that you entered is blank!", str);
+        String str = validateShoppingListItem(newListItem);
+        assertEquals("Please enter an item name!", str);
     }
 
     @Test
@@ -76,15 +78,15 @@ public class TestValidation {
             too_long += 'a';
         }
         newListItem.name = too_long;
-        String str = validation.valid_shopping_list_item(newListItem);
-        assertEquals("The string that you entered is too long!", str);
+        String str = validateShoppingListItem(newListItem);
+        assertEquals("The item that you entered is too long!", str);
     }
 
     @Test
     public void valid_string_list_item() throws Exception {
         ShoppingListItem newListItem = new ShoppingListItem();
         newListItem.name = "list_item01";
-        String str = validation.valid_shopping_list_item(newListItem);
+        String str = validateShoppingListItem(newListItem);
         assertEquals("valid", str);
     }
 

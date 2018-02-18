@@ -10,12 +10,16 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.lists.ShoppingListItem;
+import com.moufee.a14cup.repository.ShoppingListRepository;
 
 import java.util.List;
 
@@ -29,24 +33,26 @@ import dagger.android.support.AndroidSupportInjection;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ShoppingListDetailFragment extends Fragment {
+public class ListDetailFragment extends Fragment {
 
     private OnListFragmentInteractionListener mListener;
     private ListViewModel mViewModel;
     private ListDetailRecyclerViewAdapter mRecyclerViewAdapter = new ListDetailRecyclerViewAdapter();
     @Inject
     ViewModelProvider.Factory mFactory;
+    @Inject
+    ShoppingListRepository mListRepository;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ShoppingListDetailFragment() {
+    public ListDetailFragment() {
     }
 
     @SuppressWarnings("unused")
-    public static ShoppingListDetailFragment newInstance() {
-        ShoppingListDetailFragment fragment = new ShoppingListDetailFragment();
+    public static ListDetailFragment newInstance() {
+        ListDetailFragment fragment = new ListDetailFragment();
         return fragment;
     }
 
@@ -61,15 +67,29 @@ public class ShoppingListDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_shoppinglistitem_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(mRecyclerViewAdapter);
-        }
+        Context context = view.getContext();
+        RecyclerView recyclerView = view.findViewById(R.id.list_items_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(mRecyclerViewAdapter);
+
+
+        final TextView newItemEdit = view.findViewById(R.id.item_name_input);
+        newItemEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    ShoppingListItem NewItem = new ShoppingListItem();
+                    NewItem.name = newItemEdit.getText().toString();
+                    mListRepository.addItem(mViewModel.getSelectedListID().getValue(), NewItem);
+                    newItemEdit.setText("");
+                    return true;
+                }
+                return false;
+            }
+        });
+
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {

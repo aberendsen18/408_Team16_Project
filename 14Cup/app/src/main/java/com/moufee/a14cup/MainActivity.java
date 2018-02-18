@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 final EditText ListName = (EditText) view.findViewById(R.id.list_name);
 
                 alertBuilder.setCancelable(true)
-                        .setPositiveButton("Add New List", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.action_new_list_positive, new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

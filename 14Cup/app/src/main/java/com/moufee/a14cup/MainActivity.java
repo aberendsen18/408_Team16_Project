@@ -24,7 +24,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -70,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
     private RecyclerView mRecyclerView;
     private DrawerLayout mDrawerLayout;
-    private DataValidation validator = new DataValidation();
     private Toolbar mToolbar;
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
     private ActivityMainBinding mBinding;
@@ -120,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                                 // should probably check for null but
                                 // if nobody is logged in at this point, something is seriously wrong
                                 NewList.owner = mViewModel.getCurrentUser().getValue().getUid();
-                                String str = validator.valid_shopping_list(NewList);
+                                String str = DataValidation.validateShoppingList(NewList);
 
                                 if (str.equals("valid")) {
                                     mListRepository.addList(NewList);

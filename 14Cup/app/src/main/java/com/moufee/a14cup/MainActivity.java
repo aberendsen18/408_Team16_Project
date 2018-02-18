@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
                                 if (str.equals("valid")) {
                                     mListRepository.addList(NewList);
-                                    onListFragmentInteraction(NewList);
                                 } else {
                                     //print the error to the screen
                                     Toast.makeText(MainActivity.this, str,
@@ -177,12 +176,10 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                         } else {
 //                            onListFragmentInteraction(mViewModel.CurrentList);
                         }
-                    }
-                    else {
+                    } else {
                         //TODO NO LISTS
                     }
-                }
-                else
+                } else
                     recyclerViewAdapter.setLists(new ArrayList<ShoppingList>());
             }
         });

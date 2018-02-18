@@ -11,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.moufee.a14cup.R;
+import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.ui.recipes.dummy.DummyContent;
 import com.moufee.a14cup.ui.recipes.dummy.DummyContent.DummyItem;
+import com.moufee.a14cup.ui.recipes.dummy.DummyRecipes;
 
 import java.util.List;
 
@@ -70,7 +72,7 @@ public class RecipeFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyRecipeRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyRecipeRecyclerViewAdapter(DummyRecipes.ITEMS, mListener));
         }
         return view;
     }
@@ -106,6 +108,6 @@ public class RecipeFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Recipe item);
     }
 }

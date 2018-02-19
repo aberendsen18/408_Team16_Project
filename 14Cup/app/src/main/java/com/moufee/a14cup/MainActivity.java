@@ -2,11 +2,14 @@ package com.moufee.a14cup;
 
 import android.app.Dialog;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,12 +21,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
@@ -34,6 +40,7 @@ import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.ui.list.ListDetailFragment;
+import com.moufee.a14cup.ui.list.ListDetailRecyclerViewAdapter;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
@@ -71,12 +78,19 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
     private ActivityMainBinding mBinding;
 
+    private TextView mItemView;
+
     @Override
     public void onListFragmentInteraction(ShoppingList list) {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
         mToolbar.setTitle(list.name);
         mViewModel.setSelectedListID(list.id);
+    }
+
+    public void onItemFragmentInteraction() {
+        //mListRepository.deleteItem(mViewModel.getSelectedListID().getValue(), item);
+        Toast.makeText(getApplicationContext(), "Click", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -96,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
         mViewModel = ViewModelProviders.of(this, viewModelFactory).get(ListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
-
 
         mBinding.newListButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             mRecyclerView.setAdapter(recyclerViewAdapter);
         }
+
         setListeners();
 
         ListDetailFragment fragment = ListDetailFragment.newInstance();
@@ -187,6 +201,20 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                     mBinding.setUser(firebaseUser);
             }
         });
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                mListRepository.deleteList(mViewModel.getLists().getValue().get(viewHolder.getAdapterPosition()).id);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     private boolean checkPlayServices() {

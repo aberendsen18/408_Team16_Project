@@ -16,4 +16,5 @@
     <string name="action_sign_in">Sign In</string>
     <string name="action_new_list">New List</string>
     <string name="list_name_hint">List Name</string>
+    <string name="action_new_list_positive">Create New List</string>
 </resources>

@@ -19,14 +19,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
@@ -37,7 +35,6 @@ import com.moufee.a14cup.categorySorts.CategorySortList;
 import com.moufee.a14cup.categorySorts.SortCategory;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
-import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.ui.categorySorting.CategorySortFragment;
 import com.moufee.a14cup.ui.categorySorting.CategorySortListFragment;
@@ -45,10 +42,11 @@ import com.moufee.a14cup.ui.categorySorting.CategorySortListRecyclerViewAdapter;
 import com.moufee.a14cup.ui.categorySorting.CategorySortListViewModel;
 import com.moufee.a14cup.ui.categorySorting.CategorySortRecyclerViewAdapter;
 import com.moufee.a14cup.ui.categorySorting.CategorySortViewModel;
+import com.moufee.a14cup.ui.list.ListDetailFragment;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
-import com.moufee.a14cup.ui.list.ShoppingListDetailFragment;
+import com.moufee.a14cup.validation.DataValidation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,14 +92,13 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
         // Resets fragment if on a different fragment, IE SortOrders/Settings/etc
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
-        if(!(f instanceof ShoppingListDetailFragment)) {
-            ShoppingListDetailFragment fragment = ShoppingListDetailFragment.newInstance();
+        if(!(f instanceof ListDetailFragment)) {
+            ListDetailFragment fragment = ListDetailFragment.newInstance();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
         }
 
         mToolbar.setTitle(list.name);
         mViewModel.setSelectedListID(list.id);
-        mViewModel.CurrentList = list;
     }
 
     public void onSortTitleFragmentInteraction(CategorySortList sort) {
@@ -147,27 +144,10 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
         sListViewModel = ViewModelProviders.of(this, viewModelFactory).get(CategorySortListViewModel.class);
         sortingListRecyclerViewAdapter = new CategorySortListRecyclerViewAdapter(new ArrayList<CategorySortList>(), this);
-
         sViewModel = ViewModelProviders.of(this, viewModelFactory).get(CategorySortViewModel.class);
         sortRecyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>(),this);
 
-        final TextView newItemEdit = findViewById(R.id.add_item);
-        newItemEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || event == null) {
-                    ShoppingListItem NewItem = new ShoppingListItem();
-                    NewItem.name = newItemEdit.getText().toString();
-                    mListRepository.updateList(mViewModel.CurrentList, NewItem);
-                    newItemEdit.setText("");
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        TextView newListButton = findViewById(R.id.newListButton);
-        newListButton.setOnClickListener(new View.OnClickListener() {
+        mBinding.newListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 view = (LayoutInflater.from(MainActivity.this)).inflate(R.layout.add_new_list, null);
@@ -176,16 +156,24 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 final EditText ListName = (EditText) view.findViewById(R.id.list_name);
 
                 alertBuilder.setCancelable(true)
-                        .setPositiveButton("Add New List", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.action_new_list_positive, new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ShoppingList NewList = new ShoppingList();
                                 NewList.name = ListName.getText().toString();
-                                NewList.owner = mViewModel.USERID;
+                                // should probably check for null but
+                                // if nobody is logged in at this point, something is seriously wrong
+                                NewList.owner = mViewModel.getCurrentUser().getValue().getUid();
+                                String str = DataValidation.validateShoppingList(NewList);
 
-                                mListRepository.addList(NewList);
-                                onListFragmentInteraction(NewList);
+                                if (str.equals("valid")) {
+                                    mListRepository.addList(NewList);
+                                } else {
+                                    //print the error to the screen
+                                    Toast.makeText(MainActivity.this, str,
+                                            Toast.LENGTH_LONG).show();
+                                }
                             }
                         })
                         .setNegativeButton(
@@ -217,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         }
         setListeners();
 
-        ShoppingListDetailFragment fragment = ShoppingListDetailFragment.newInstance();
+        ListDetailFragment fragment = ListDetailFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
     }
 
@@ -229,20 +217,18 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
                 if (shoppingLists != null) {
                     recyclerViewAdapter.setLists(shoppingLists);
-                    if (mViewModel.getLists().getValue().size() != 0) {
-                        ShoppingList firstlist = mViewModel.getLists().getValue().get(0);
-                        if (mViewModel.CurrentList == null) {
-                            mViewModel.CurrentList = firstlist;
-                            onListFragmentInteraction(firstlist);
+                    if (shoppingLists.size() != 0) {
+                        ShoppingList firstList = shoppingLists.get(0);
+                        if (mViewModel.getSelectedListID().getValue() == null) {
+                            mViewModel.setSelectedListID(firstList.id);
+                            onListFragmentInteraction(firstList);
                         } else {
-                            onListFragmentInteraction(mViewModel.CurrentList);
+//                            onListFragmentInteraction(mViewModel.CurrentList);
                         }
-                    }
-                    else {
+                    } else {
                         //TODO NO LISTS
                     }
-                }
-                else
+                } else
                     recyclerViewAdapter.setLists(new ArrayList<ShoppingList>());
             }
         });

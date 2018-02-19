@@ -1,8 +1,6 @@
 package com.moufee.a14cup.di;
 
-import com.moufee.a14cup.ui.categorySorting.CategorySortFragment;
-import com.moufee.a14cup.ui.categorySorting.CategorySortListFragment;
-import com.moufee.a14cup.ui.list.ShoppingListDetailFragment;
+import com.moufee.a14cup.ui.list.ListDetailFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -14,5 +12,5 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class FragmentBuildersModule {
     @ContributesAndroidInjector
-    abstract ShoppingListDetailFragment contributeShoppingListDetailFragment();
+    abstract ListDetailFragment contributeShoppingListDetailFragment();
 }

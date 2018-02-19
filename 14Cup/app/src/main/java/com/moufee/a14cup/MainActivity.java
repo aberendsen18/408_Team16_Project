@@ -2,14 +2,11 @@ package com.moufee.a14cup;
 
 import android.app.Dialog;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -40,7 +37,6 @@ import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.ui.list.ListDetailFragment;
-import com.moufee.a14cup.ui.list.ListDetailRecyclerViewAdapter;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
@@ -182,12 +178,10 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                         } else {
 //                            onListFragmentInteraction(mViewModel.CurrentList);
                         }
-                    }
-                    else {
+                    } else {
                         //TODO NO LISTS
                     }
-                }
-                else
+                } else
                     recyclerViewAdapter.setLists(new ArrayList<ShoppingList>());
             }
         });

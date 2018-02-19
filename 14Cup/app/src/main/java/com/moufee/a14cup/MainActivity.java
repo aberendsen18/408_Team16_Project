@@ -74,8 +74,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
     private ActivityMainBinding mBinding;
 
-    private TextView mItemView;
-
     @Override
     public void onListFragmentInteraction(ShoppingList list) {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
@@ -83,12 +81,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mToolbar.setTitle(list.name);
         mViewModel.setSelectedListID(list.id);
     }
-
-    public void onItemFragmentInteraction() {
-        //mListRepository.deleteItem(mViewModel.getSelectedListID().getValue(), item);
-        Toast.makeText(getApplicationContext(), "Click", Toast.LENGTH_SHORT).show();
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -47,6 +47,7 @@ import com.moufee.a14cup.ui.list.ListDetailFragment;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
+import com.moufee.a14cup.ui.settings.SettingsActivity;
 import com.moufee.a14cup.validation.DataValidation;
 
 import java.util.ArrayList;
@@ -311,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 AuthUI.getInstance().signOut(this);
                 return true;
             case R.id.action_settings:
+                startActivity(SettingsActivity.getIntent(getApplicationContext()));
                 return true;
             case R.id.action_sort_categories:
                 mToolbar = findViewById(R.id.toolbar);

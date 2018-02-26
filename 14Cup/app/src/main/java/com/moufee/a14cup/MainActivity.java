@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             mRecyclerView.setAdapter(recyclerViewAdapter);
         }
+
         setListeners();
 
         ListDetailFragment fragment = ListDetailFragment.newInstance();
@@ -242,6 +244,20 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                     mBinding.setUser(firebaseUser);
             }
         });
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                mListRepository.deleteList(mViewModel.getLists().getValue().get(viewHolder.getAdapterPosition()).id);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     private boolean checkPlayServices() {

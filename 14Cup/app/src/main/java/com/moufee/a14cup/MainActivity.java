@@ -32,21 +32,16 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.moufee.a14cup.categorySorts.CategorySortList;
-import com.moufee.a14cup.categorySorts.SortCategory;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.repository.ShoppingListRepository;
-import com.moufee.a14cup.ui.categorySorting.CategorySortFragment;
-import com.moufee.a14cup.ui.categorySorting.CategorySortListFragment;
-import com.moufee.a14cup.ui.categorySorting.CategorySortListRecyclerViewAdapter;
 import com.moufee.a14cup.ui.categorySorting.CategorySortListViewModel;
-import com.moufee.a14cup.ui.categorySorting.CategorySortRecyclerViewAdapter;
 import com.moufee.a14cup.ui.categorySorting.CategorySortViewModel;
 import com.moufee.a14cup.ui.list.ListDetailFragment;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
+import com.moufee.a14cup.ui.settings.SettingsActivity;
 import com.moufee.a14cup.validation.DataValidation;
 
 import java.util.ArrayList;
@@ -60,7 +55,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
 
-public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector, MyListsFragment.OnListFragmentInteractionListener, CategorySortFragment.OnListFragmentInteractionListener, CategorySortListFragment.OnListFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector, MyListsFragment.OnListFragmentInteractionListener {
 
     @Inject
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidInjector;
@@ -82,8 +77,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
-    private CategorySortListRecyclerViewAdapter sortingListRecyclerViewAdapter;
-    private CategorySortRecyclerViewAdapter sortRecyclerViewAdapter;
     private ActivityMainBinding mBinding;
 
     @Override
@@ -93,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
         // Resets fragment if on a different fragment, IE SortOrders/Settings/etc
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
-        if(!(f instanceof ListDetailFragment)) {
+        if (!(f instanceof ListDetailFragment)) {
             ListDetailFragment fragment = ListDetailFragment.newInstance();
             getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
         }
@@ -102,28 +95,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel.setSelectedListID(list.id);
     }
 
-    public void onSortTitleFragmentInteraction(CategorySortList sort) {
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        drawerLayout.closeDrawer(GravityCompat.START);
 
-        mToolbar.setTitle(sort.name);
-        sListViewModel.CurrentSort = sort;
-
-        CategorySortFragment fragment = CategorySortFragment.newInstance();
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
-
-        sortRecyclerViewAdapter.setCategories(sViewModel.getCategories());
-    }
-
-    public void onSortCategoryFragmentInteraction(SortCategory category) {
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        drawerLayout.closeDrawer(GravityCompat.START);
-
-        //CategorySortListFragment fragment = CategorySortListFragment.newInstance();
-        //getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
-
-        //CategorySortList sortList = sListViewModel.CurrentSort;
-    }
 
 
     @Override
@@ -144,9 +116,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
 
         sListViewModel = ViewModelProviders.of(this, viewModelFactory).get(CategorySortListViewModel.class);
-        sortingListRecyclerViewAdapter = new CategorySortListRecyclerViewAdapter(new ArrayList<CategorySortList>(), this);
         sViewModel = ViewModelProviders.of(this, viewModelFactory).get(CategorySortViewModel.class);
-        sortRecyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>(),this);
 
         mBinding.newListButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -311,24 +281,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 AuthUI.getInstance().signOut(this);
                 return true;
             case R.id.action_settings:
-                return true;
-            case R.id.action_sort_categories:
-                mToolbar = findViewById(R.id.toolbar);
-                mToolbar.setTitle(R.string.my_sort_orders);
-
-                CategorySortListFragment fragment = CategorySortListFragment.newInstance();
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
-                ArrayList<CategorySortList> sortList = sListViewModel.getSorts();
-                if (sortList != null) {
-                    sortingListRecyclerViewAdapter.setSortList(sortList);
-                    CategorySortList firstSort = sortList.get(0);
-                    sListViewModel.CurrentSort = firstSort;
-                    sViewModel.CurrentSort = firstSort;
-                    sViewModel.setListOfCategories(firstSort.categories);
-                } else {
-                    Log.d(TAG,"SORTLIST IS NULLLLLL");
-                }
-
+                startActivity(SettingsActivity.getIntent(getApplicationContext()));
                 return true;
         }
 

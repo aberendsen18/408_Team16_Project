@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import com.moufee.a14cup.categorySorts.CategorySortList;
 import com.moufee.a14cup.databinding.FragmentCategorysortingTitleBinding;
-import com.moufee.a14cup.ui.categorySorting.CategorySortListFragment.OnListFragmentInteractionListener;
 
 import java.util.ArrayList;
 
@@ -16,9 +15,9 @@ import java.util.ArrayList;
 
 public class CategorySortListRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private ArrayList<CategorySortList> lists;
-    private final OnListFragmentInteractionListener mListener;
+    private final CategorySortListFragment.OnCategorySortListInteractionListener mListener;
 
-    public CategorySortListRecyclerViewAdapter(ArrayList<CategorySortList> lists, OnListFragmentInteractionListener listener) {
+    public CategorySortListRecyclerViewAdapter(ArrayList<CategorySortList> lists, CategorySortListFragment.OnCategorySortListInteractionListener listener) {
         this.lists = lists;
         mListener = listener;
     }

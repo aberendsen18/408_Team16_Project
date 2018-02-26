@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,27 +21,30 @@ import java.util.ArrayList;
 
 /**
  * Created by Travis Kovacic on 2/16/2018.
+ * This fragment allows the user to edit a category sort order
+ * by dragging the categories into the order they want.
+ * Users can also add and delete categories.
  */
 
 public class CategorySortFragment extends Fragment {
 
-    private OnListFragmentInteractionListener mListener;
     private CategorySortViewModel viewModel;
     private RecyclerView recyclerView;
     private CategorySortRecyclerViewAdapter recyclerViewAdapter;
 
-    public CategorySortFragment(){
+    public CategorySortFragment() {
     }
+
     public static CategorySortFragment newInstance() {
-        CategorySortFragment fragment = new CategorySortFragment();
-        return fragment;
+        return new CategorySortFragment();
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         viewModel = ViewModelProviders.of(this).get(CategorySortViewModel.class);
-        recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>(), mListener);
+        recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>());
 
     }
 
@@ -59,46 +66,58 @@ public class CategorySortFragment extends Fragment {
 
     private void setListeners() {
         // viewmodel
-        ArrayList<SortCategory> categories = viewModel.getCategories();
-        if(categories != null){
+        final ArrayList<SortCategory> categories = viewModel.getCategories();
+        if (categories != null) {
             recyclerViewAdapter.setCategories(categories);
         } else {
             recyclerViewAdapter.setCategories(new ArrayList<SortCategory>());
         }
 
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                int fromPos = viewHolder.getAdapterPosition();
+                int toPos = target.getAdapterPosition();
+                //todo: actually update database
+                SortCategory moved = categories.remove(fromPos);
+                categories.add(toPos, moved);
+                recyclerViewAdapter.setCategories(categories);
+                recyclerViewAdapter.notifyItemMoved(fromPos, toPos);
+                return true;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                //todo: allow swipe to delete
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.category_sort_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_category:
+                //todo: handle creating a category
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onSortCategoryFragmentInteraction(SortCategory category);
     }
 
 }

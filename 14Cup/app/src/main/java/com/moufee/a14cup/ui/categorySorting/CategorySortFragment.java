@@ -2,6 +2,7 @@ package com.moufee.a14cup.ui.categorySorting;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -73,7 +74,7 @@ public class CategorySortFragment extends Fragment {
             recyclerViewAdapter.setCategories(new ArrayList<SortCategory>());
         }
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 int fromPos = viewHolder.getAdapterPosition();
@@ -89,6 +90,43 @@ public class CategorySortFragment extends Fragment {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 //todo: allow swipe to delete
+                int pos = viewHolder.getAdapterPosition();
+                categories.remove(pos);
+                recyclerViewAdapter.notifyItemRemoved(pos);
+            }
+
+            @Override
+            public void onChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                if (dX == 0 && dY != 0) {
+                    super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                    return;
+                }
+
+                final View fg = ((CategorySortHolder) viewHolder).mBinding.categoryForeground;
+
+                getDefaultUIUtil().onDrawOver(c, recyclerView, fg, dX, dY, actionState, isCurrentlyActive);
+            }
+
+            @Override
+            public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+                if (viewHolder != null) {
+                    getDefaultUIUtil().onSelected(((CategorySortHolder) viewHolder).mBinding.categoryForeground);
+                }
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                if (dX == 0 && dY != 0) {
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                    return;
+
+                }
+                final View fg = ((CategorySortHolder) viewHolder).mBinding.categoryForeground;
+
+                getDefaultUIUtil().onDraw(c, recyclerView, fg, dX, dY, actionState, isCurrentlyActive);
+
             }
         });
         itemTouchHelper.attachToRecyclerView(recyclerView);

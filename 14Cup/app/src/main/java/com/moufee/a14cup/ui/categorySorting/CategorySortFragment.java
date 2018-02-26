@@ -17,11 +17,13 @@ import java.util.ArrayList;
 
 /**
  * Created by Travis Kovacic on 2/16/2018.
+ * This fragment allows the user to edit a category sort order
+ * by dragging the categories into the order they want.
+ * Users can also add and delete categories.
  */
 
 public class CategorySortFragment extends Fragment {
 
-    private OnListFragmentInteractionListener mListener;
     private CategorySortViewModel viewModel;
     private RecyclerView recyclerView;
     private CategorySortRecyclerViewAdapter recyclerViewAdapter;
@@ -29,15 +31,14 @@ public class CategorySortFragment extends Fragment {
     public CategorySortFragment(){
     }
     public static CategorySortFragment newInstance() {
-        CategorySortFragment fragment = new CategorySortFragment();
-        return fragment;
+        return new CategorySortFragment();
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         viewModel = ViewModelProviders.of(this).get(CategorySortViewModel.class);
-        recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>(), mListener);
+        recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>());
 
     }
 
@@ -72,33 +73,11 @@ public class CategorySortFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        }/* else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }*/
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onSortCategoryFragmentInteraction(SortCategory category);
     }
 
 }

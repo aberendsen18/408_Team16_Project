@@ -18,8 +18,8 @@ public class CategoryTitleHolder extends RecyclerView.ViewHolder{
         mBinding = binding;
     }
 
-    public void bind(CategorySortList list, CategorySortListFragment.OnListFragmentInteractionListener listener) {
-        mBinding.setCategorySortTitle(list);
+    public void bind(CategorySortList list, CategorySortListFragment.OnCategorySortListInteractionListener listener) {
+        mBinding.setCategorySortList(list);
         mBinding.setListener(listener);
         mBinding.executePendingBindings();
     }

@@ -17,11 +17,13 @@ import java.util.ArrayList;
 
 /**
  * Created by Travis Kovacic on 2/12/2018.
+ * This fragment displays the list of category sort orders
+ * The use can then select a sort order to edit it
  */
 
 public class CategorySortListFragment extends Fragment{
 
-    private OnListFragmentInteractionListener mListener;
+    private OnCategorySortListInteractionListener mListener;
     private CategorySortListViewModel viewModel;
     private RecyclerView recyclerView;
     private CategorySortListRecyclerViewAdapter recyclerViewAdapter;
@@ -73,12 +75,12 @@ public class CategorySortListFragment extends Fragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } /*else {
+        if (context instanceof OnCategorySortListInteractionListener) {
+            mListener = (OnCategorySortListInteractionListener) context;
+        } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }*/
+                    + " must implement OnCategorySortListInteractionListener");
+        }
     }
 
     @Override
@@ -97,9 +99,8 @@ public class CategorySortListFragment extends Fragment{
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onSortTitleFragmentInteraction(CategorySortList list);
+    public interface OnCategorySortListInteractionListener {
+        void onSelectSortList(CategorySortList list);
     }
 
 }

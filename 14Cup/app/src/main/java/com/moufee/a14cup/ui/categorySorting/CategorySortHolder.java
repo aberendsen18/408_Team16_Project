@@ -18,9 +18,8 @@ public class CategorySortHolder extends RecyclerView.ViewHolder{
         mBinding = binding;
     }
 
-    public void bind(SortCategory category, CategorySortFragment.OnListFragmentInteractionListener listener) {
+    public void bind(SortCategory category) {
         mBinding.setCategorySortListCategory(category);
-        mBinding.setListener1(listener);
         mBinding.executePendingBindings();
     }
 

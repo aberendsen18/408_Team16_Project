@@ -15,11 +15,9 @@ import java.util.ArrayList;
 
 public class CategorySortRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<SortCategory> categories;
-    private final CategorySortFragment.OnListFragmentInteractionListener mListener;
 
-    public CategorySortRecyclerViewAdapter(ArrayList<SortCategory> categories, CategorySortFragment.OnListFragmentInteractionListener listener) {
+    public CategorySortRecyclerViewAdapter(ArrayList<SortCategory> categories) {
         this.categories = categories;
-        mListener = listener;
     }
 
     public void setCategories(ArrayList<SortCategory> categories) {
@@ -35,7 +33,7 @@ public class CategorySortRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        ((CategorySortHolder) holder).bind(categories.get(position), mListener);
+        ((CategorySortHolder) holder).bind(categories.get(position));
     }
 
     @Override

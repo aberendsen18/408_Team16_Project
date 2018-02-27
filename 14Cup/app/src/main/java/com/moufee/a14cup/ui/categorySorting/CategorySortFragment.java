@@ -4,7 +4,9 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -75,6 +77,12 @@ public class CategorySortFragment extends Fragment {
         }
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
+
+            protected boolean isElevated = false;
+            protected float originalElevation = 0;
+            protected float activeElevationChange = 1f;
+
+
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 int fromPos = viewHolder.getAdapterPosition();
@@ -127,6 +135,41 @@ public class CategorySortFragment extends Fragment {
 
                 getDefaultUIUtil().onDraw(c, recyclerView, fg, dX, dY, actionState, isCurrentlyActive);
 
+            }
+
+            protected void updateElevation(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder holder, boolean elevate) {
+                if (elevate) {
+                    originalElevation = ViewCompat.getElevation(holder.itemView);
+                    float newElevation = activeElevationChange + findMaxElevation(recyclerView);
+                    ViewCompat.setElevation(holder.itemView, newElevation);
+                    isElevated = true;
+                } else {
+                    ViewCompat.setElevation(holder.itemView, originalElevation);
+                    originalElevation = 0;
+                    isElevated = false;
+                }
+            }
+
+            /**
+             * Finds the elevation of the highest visible viewHolder to make sure the elevated view
+             * from {@link #updateElevation(RecyclerView, RecyclerView.ViewHolder, boolean)} is above
+             * all others.
+             *
+             * @param recyclerView The RecyclerView to use when determining the height of all the visible ViewHolders
+             */
+            protected float findMaxElevation(@NonNull RecyclerView recyclerView) {
+                float maxChildElevation = 0;
+
+                for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                    View child = recyclerView.getChildAt(i);
+                    float elevation = ViewCompat.getElevation(child);
+
+                    if (elevation > maxChildElevation) {
+                        maxChildElevation = elevation;
+                    }
+                }
+
+                return maxChildElevation;
             }
         });
         itemTouchHelper.attachToRecyclerView(recyclerView);

@@ -54,7 +54,7 @@ public class CategorySortFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_categorysorting_sort_list, container, false);
 
@@ -129,19 +129,13 @@ public class CategorySortFragment extends Fragment {
             @Override
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
-                Log.d(TAG, "onChildDraw: elevation:" + viewHolder.itemView.getElevation());
-
-                //if we are dragging vertically
+                // if we are dragging vertically
                 if (dX == 0 && dY != 0) {
+                    // prevents default elevation change (?)
                     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, false);
-                    if (isCurrentlyActive && !isElevated){
-//                        updateElevation(viewHolder, true);
-                    }
                     return;
-
                 }
                 final View fg = ((CategorySortHolder) viewHolder).mBinding.categoryForeground;
-
 
                 getDefaultUIUtil().onDraw(c, recyclerView, fg, dX, dY, actionState, isCurrentlyActive);
 

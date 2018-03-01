@@ -10,6 +10,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +35,7 @@ public class CategorySortFragment extends Fragment {
     private CategorySortViewModel viewModel;
     private RecyclerView recyclerView;
     private CategorySortRecyclerViewAdapter recyclerViewAdapter;
+    private static final String TAG = "CategorySortFragment";
 
     public CategorySortFragment() {
     }
@@ -80,7 +82,7 @@ public class CategorySortFragment extends Fragment {
 
             protected boolean isElevated = false;
             protected float originalElevation = 0;
-            protected float activeElevationChange = 1f;
+            protected float activeElevationChange = 8f;
 
 
             @Override
@@ -118,33 +120,48 @@ public class CategorySortFragment extends Fragment {
 
             @Override
             public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-                if (viewHolder != null) {
+                if (viewHolder != null && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
                     getDefaultUIUtil().onSelected(((CategorySortHolder) viewHolder).mBinding.categoryForeground);
+                    updateElevation(viewHolder, true);
                 }
             }
 
             @Override
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
+                Log.d(TAG, "onChildDraw: elevation:" + viewHolder.itemView.getElevation());
+
+                //if we are dragging vertically
                 if (dX == 0 && dY != 0) {
-                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, false);
+                    if (isCurrentlyActive && !isElevated){
+//                        updateElevation(viewHolder, true);
+                    }
                     return;
 
                 }
                 final View fg = ((CategorySortHolder) viewHolder).mBinding.categoryForeground;
 
+
                 getDefaultUIUtil().onDraw(c, recyclerView, fg, dX, dY, actionState, isCurrentlyActive);
 
             }
 
-            protected void updateElevation(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder holder, boolean elevate) {
+            @Override
+            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerView, viewHolder);
+                Log.d(TAG, "clearView: onClear");
+                updateElevation(viewHolder, false);
+            }
+
+            protected void updateElevation(@NonNull RecyclerView.ViewHolder holder, boolean elevate) {
                 if (elevate) {
                     originalElevation = ViewCompat.getElevation(holder.itemView);
-                    float newElevation = activeElevationChange + findMaxElevation(recyclerView);
+                    float newElevation = activeElevationChange;
                     ViewCompat.setElevation(holder.itemView, newElevation);
                     isElevated = true;
                 } else {
-                    ViewCompat.setElevation(holder.itemView, originalElevation);
+                    ViewCompat.setElevation(holder.itemView, 0);
                     originalElevation = 0;
                     isElevated = false;
                 }
@@ -152,7 +169,7 @@ public class CategorySortFragment extends Fragment {
 
             /**
              * Finds the elevation of the highest visible viewHolder to make sure the elevated view
-             * from {@link #updateElevation(RecyclerView, RecyclerView.ViewHolder, boolean)} is above
+             * from {@link #updateElevation(RecyclerView.ViewHolder, boolean)} is above
              * all others.
              *
              * @param recyclerView The RecyclerView to use when determining the height of all the visible ViewHolders

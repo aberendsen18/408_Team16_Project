@@ -1,5 +1,6 @@
 package com.moufee.a14cup.ui.settings;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -41,6 +42,15 @@ public class SettingsFragment extends PreferenceFragment {
         super.onAttach(context);
         if (context instanceof PreferenceInteractionListener) {
             mListener = (PreferenceInteractionListener) context;
+            Log.d("SETTINGS_FRAGMENT", "onAttach: setting listener");
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof PreferenceInteractionListener) {
+            mListener = (PreferenceInteractionListener) activity;
             Log.d("SETTINGS_FRAGMENT", "onAttach: setting listener");
         }
     }

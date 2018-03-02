@@ -8,8 +8,13 @@ public class ShoppingListItem {
     public String name;
     public String id;
     public String category;
+    public boolean completed = false;
 
     public ShoppingListItem() {
+    }
+
+    public void toggleCompletion() {
+        this.completed = !this.completed;
     }
 
     @Override

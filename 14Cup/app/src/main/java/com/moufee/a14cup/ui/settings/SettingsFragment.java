@@ -49,10 +49,7 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity instanceof PreferenceInteractionListener) {
-            mListener = (PreferenceInteractionListener) activity;
-            Log.d("SETTINGS_FRAGMENT", "onAttach: setting listener");
-        }
+        onAttach((Context) activity);
     }
 
     public interface PreferenceInteractionListener {

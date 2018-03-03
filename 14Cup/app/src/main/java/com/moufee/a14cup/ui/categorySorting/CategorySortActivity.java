@@ -1,8 +1,10 @@
 package com.moufee.a14cup.ui.categorySorting;
 
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.moufee.a14cup.R;
@@ -12,6 +14,7 @@ import com.moufee.a14cup.repository.CategoryRepository;
 
 import javax.inject.Inject;
 
+import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
@@ -28,6 +31,9 @@ public class CategorySortActivity extends SingleFragmentActivity implements HasS
     @Inject
     CategoryRepository cListRepository;
 
+    @Inject
+    ViewModelProvider.Factory mViewModelFactory;
+
     private CategorySortListViewModel viewModel;
 
     public static Intent getIntent(Context packageContext) {
@@ -37,9 +43,15 @@ public class CategorySortActivity extends SingleFragmentActivity implements HasS
     @Override
     protected Fragment createFragment() {
 
-        viewModel = ViewModelProviders.of(this).get(CategorySortListViewModel.class);
+        viewModel = ViewModelProviders.of(this, mViewModelFactory).get(CategorySortListViewModel.class);
 
         return CategorySortListFragment.newInstance();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
+        super.onCreate(savedInstanceState);
     }
 
     @Override

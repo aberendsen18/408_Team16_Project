@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +19,8 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import dagger.android.support.AndroidSupportInjection;
+
 /**
  * Created by Travis Kovacic on 2/12/2018.
  * This fragment displays the list of category sort orders
@@ -31,8 +32,8 @@ public class CategorySortListFragment extends Fragment{
     @Inject
     CategoryRepository cListRepository;
 
-    /*@Inject
-    ViewModelProvider.Factory mFactory;*/
+    @Inject
+    ViewModelProvider.Factory mFactory;
 
     private OnCategorySortListInteractionListener mListener;
     private CategorySortListViewModel viewModel;
@@ -48,7 +49,7 @@ public class CategorySortListFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(CategorySortListViewModel.class);
+        viewModel = ViewModelProviders.of(this, mFactory).get(CategorySortListViewModel.class);
         recyclerViewAdapter = new CategorySortListRecyclerViewAdapter(new ArrayList<CategorySortList>(), mListener);
     }
 
@@ -83,6 +84,7 @@ public class CategorySortListFragment extends Fragment{
 
     @Override
     public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
         super.onAttach(context);
         /*if (context instanceof AppCompatActivity) {
             viewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(CategorySortListViewModel.class);

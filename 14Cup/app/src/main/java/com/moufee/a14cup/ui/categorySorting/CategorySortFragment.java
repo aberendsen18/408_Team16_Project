@@ -1,5 +1,6 @@
 package com.moufee.a14cup.ui.categorySorting;
 
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -24,6 +25,10 @@ import com.moufee.a14cup.repository.CategoryRepository;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
+import dagger.android.support.AndroidSupportInjection;
+
 /**
  * Created by Travis Kovacic on 2/16/2018.
  * This fragment allows the user to edit a category sort order
@@ -33,7 +38,11 @@ import java.util.ArrayList;
 
 public class CategorySortFragment extends Fragment {
 
-    private CategoryRepository cListRepository;
+    @Inject
+    CategoryRepository cListRepository;
+
+    @Inject
+    ViewModelProvider.Factory mFactory;
 
     private CategorySortListViewModel viewModel;
     private RecyclerView recyclerView;
@@ -51,7 +60,7 @@ public class CategorySortFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        viewModel = ViewModelProviders.of(this).get(CategorySortListViewModel.class);
+        viewModel = ViewModelProviders.of(this, mFactory).get(CategorySortListViewModel.class);
         recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>());
 
     }
@@ -208,6 +217,7 @@ public class CategorySortFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
 

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -46,7 +47,7 @@ public class CategorySortFragment extends Fragment {
 
     private CategorySortListViewModel viewModel;
     private RecyclerView recyclerView;
-    private CategorySortRecyclerViewAdapter recyclerViewAdapter;
+    private CategorySortRecyclerViewAdapter recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>());
     private static final String TAG = "CategorySortFragment";
 
     public CategorySortFragment() {
@@ -59,10 +60,6 @@ public class CategorySortFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-        viewModel = ViewModelProviders.of(this, mFactory).get(CategorySortListViewModel.class);
-        recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>());
-
     }
 
     @Override
@@ -113,9 +110,9 @@ public class CategorySortFragment extends Fragment {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 //todo: allow swipe to delete
                 int pos = viewHolder.getAdapterPosition();
+                //cListRepository.deleteCategory(viewModel.CurrentSort, viewModel.CurrentSort.categories.get(pos));
                 categories.remove(pos);
                 recyclerViewAdapter.notifyItemRemoved(pos);
-                cListRepository.deleteCategory(viewModel.CurrentSort, viewModel.CurrentSort.categories.get(pos));
             }
 
             @Override
@@ -219,6 +216,10 @@ public class CategorySortFragment extends Fragment {
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
+        if (context instanceof AppCompatActivity) {
+            viewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(CategorySortListViewModel.class);
+            setListeners();
+        }
     }
 
     @Override

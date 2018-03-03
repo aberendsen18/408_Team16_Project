@@ -37,17 +37,15 @@ public class CategoryRepository {
 
     public ArrayList<CategorySortList> initMockSorts(){
         ArrayList<CategorySortList> toReturn = new ArrayList<>();
-        ArrayList<SortCategory> categories = new ArrayList<>();
-
-        for(int j = 0; j < 5; j++){
-            int r = (int)(Math.random()*10);
-            SortCategory tempC = new SortCategory("Category"+r, j);
-            tempC.id = Integer.toString(j);
-            categories.add(tempC);
-        }
 
         for(int i = 0; i<5; i++){
-
+            ArrayList<SortCategory> categories = new ArrayList<>();
+            for(int j = 0; j < 5; j++){
+                int r = (int)(Math.random()*10);
+                SortCategory tempC = new SortCategory("Category"+r, j);
+                tempC.id = Integer.toString(j);
+                categories.add(tempC);
+            }
             CategorySortList temp = new CategorySortList("Sort "+i, categories);
             temp.id = Integer.toString(i);
             toReturn.add(temp);

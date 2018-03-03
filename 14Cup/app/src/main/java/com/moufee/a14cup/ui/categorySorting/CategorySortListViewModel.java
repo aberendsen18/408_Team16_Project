@@ -30,12 +30,12 @@ public class CategorySortListViewModel extends ViewModel {
     public CategorySortListViewModel(CategoryRepository listRepository){
         cListRepository = listRepository;
         listOfSorts = cListRepository.getCategorySortList();
-        listOfCategories = listOfSorts.get(0).categories;
-        CurrentSort = null;
+        CurrentSort = listOfSorts.get(0);
+        listOfCategories = cListRepository.getCategoryList(CurrentSort);
     }
 
-    public ArrayList<CategorySortList> getSorts() { return listOfSorts;}
+    public ArrayList<CategorySortList> getSorts() { return cListRepository.getCategorySortList();}
 
-    public ArrayList<SortCategory> getCategories() {return listOfCategories;}
+    public ArrayList<SortCategory> getCategories() {return cListRepository.getCategoryList(CurrentSort);}
 
 }

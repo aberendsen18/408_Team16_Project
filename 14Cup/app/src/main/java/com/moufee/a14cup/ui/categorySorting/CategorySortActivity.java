@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.SingleFragmentActivity;

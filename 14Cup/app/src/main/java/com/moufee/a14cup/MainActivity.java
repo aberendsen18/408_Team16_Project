@@ -34,9 +34,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.repository.CategoryRepository;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.ui.categorySorting.CategorySortListViewModel;
-import com.moufee.a14cup.ui.categorySorting.CategorySortViewModel;
 import com.moufee.a14cup.ui.list.ListDetailFragment;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
@@ -59,16 +59,12 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
     @Inject
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidInjector;
-
-
     @Inject
     ViewModelProvider.Factory viewModelFactory;
     @Inject
     ShoppingListRepository mListRepository;
 
     private ListViewModel mViewModel;
-    private CategorySortListViewModel sListViewModel;
-    private CategorySortViewModel sViewModel;
     private static final String TAG = "MAIN_ACTIVITY";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -95,9 +91,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel.setSelectedListID(list.id);
     }
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
@@ -111,12 +104,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mToolbar.setTitle(R.string.my_lists);
         setSupportActionBar(mToolbar);
 
-
         mViewModel = ViewModelProviders.of(this, viewModelFactory).get(ListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
-
-        sListViewModel = ViewModelProviders.of(this, viewModelFactory).get(CategorySortListViewModel.class);
-        sViewModel = ViewModelProviders.of(this, viewModelFactory).get(CategorySortViewModel.class);
 
         mBinding.newListButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     }
 
     private void setListeners() {
-
 
         mViewModel.getLists().observe(this, new Observer<List<ShoppingList>>() {
             @Override

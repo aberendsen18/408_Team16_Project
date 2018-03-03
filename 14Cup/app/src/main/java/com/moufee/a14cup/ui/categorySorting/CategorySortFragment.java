@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.categorySorts.SortCategory;
+import com.moufee.a14cup.repository.CategoryRepository;
 
 import java.util.ArrayList;
 
@@ -32,7 +33,9 @@ import java.util.ArrayList;
 
 public class CategorySortFragment extends Fragment {
 
-    private CategorySortViewModel viewModel;
+    private CategoryRepository cListRepository;
+
+    private CategorySortListViewModel viewModel;
     private RecyclerView recyclerView;
     private CategorySortRecyclerViewAdapter recyclerViewAdapter;
     private static final String TAG = "CategorySortFragment";
@@ -48,7 +51,7 @@ public class CategorySortFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        viewModel = ViewModelProviders.of(this).get(CategorySortViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(CategorySortListViewModel.class);
         recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>());
 
     }
@@ -103,6 +106,7 @@ public class CategorySortFragment extends Fragment {
                 int pos = viewHolder.getAdapterPosition();
                 categories.remove(pos);
                 recyclerViewAdapter.notifyItemRemoved(pos);
+                cListRepository.deleteCategory(viewModel.CurrentSort, viewModel.CurrentSort.categories.get(pos));
             }
 
             @Override

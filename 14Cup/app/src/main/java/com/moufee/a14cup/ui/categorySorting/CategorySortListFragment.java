@@ -1,9 +1,11 @@
 package com.moufee.a14cup.ui.categorySorting;
 
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,8 +14,11 @@ import android.view.ViewGroup;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.categorySorts.CategorySortList;
+import com.moufee.a14cup.repository.CategoryRepository;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 /**
  * Created by Travis Kovacic on 2/12/2018.
@@ -23,6 +28,12 @@ import java.util.ArrayList;
 
 public class CategorySortListFragment extends Fragment{
 
+    @Inject
+    CategoryRepository cListRepository;
+
+    /*@Inject
+    ViewModelProvider.Factory mFactory;*/
+
     private OnCategorySortListInteractionListener mListener;
     private CategorySortListViewModel viewModel;
     private RecyclerView recyclerView;
@@ -31,16 +42,14 @@ public class CategorySortListFragment extends Fragment{
     public CategorySortListFragment(){
     }
 
-
     public static CategorySortListFragment newInstance() { return new CategorySortListFragment(); }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
+        super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(this).get(CategorySortListViewModel.class);
         recyclerViewAdapter = new CategorySortListRecyclerViewAdapter(new ArrayList<CategorySortList>(), mListener);
-
     }
 
     @Override
@@ -75,6 +84,10 @@ public class CategorySortListFragment extends Fragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        /*if (context instanceof AppCompatActivity) {
+            viewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(CategorySortListViewModel.class);
+            setListeners();
+        }*/
         if (context instanceof OnCategorySortListInteractionListener) {
             mListener = (OnCategorySortListInteractionListener) context;
         } else {

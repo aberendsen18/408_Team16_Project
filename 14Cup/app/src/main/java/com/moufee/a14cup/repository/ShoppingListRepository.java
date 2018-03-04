@@ -74,4 +74,12 @@ public class ShoppingListRepository {
     public void addItem(String listID, ShoppingListItem item) {
         listsCollection.document(listID).collection("items").add(item);
     }
+
+    public void deleteItem(String listID, String itemID) {
+        listsCollection.document(listID).collection("items").document(itemID).delete();
+    }
+
+    public void deleteList(String listID) {
+        listsCollection.document(listID).delete();
+    }
 }

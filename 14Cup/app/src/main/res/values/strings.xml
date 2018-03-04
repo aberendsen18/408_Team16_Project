@@ -19,4 +19,6 @@
     <string name="action_new_list">New List</string>
     <string name="list_name_hint">List Name</string>
     <string name="action_new_list_positive">Create New List</string>
+    <string name="buttonAddRecipeText">Add Recipe</string>
+    <string name="spinner_shopping_list_prompt">[Select Shopping List]</string>
 </resources>

@@ -15,6 +15,10 @@ public class SortCategory {
         this.rank = rank;
     }
 
+    public SortCategory(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return name;

@@ -3,15 +3,18 @@ package com.moufee.a14cup.ui.categorySorting;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +22,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.categorySorts.SortCategory;
@@ -29,6 +34,8 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
+
+import static com.moufee.a14cup.validation.DataValidation.validateCategoryName;
 
 /**
  * Created by Travis Kovacic on 2/16/2018.
@@ -110,7 +117,6 @@ public class CategorySortFragment extends Fragment {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 //todo: allow swipe to delete
                 int pos = viewHolder.getAdapterPosition();
-                //cListRepository.deleteCategory(viewModel.CurrentSort, viewModel.CurrentSort.categories.get(pos));
                 categories.remove(pos);
                 recyclerViewAdapter.notifyItemRemoved(pos);
             }
@@ -207,6 +213,38 @@ public class CategorySortFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_add_category:
                 //todo: handle creating a category
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+                builder.setTitle("Add Category");
+
+                final EditText input = new EditText(this.getContext());
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String categoryName = input.getText().toString();
+                        SortCategory addedSort = new SortCategory(categoryName);
+                        String valid = validateCategoryName(addedSort);
+                        if (valid.equals("valid")) {
+                            cListRepository.addCategory(viewModel.CurrentSort, addedSort);
+                            recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.getItemCount());
+                            //todo: Figure out why when adding a category after deleting one, it inserts the category with the swiping graphic instead of the text
+                        } else {
+                            //print the error to the screen
+                            Toast.makeText(getActivity(), valid,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -1,5 +1,7 @@
 package com.moufee.a14cup.repository;
 
+import android.util.Log;
+
 import com.moufee.a14cup.categorySorts.CategorySortList;
 import com.moufee.a14cup.categorySorts.SortCategory;
 
@@ -33,6 +35,17 @@ public class CategoryRepository {
         // But my mocked implementation will need integers for ArrayList
         CategorySortList listToRemoveCategoryFrom =  categoryListCollection.get(Integer.parseInt(list.id));
         listToRemoveCategoryFrom.categories.remove(Integer.parseInt(sort.id));
+    }
+
+    public void addCategory(CategorySortList list, SortCategory sort){
+        CategorySortList listToAddTo = categoryListCollection.get(Integer.parseInt(list.id));
+        listToAddTo.categories.add(sort);
+    }
+
+    public void printCategoriesFromList(CategorySortList list){
+        for(int i = 0; i < list.categories.size(); i++){
+            Log.d("Test", "Category: " + list.categories.get(i));
+        }
     }
 
     public ArrayList<CategorySortList> initMockSorts(){

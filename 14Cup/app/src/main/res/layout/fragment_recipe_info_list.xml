@@ -12,12 +12,13 @@
         android:id="@+id/list"
         android:name="com.moufee.a14cup.ui.recipes.RecipeInfoFragment"
         android:layout_width="0dp"
-        android:layout_height="341dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewIngredients"
         tools:context="com.moufee.a14cup.ui.recipes.RecipeInfoFragment"
         tools:listitem="@layout/fragment_recipe_info" />
 
@@ -25,23 +26,20 @@
         android:id="@+id/buttonAddRecipe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="3dp"
-        android:layout_marginTop="8dp"
         android:text="@string/buttonAddRecipeText"
-        app:layout_constraintBottom_toTopOf="@+id/textViewIngredients"
+        app:layout_constraintBottom_toBottomOf="@+id/shoppingListSpinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/shoppingListSpinner"
-        app:layout_constraintTop_toBottomOf="@+id/textViewRecipeName"
-        android:layout_marginRight="3dp" />
+        app:layout_constraintTop_toTopOf="@+id/shoppingListSpinner" />
 
     <TextView
         android:id="@+id/textViewRecipeName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="RecipeTitle"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -52,10 +50,8 @@
         android:id="@+id/shoppingListSpinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:prompt="@string/spinner_shopping_list_prompt"
-        app:layout_constraintBottom_toTopOf="@+id/textViewIngredients"
         app:layout_constraintEnd_toStartOf="@+id/buttonAddRecipe"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -66,12 +62,11 @@
         android:id="@+id/textViewIngredients"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="Ingredients:"
-        app:layout_constraintBottom_toTopOf="@+id/list"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="8dp" />
+        app:layout_constraintTop_toBottomOf="@+id/shoppingListSpinner" />
 
 </android.support.constraint.ConstraintLayout>
 

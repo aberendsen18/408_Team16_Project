@@ -15,6 +15,8 @@ import com.moufee.a14cup.repository.UserRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by tyler on 3/4/18.
  */
@@ -30,6 +32,7 @@ public class RecipeViewModel extends ViewModel {
     private MutableLiveData<Recipe> mSelectedRecipe = new MutableLiveData<>();
     private LiveData<FirebaseUser> mCurrentUser;
 
+    @Inject
     public RecipeViewModel(RecipeRepository recipeRepository, ShoppingListRepository shoppingListRepository, UserRepository userRepository){
         mShoppingListRepository = shoppingListRepository;
         mUserRepository = userRepository;

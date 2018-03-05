@@ -1,5 +1,6 @@
 package com.moufee.a14cup.recipes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +31,7 @@ public class Recipe {
     public Recipe(String label, String url, List<String> ingredientLines){
         this.label = label;
         this.ingredientLines = ingredientLines;
+        this.ingredients = new ArrayList<>();
 
         for(String ing : ingredientLines){
             this.ingredients.add(new Ingredient(ing));

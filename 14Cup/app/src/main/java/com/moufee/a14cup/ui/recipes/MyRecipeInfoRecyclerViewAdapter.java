@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.moufee.a14cup.R;
@@ -12,6 +13,8 @@ import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.ui.recipes.RecipeInfoFragment.OnListFragmentInteractionListener;
 import com.moufee.a14cup.ui.recipes.dummy.DummyContent.DummyItem;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,7 +28,12 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
     private final OnListFragmentInteractionListener mListener;
 
     public MyRecipeInfoRecyclerViewAdapter(Recipe recipe, OnListFragmentInteractionListener listener) {
-        mRecipe = recipe;
+        ArrayList<String> ing_tortilla_soup = new ArrayList<String>(Arrays.asList("2 14- to 19-ounce cans chicken noodle soup",
+                "1 cup frozen corn kernels",
+                "1 teaspoon hot sauce",
+                "2 cups tortilla chips",
+                "1 avocado, cut into pieces"));
+        mRecipe = new Recipe("Tortilla Soup", "x", ing_tortilla_soup);
         mListener = listener;
     }
 
@@ -41,6 +49,7 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
         holder.mItem = mRecipe.getIngredients().get(position);
         holder.mIdView.setText(Integer.toString(position+1));
         holder.mContentView.setText(mRecipe.getIngredientText(position));
+
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,20 +69,21 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
     }
 
     public void setRecipe(Recipe recipe){
-        mRecipe = recipe;
+        //mRecipe = recipe;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
-        public final TextView mContentView;
+        public final CheckBox mContentView;
         public Ingredient mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mIdView = (TextView) view.findViewById(R.id.idRecipeInfo);
+            mContentView = (CheckBox) view.findViewById(R.id.checkBoxRecipeInfo);
         }
 
         @Override

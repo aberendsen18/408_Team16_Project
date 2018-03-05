@@ -8,22 +8,22 @@ import android.widget.TextView;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.recipes.Recipe;
-import com.moufee.a14cup.ui.recipes.RecipeFragment.OnListFragmentInteractionListener;
+import com.moufee.a14cup.ui.recipes.RecipeFragment.OnRecipeFragmentInteractionListener;
 import com.moufee.a14cup.ui.recipes.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link OnRecipeFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRecyclerViewAdapter.ViewHolder> {
 
     private final List<Recipe> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final OnRecipeFragmentInteractionListener mListener;
 
-    public MyRecipeRecyclerViewAdapter(List<Recipe> items, OnListFragmentInteractionListener listener) {
+    public MyRecipeRecyclerViewAdapter(List<Recipe> items, OnRecipeFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -47,7 +47,7 @@ public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRe
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onRecipeFragmentInteraction(holder.mItem);
                 }
             }
         });

@@ -12,16 +12,12 @@ import android.view.ViewGroup;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.recipes.Recipe;
-import com.moufee.a14cup.ui.recipes.dummy.DummyContent;
-import com.moufee.a14cup.ui.recipes.dummy.DummyContent.DummyItem;
 import com.moufee.a14cup.ui.recipes.dummy.DummyRecipes;
-
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnRecipeFragmentInteractionListener}
  * interface.
  */
 public class RecipeFragment extends Fragment {
@@ -30,7 +26,7 @@ public class RecipeFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
+    private OnRecipeFragmentInteractionListener mListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -81,8 +77,8 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnRecipeFragmentInteractionListener) {
+            mListener = (OnRecipeFragmentInteractionListener) context;
         }
         /*else {
             throw new RuntimeException(context.toString()
@@ -106,8 +102,8 @@ public class RecipeFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+    public interface OnRecipeFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Recipe item);
+        void onRecipeFragmentInteraction(Recipe item);
     }
 }

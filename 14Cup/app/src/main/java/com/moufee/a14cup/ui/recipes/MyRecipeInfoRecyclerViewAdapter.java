@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.moufee.a14cup.R;
+import com.moufee.a14cup.recipes.Ingredient;
+import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.ui.recipes.RecipeInfoFragment.OnListFragmentInteractionListener;
 import com.moufee.a14cup.ui.recipes.dummy.DummyContent.DummyItem;
 
@@ -19,11 +21,11 @@ import java.util.List;
  */
 public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeInfoRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private Recipe mRecipe;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyRecipeInfoRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public MyRecipeInfoRecyclerViewAdapter(Recipe recipe, OnListFragmentInteractionListener listener) {
+        mRecipe = recipe;
         mListener = listener;
     }
 
@@ -36,9 +38,9 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mItem = mRecipe.getIngredients().get(position);
+        holder.mIdView.setText(Integer.toString(position+1));
+        holder.mContentView.setText(mRecipe.getIngredientText(position));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +48,7 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    //mListener.onListFragmentInteraction(holder.mItem);
                 }
             }
         });
@@ -54,14 +56,18 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mRecipe.getIngredients().size();
+    }
+
+    public void setRecipe(Recipe recipe){
+        mRecipe = recipe;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Ingredient mItem;
 
         public ViewHolder(View view) {
             super(view);

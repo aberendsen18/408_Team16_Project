@@ -1,8 +1,13 @@
 package com.moufee.a14cup.ui.recipes;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,10 +16,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.moufee.a14cup.R;
+import com.moufee.a14cup.recipes.Recipe;
+import com.moufee.a14cup.repository.RecipeRepository;
+import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.recipes.dummy.DummyContent;
 import com.moufee.a14cup.ui.recipes.dummy.DummyContent.DummyItem;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * A fragment representing a list of Items.
@@ -28,7 +38,14 @@ public class RecipeInfoFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
+    private MyRecipeInfoRecyclerViewAdapter mRecyclerViewAdapter;
+    private RecipeViewModel mViewModel;
     private OnListFragmentInteractionListener mListener;
+
+    @Inject
+    ViewModelProvider.Factory mFactory;
+    @Inject
+    RecipeRepository mRecipeRepo;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -70,7 +87,8 @@ public class RecipeInfoFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyRecipeInfoRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            mRecyclerViewAdapter = new MyRecipeInfoRecyclerViewAdapter(mViewModel.getSelectedRecipe(), mListener);
+            recyclerView.setAdapter(mRecyclerViewAdapter);
         }
         return view;
     }
@@ -79,12 +97,27 @@ public class RecipeInfoFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof AppCompatActivity) {
+            mViewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(RecipeViewModel.class);
+            setListeners();
+        }
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
+    }
+
+    private void setListeners(){
+        mViewModel.getSelectedLiveDataRecipe().observe(this, new Observer<Recipe>() {
+            @Override
+            public void onChanged(@Nullable Recipe recipe) {
+                if (recipe != null) {
+                    mRecyclerViewAdapter.setRecipe(recipe);
+                }
+            }
+        });
     }
 
     @Override
@@ -105,6 +138,6 @@ public class RecipeInfoFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Recipe item);
     }
 }

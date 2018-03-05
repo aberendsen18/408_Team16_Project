@@ -9,7 +9,7 @@
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/list"
+        android:id="@+id/ingredientsListRecyclerView"
         android:name="com.moufee.a14cup.ui.recipes.RecipeInfoFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -32,7 +32,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/shoppingListSpinner"
-        app:layout_constraintTop_toTopOf="@+id/shoppingListSpinner" />
+        app:layout_constraintTop_toTopOf="@+id/shoppingListSpinner"
+        android:layout_marginRight="3dp" />
 
     <TextView
         android:id="@+id/textViewRecipeName"
@@ -66,7 +67,8 @@
         android:layout_marginTop="8dp"
         android:text="Ingredients:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shoppingListSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/shoppingListSpinner"
+        android:layout_marginLeft="8dp" />
 
 </android.support.constraint.ConstraintLayout>
 

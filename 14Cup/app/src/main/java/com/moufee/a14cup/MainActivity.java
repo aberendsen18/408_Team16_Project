@@ -95,7 +95,10 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     @Override
     public void onRecipeFragmentInteraction(Recipe item){
         RecipeInfoFragment fragment = RecipeInfoFragment.newInstance(1);
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
         //mDrawerLayout.closeDrawer(GravityCompat.START);
         mToolbar.setTitle("Add A Recipe"); // write a get recipe label method.
 

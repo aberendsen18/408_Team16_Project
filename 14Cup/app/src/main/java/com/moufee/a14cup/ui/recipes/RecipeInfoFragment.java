@@ -18,11 +18,6 @@ import android.view.ViewGroup;
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.repository.RecipeRepository;
-import com.moufee.a14cup.ui.list.ListViewModel;
-import com.moufee.a14cup.ui.recipes.dummy.DummyContent;
-import com.moufee.a14cup.ui.recipes.dummy.DummyContent.DummyItem;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -81,9 +76,8 @@ public class RecipeInfoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recipe_info_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+        RecyclerView recyclerView = view.findViewById(R.id.ingredientsListRecyclerView);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -91,7 +85,7 @@ public class RecipeInfoFragment extends Fragment {
             }
             //mRecyclerViewAdapter = new MyRecipeInfoRecyclerViewAdapter(mViewModel.getSelectedRecipe(), mListener);
             recyclerView.setAdapter(mRecyclerViewAdapter);
-        }
+
         return view;
     }
 

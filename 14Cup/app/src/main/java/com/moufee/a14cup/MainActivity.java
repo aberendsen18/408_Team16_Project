@@ -41,10 +41,10 @@ import com.moufee.a14cup.ui.list.ListDetailFragment;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
-import com.moufee.a14cup.ui.settings.SettingsActivity;
 import com.moufee.a14cup.ui.recipes.RecipeFragment;
 import com.moufee.a14cup.ui.recipes.RecipeInfoFragment;
 import com.moufee.a14cup.ui.recipes.RecipeViewModel;
+import com.moufee.a14cup.ui.settings.SettingsActivity;
 import com.moufee.a14cup.validation.DataValidation;
 
 import java.util.ArrayList;

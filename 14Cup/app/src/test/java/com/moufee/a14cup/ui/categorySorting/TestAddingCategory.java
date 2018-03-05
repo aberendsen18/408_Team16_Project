@@ -4,11 +4,7 @@ import com.moufee.a14cup.categorySorts.CategorySortList;
 import com.moufee.a14cup.categorySorts.SortCategory;
 import com.moufee.a14cup.repository.CategoryRepository;
 
-import net.bytebuddy.TypeCache;
-
 import org.junit.Test;
-
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,10 +22,10 @@ public class TestAddingCategory {
 
         SortCategory categoryToAdd = new SortCategory("Added");
 
-        testRepo.addCategory(testList,categoryToAdd);
+        testRepo.addCategory(testList, categoryToAdd);
 
         String expectedResult = "Added";
-        String actualResult = testList.categories.get(testList.categories.size()-1).name;
+        String actualResult = testList.categories.get(testList.categories.size() - 1).name;
 
         assertEquals(expectedResult, actualResult);
     }

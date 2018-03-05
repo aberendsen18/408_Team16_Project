@@ -24,4 +24,5 @@
     <string name="pref_category_sorting">Category Sorting</string>
     <string name="action_add_category">Add Category</string>
     <string name="description_delete_icon">Delete Icon</string>
+    <string name="hint_category_name">Category Name</string>
 </resources>

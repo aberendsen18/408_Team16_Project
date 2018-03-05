@@ -1,5 +1,6 @@
 package com.moufee.a14cup.ui.categorySorting;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -7,6 +8,7 @@ import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
@@ -14,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,7 +27,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.moufee.a14cup.R;
-import com.moufee.a14cup.categorySorts.SortCategory;
+import com.moufee.a14cup.categorySorts.CategorySortOrder;
 import com.moufee.a14cup.repository.CategoryRepository;
 
 import java.util.ArrayList;
@@ -52,9 +53,9 @@ public class CategorySortFragment extends Fragment {
     @Inject
     ViewModelProvider.Factory mFactory;
 
-    private CategorySortListViewModel viewModel;
+    private CategorySortViewModel viewModel;
     private RecyclerView recyclerView;
-    private CategorySortRecyclerViewAdapter recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<SortCategory>());
+    private CategorySortRecyclerViewAdapter recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<String>());
     private static final String TAG = "CategorySortFragment";
 
     public CategorySortFragment() {
@@ -87,12 +88,15 @@ public class CategorySortFragment extends Fragment {
 
     private void setListeners() {
         // viewmodel
-        final ArrayList<SortCategory> categories = viewModel.getCategories();
-        if (categories != null) {
-            recyclerViewAdapter.setCategories(categories);
-        } else {
-            recyclerViewAdapter.setCategories(new ArrayList<SortCategory>());
-        }
+        viewModel.getCurrentSort().observe(this, new Observer<CategorySortOrder>() {
+            @Override
+            public void onChanged(@Nullable CategorySortOrder categorySortOrder) {
+                if (categorySortOrder != null && categorySortOrder.categoryOrder != null)
+                    recyclerViewAdapter.setCategories(categorySortOrder.categoryOrder);
+                else
+                    recyclerViewAdapter.setCategories(new ArrayList<String>());
+            }
+        });
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
 
@@ -106,18 +110,20 @@ public class CategorySortFragment extends Fragment {
                 int fromPos = viewHolder.getAdapterPosition();
                 int toPos = target.getAdapterPosition();
                 //todo: actually update database
-                SortCategory moved = categories.remove(fromPos);
-                categories.add(toPos, moved);
-                recyclerViewAdapter.setCategories(categories);
+                CategorySortOrder order = viewModel.getCurrentSort().getValue();
+                String moved = order.categoryOrder.remove(fromPos);
+                order.categoryOrder.add(toPos, moved);
+                cListRepository.updateSortOrder(order);
                 recyclerViewAdapter.notifyItemMoved(fromPos, toPos);
                 return true;
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                //todo: allow swipe to delete
                 int pos = viewHolder.getAdapterPosition();
-                categories.remove(pos);
+                CategorySortOrder selectedOrder = viewModel.getCurrentSort().getValue();
+                selectedOrder.categoryOrder.remove(pos);
+                cListRepository.updateSortOrder(selectedOrder);
                 recyclerViewAdapter.notifyItemRemoved(pos);
             }
 
@@ -145,6 +151,7 @@ public class CategorySortFragment extends Fragment {
             @Override
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
+                Log.d(TAG, "onChildDraw: dx" + dX + " dy " + dY);
                 // if we are dragging vertically
                 if (dX == 0 && dY != 0) {
                     // prevents default elevation change (?)
@@ -216,20 +223,24 @@ public class CategorySortFragment extends Fragment {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
                 builder.setTitle("Add Category");
+                final View myView = getLayoutInflater().inflate(R.layout.add_new_category, null);
 
-                final EditText input = new EditText(this.getContext());
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                builder.setView(input);
+
+                builder.setView(myView);
                 builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        EditText input = myView.findViewById(R.id.category_name);
                         String categoryName = input.getText().toString();
-                        SortCategory addedSort = new SortCategory(categoryName);
-                        String valid = validateCategoryName(addedSort);
+                        String valid = validateCategoryName(categoryName);
                         if (valid.equals("valid")) {
-                            cListRepository.addCategory(viewModel.CurrentSort, addedSort);
+                            CategorySortOrder selectedOrder = viewModel.getCurrentSort().getValue();
+                            selectedOrder.categoryOrder.add(categoryName);
+                            cListRepository.updateSortOrder(selectedOrder);
                             recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.getItemCount());
-                            //todo: Figure out why when adding a category after deleting one, it inserts the category with the swiping graphic instead of the text
+                            // temporary fix by resetting the adapter and forcing it to render everything again
+                            //todo: Find a better fix for the swiping graphic instead of text problem
+                            recyclerView.setAdapter(recyclerViewAdapter);
                         } else {
                             //print the error to the screen
                             Toast.makeText(getActivity(), valid,
@@ -255,7 +266,7 @@ public class CategorySortFragment extends Fragment {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
         if (context instanceof AppCompatActivity) {
-            viewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(CategorySortListViewModel.class);
+            viewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(CategorySortViewModel.class);
             setListeners();
         }
     }

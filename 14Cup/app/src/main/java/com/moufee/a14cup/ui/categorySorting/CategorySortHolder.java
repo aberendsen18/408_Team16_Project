@@ -2,7 +2,6 @@ package com.moufee.a14cup.ui.categorySorting;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.moufee.a14cup.categorySorts.SortCategory;
 import com.moufee.a14cup.databinding.FragmentCategorysortingSortBinding;
 
 /**
@@ -18,8 +17,8 @@ public class CategorySortHolder extends RecyclerView.ViewHolder{
         mBinding = binding;
     }
 
-    public void bind(SortCategory category) {
-        mBinding.setCategorySortListCategory(category);
+    public void bind(String categoryName) {
+        mBinding.setCategoryName(categoryName);
         mBinding.executePendingBindings();
     }
 

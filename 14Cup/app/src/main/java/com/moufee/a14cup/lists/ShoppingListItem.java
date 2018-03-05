@@ -12,6 +12,15 @@ public class ShoppingListItem {
     public ShoppingListItem() {
     }
 
+    public ShoppingListItem(String name) {
+        this.name = name;
+    }
+
+    public ShoppingListItem(String name, String category) {
+        this.name = name;
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return name;

@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.SingleFragmentActivity;
-import com.moufee.a14cup.categorySorts.CategorySortList;
-import com.moufee.a14cup.repository.CategoryRepository;
+import com.moufee.a14cup.categorySorts.CategorySortOrder;
 
 import javax.inject.Inject;
 
@@ -30,12 +28,9 @@ public class CategorySortActivity extends SingleFragmentActivity implements HasS
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidInjector;
 
     @Inject
-    CategoryRepository cListRepository;
-
-    @Inject
     ViewModelProvider.Factory mViewModelFactory;
 
-    private CategorySortListViewModel viewModel;
+    private CategorySortViewModel viewModel;
 
     public static Intent getIntent(Context packageContext) {
         return new Intent(packageContext, CategorySortActivity.class);
@@ -44,7 +39,7 @@ public class CategorySortActivity extends SingleFragmentActivity implements HasS
     @Override
     protected Fragment createFragment() {
 
-        viewModel = ViewModelProviders.of(this, mViewModelFactory).get(CategorySortListViewModel.class);
+        viewModel = ViewModelProviders.of(this, mViewModelFactory).get(CategorySortViewModel.class);
 
         return CategorySortListFragment.newInstance();
     }
@@ -56,8 +51,8 @@ public class CategorySortActivity extends SingleFragmentActivity implements HasS
     }
 
     @Override
-    public void onSelectSortList(CategorySortList list) {
-        viewModel.CurrentSort = list;
+    public void onSelectSortList(CategorySortOrder order) {
+        viewModel.setCurrentSort(order);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.single_fragment_container, CategorySortFragment.newInstance())

@@ -1,11 +1,24 @@
 package com.moufee.a14cup.repository;
 
+import android.arch.core.util.Function;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.moufee.a14cup.categorySorts.CategorySortList;
-import com.moufee.a14cup.categorySorts.SortCategory;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.moufee.a14cup.categorySorts.CategorySortOrder;
+import com.moufee.a14cup.util.FirestoreQueryLiveData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,54 +30,62 @@ import javax.inject.Singleton;
 @Singleton
 public class CategoryRepository {
 
-    private final ArrayList<CategorySortList> categoryListCollection;
+    private final CollectionReference categorySortCollection;
+
 
     @Inject
-    public CategoryRepository() {
-        this.categoryListCollection = initMockSorts();
-    }
+    public CategoryRepository(FirebaseFirestore firebaseFirestore) {
+        this.categorySortCollection = firebaseFirestore.collection("sortOrders");
+        categorySortCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                Log.d("SADF", "onComplete: ");
 
-    public ArrayList<CategorySortList> getCategorySortList(){
-        return categoryListCollection;
-    }
-
-    public ArrayList<SortCategory> getCategoryList(CategorySortList list) { return list.categories; }
-
-    public void deleteCategory(CategorySortList list, SortCategory sort){
-        // Convoluted transfer from string to int since when actually stored in firebase, the id's will be strings.
-        // But my mocked implementation will need integers for ArrayList
-        CategorySortList listToRemoveCategoryFrom =  categoryListCollection.get(Integer.parseInt(list.id));
-        listToRemoveCategoryFrom.categories.remove(Integer.parseInt(sort.id));
-    }
-
-    public void addCategory(CategorySortList list, SortCategory sort){
-        CategorySortList listToAddTo = categoryListCollection.get(Integer.parseInt(list.id));
-        listToAddTo.categories.add(sort);
-    }
-
-    public void printCategoriesFromList(CategorySortList list){
-        for(int i = 0; i < list.categories.size(); i++){
-            Log.d("Test", "Category: " + list.categories.get(i));
-        }
-    }
-
-    public ArrayList<CategorySortList> initMockSorts(){
-        ArrayList<CategorySortList> toReturn = new ArrayList<>();
-
-        for(int i = 0; i<5; i++){
-            ArrayList<SortCategory> categories = new ArrayList<>();
-            for(int j = 0; j < 5; j++){
-                int r = (int)(Math.random()*10);
-                SortCategory tempC = new SortCategory("Category"+r, j);
-                tempC.id = Integer.toString(j);
-                categories.add(tempC);
             }
-            CategorySortList temp = new CategorySortList("Sort "+i, categories);
-            temp.id = Integer.toString(i);
-            toReturn.add(temp);
-        }
-
-        return toReturn;
+        });
     }
+
+
+    public LiveData<List<CategorySortOrder>> getSortOrders(String userID) {
+        return Transformations.map(new FirestoreQueryLiveData(categorySortCollection), new Function<QuerySnapshot, List<CategorySortOrder>>() {
+            @Override
+            public List<CategorySortOrder> apply(QuerySnapshot input) {
+                List<CategorySortOrder> result = new ArrayList<>();
+                if (input != null)
+                    for (DocumentSnapshot doc : input) {
+                        if (doc.get("name") != null) {
+                            Log.d("SAF", "apply: " + doc.toString() + doc.get("name"));
+                            CategorySortOrder order = doc.toObject(CategorySortOrder.class);
+                            order.id = doc.getId();
+                            result.add(order);
+                        }
+                    }
+                return result;
+            }
+        });
+    }
+
+    public LiveData<Map<String, CategorySortOrder>> getSortOrdersMap(String userID) {
+        return Transformations.map(new FirestoreQueryLiveData(categorySortCollection), new Function<QuerySnapshot, Map<String, CategorySortOrder>>() {
+            @Override
+            public Map<String, CategorySortOrder> apply(QuerySnapshot input) {
+                Map<String, CategorySortOrder> result = new HashMap<>();
+                for (DocumentSnapshot doc : input) {
+                    if (doc.get("name") != null) {
+                        Log.d("SAF", "apply2: " + doc.toString() + doc.get("name"));
+                        CategorySortOrder order = doc.toObject(CategorySortOrder.class);
+                        order.id = doc.getId();
+                        result.put(doc.getId(), order);
+                    }
+                }
+                return result;
+            }
+        });
+    }
+
+    public void updateSortOrder(CategorySortOrder sortOrder) {
+        categorySortCollection.document(sortOrder.id).set(sortOrder);
+    }
+
 
 }

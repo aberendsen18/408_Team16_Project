@@ -1,10 +1,13 @@
 package com.moufee.a14cup.ui.categorySorting;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,10 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.moufee.a14cup.R;
-import com.moufee.a14cup.categorySorts.CategorySortList;
+import com.moufee.a14cup.categorySorts.CategorySortOrder;
 import com.moufee.a14cup.repository.CategoryRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -27,7 +31,7 @@ import dagger.android.support.AndroidSupportInjection;
  * The use can then select a sort order to edit it
  */
 
-public class CategorySortListFragment extends Fragment{
+public class CategorySortListFragment extends Fragment {
 
     @Inject
     CategoryRepository cListRepository;
@@ -36,21 +40,23 @@ public class CategorySortListFragment extends Fragment{
     ViewModelProvider.Factory mFactory;
 
     private OnCategorySortListInteractionListener mListener;
-    private CategorySortListViewModel viewModel;
+    private CategorySortViewModel mViewModel;
     private RecyclerView recyclerView;
     private CategorySortListRecyclerViewAdapter recyclerViewAdapter;
 
-    public CategorySortListFragment(){
+    public CategorySortListFragment() {
     }
 
-    public static CategorySortListFragment newInstance() { return new CategorySortListFragment(); }
+    public static CategorySortListFragment newInstance() {
+        return new CategorySortListFragment();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        viewModel = ViewModelProviders.of(this, mFactory).get(CategorySortListViewModel.class);
-        recyclerViewAdapter = new CategorySortListRecyclerViewAdapter(new ArrayList<CategorySortList>(), mListener);
+        mViewModel = ViewModelProviders.of(getActivity(), mFactory).get(CategorySortViewModel.class);
+        recyclerViewAdapter = new CategorySortListRecyclerViewAdapter(new ArrayList<CategorySortOrder>(), mListener);
     }
 
     @Override
@@ -65,20 +71,20 @@ public class CategorySortListFragment extends Fragment{
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(recyclerViewAdapter);
         }
-        setListeners();
         return view;
     }
 
     private void setListeners() {
         // viewmodel
-        ArrayList<CategorySortList> sortList = viewModel.getSorts();
-
-        if(sortList != null){
-            viewModel.CurrentSort = sortList.get(0);
-            recyclerViewAdapter.setSortList(sortList);
-        }else{
-            recyclerViewAdapter.setSortList(new ArrayList<CategorySortList>());
-        }
+        mViewModel.getSortOrders().observe(this, new Observer<List<CategorySortOrder>>() {
+            @Override
+            public void onChanged(@Nullable List<CategorySortOrder> categorySortOrders) {
+                if (categorySortOrders != null)
+                    recyclerViewAdapter.setSortList(categorySortOrders);
+                else
+                    recyclerViewAdapter.setSortList(new ArrayList<CategorySortOrder>());
+            }
+        });
     }
 
 
@@ -86,10 +92,10 @@ public class CategorySortListFragment extends Fragment{
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
-        /*if (context instanceof AppCompatActivity) {
-            viewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(CategorySortListViewModel.class);
+        if (context instanceof AppCompatActivity) {
+            mViewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(CategorySortViewModel.class);
             setListeners();
-        }*/
+        }
         if (context instanceof OnCategorySortListInteractionListener) {
             mListener = (OnCategorySortListInteractionListener) context;
         } else {
@@ -115,7 +121,7 @@ public class CategorySortListFragment extends Fragment{
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnCategorySortListInteractionListener {
-        void onSelectSortList(CategorySortList list);
+        void onSelectSortList(CategorySortOrder order);
     }
 
 }

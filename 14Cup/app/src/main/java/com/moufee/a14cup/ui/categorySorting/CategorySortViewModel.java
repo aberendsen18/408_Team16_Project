@@ -1,11 +1,18 @@
 package com.moufee.a14cup.ui.categorySorting;
 
+import android.arch.core.util.Function;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 
-import com.moufee.a14cup.categorySorts.CategorySortList;
-import com.moufee.a14cup.categorySorts.SortCategory;
+import com.google.firebase.auth.FirebaseUser;
+import com.moufee.a14cup.categorySorts.CategorySortOrder;
+import com.moufee.a14cup.repository.CategoryRepository;
+import com.moufee.a14cup.repository.UserRepository;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -15,30 +22,43 @@ import javax.inject.Inject;
 
 public class CategorySortViewModel extends ViewModel {
 
-    private ArrayList<SortCategory> listOfCategories;
-    public CategorySortList CurrentSort;
+    private LiveData<List<CategorySortOrder>> mSortOrders;
+    private LiveData<Map<String, CategorySortOrder>> mSortOrdersMap;
+    private MutableLiveData<CategorySortOrder> mCurrentSort;
+    private MutableLiveData<String> mCurrentSortID = new MutableLiveData<>();
+    private CategoryRepository mCategoryRepository;
+    private UserRepository mUserRepository;
 
 
     @Inject
-    public CategorySortViewModel(){
-        listOfCategories = mockCategories();
-        CurrentSort = null;
+    public CategorySortViewModel(final CategoryRepository categoryRepository, UserRepository userRepository) {
+        this.mUserRepository = userRepository;
+        this.mCategoryRepository = categoryRepository;
+        mSortOrders = Transformations.switchMap(mUserRepository.getCurrentUser(), new Function<FirebaseUser, LiveData<List<CategorySortOrder>>>() {
+            @Override
+            public LiveData<List<CategorySortOrder>> apply(FirebaseUser input) {
+                return mCategoryRepository.getSortOrders(input.getUid());
+            }
+        });
+        mSortOrdersMap = Transformations.switchMap(mUserRepository.getCurrentUser(), new Function<FirebaseUser, LiveData<Map<String, CategorySortOrder>>>() {
+            @Override
+            public LiveData<Map<String, CategorySortOrder>> apply(FirebaseUser input) {
+                return mCategoryRepository.getSortOrdersMap(input.getUid());
+            }
+        });
+        mCurrentSort = new MutableLiveData<>();
     }
 
-    public void setListOfCategories (ArrayList<SortCategory> c) {listOfCategories = c;}
 
-    public ArrayList<SortCategory> getCategories() { return listOfCategories;}
-
-    public ArrayList<SortCategory> mockCategories(){
-        ArrayList<SortCategory> mock = new ArrayList<>();
-
-        for(int j = 0; j < 5; j++){
-            SortCategory tempC = new SortCategory("Category"+j, j);
-            mock.add(tempC);
-        }
-
-        return  mock;
+    public LiveData<List<CategorySortOrder>> getSortOrders() {
+        return mSortOrders;
     }
 
+    public LiveData<CategorySortOrder> getCurrentSort() {
+        return mCurrentSort;
+    }
 
+    public void setCurrentSort(CategorySortOrder order) {
+        mCurrentSort.setValue(order);
+    }
 }

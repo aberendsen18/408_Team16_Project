@@ -4,26 +4,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.moufee.a14cup.categorySorts.SortCategory;
 import com.moufee.a14cup.databinding.FragmentCategorysortingSortBinding;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Travis Kovacic on 2/16/2018.
  */
 
 public class CategorySortRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ArrayList<SortCategory> categories;
-    private final CategorySortFragment.OnListFragmentInteractionListener mListener;
+    private List<String> categories;
 
-    public CategorySortRecyclerViewAdapter(ArrayList<SortCategory> categories, CategorySortFragment.OnListFragmentInteractionListener listener) {
+    public CategorySortRecyclerViewAdapter(List<String> categories) {
         this.categories = categories;
-        mListener = listener;
     }
 
-    public void setCategories(ArrayList<SortCategory> categories) {
+    public void setCategories(List<String> categories) {
         this.categories = categories;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -35,7 +33,7 @@ public class CategorySortRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        ((CategorySortHolder) holder).bind(categories.get(position), mListener);
+        ((CategorySortHolder) holder).bind(categories.get(position));
     }
 
     @Override

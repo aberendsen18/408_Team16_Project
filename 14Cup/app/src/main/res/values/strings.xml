@@ -19,4 +19,10 @@
     <string name="action_new_list">New List</string>
     <string name="list_name_hint">List Name</string>
     <string name="action_new_list_positive">Create New List</string>
+    <string name="pref_manage_category_sort">Manage Category Sort Orders</string>
+    <string name="pref_manage_category_sort_key">manage_category_sort</string>
+    <string name="pref_category_sorting">Category Sorting</string>
+    <string name="action_add_category">Add Category</string>
+    <string name="description_delete_icon">Delete Icon</string>
+    <string name="hint_category_name">Category Name</string>
 </resources>

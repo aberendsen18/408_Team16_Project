@@ -13,6 +13,15 @@ public class ShoppingListItem {
     public ShoppingListItem() {
     }
 
+    public ShoppingListItem(String name) {
+        this.name = name;
+    }
+
+    public ShoppingListItem(String name, String category) {
+        this.name = name;
+        this.category = category;
+    }
+
     public void toggleCompletion() {
         this.completed = !this.completed;
     }

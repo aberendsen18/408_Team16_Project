@@ -30,4 +30,15 @@ public abstract class DataValidation {
 
         return "valid";
     }
+
+    //private method that validates a shopping list item
+    public static String validateCategoryName(String category) {
+        if (category == null || category.length() == 0 || category.isEmpty()) {
+            return "Please enter an category name!";
+        } else if (category.length() > 256) {
+            return "The category that you entered is too long!";
+        }
+
+        return "valid";
+    }
 }

@@ -5,12 +5,12 @@
 
     <data>
         <variable
-            name="categorySortTitle"
-            type="com.moufee.a14cup.categorySorts.CategorySortList"/>
+            name="categorySortOrder"
+            type="com.moufee.a14cup.categorySorts.CategorySortOrder" />
 
         <variable
             name="listener"
-            type="com.moufee.a14cup.ui.categorySorting.CategorySortListFragment.OnListFragmentInteractionListener"/>
+            type="com.moufee.a14cup.ui.categorySorting.CategorySortListFragment.OnCategorySortListInteractionListener" />
 
     </data>
 
@@ -22,7 +22,7 @@
         android:clickable="true"
         android:orientation="horizontal"
         android:focusable="true"
-        android:onClick="@{() -> listener.onSortTitleFragmentInteraction(categorySortTitle)}"
+        android:onClick="@{() -> listener.onSelectSortList(categorySortOrder)}"
         >
 
         <TextView
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:text="@{categorySortTitle.name}"
+            android:text="@{categorySortOrder.name}"
             android:textAppearance="@style/TextAppearance.AppCompat.Menu"
             android:textSize="18sp"
             tools:text="Sort Title"/>

@@ -28,7 +28,7 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
     private final OnListFragmentInteractionListener mListener;
 
     public MyRecipeInfoRecyclerViewAdapter(Recipe recipe, OnListFragmentInteractionListener listener) {
-     
+
         mRecipe = recipe;
         mListener = listener;
     }

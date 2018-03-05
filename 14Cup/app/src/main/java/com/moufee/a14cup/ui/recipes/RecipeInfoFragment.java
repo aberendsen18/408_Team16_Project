@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.recipes.Recipe;
@@ -38,6 +39,7 @@ public class RecipeInfoFragment extends Fragment {
     private MyRecipeInfoRecyclerViewAdapter mRecyclerViewAdapter;
     private RecipeViewModel mViewModel;
     private OnListFragmentInteractionListener mListener;
+    private TextView mRecipeTitle;
 
     @Inject
     ViewModelProvider.Factory mFactory;
@@ -68,6 +70,8 @@ public class RecipeInfoFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+
+
     }
 
     @Override
@@ -75,7 +79,9 @@ public class RecipeInfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_info_list, container, false);
 
-        // Set the adapter
+        mRecipeTitle = (TextView) view.findViewById(R.id.textViewRecipeName);
+
+                // Set the adapter
             Context context = view.getContext();
         RecyclerView recyclerView = view.findViewById(R.id.ingredientsListRecyclerView);
             if (mColumnCount <= 1) {
@@ -113,6 +119,7 @@ public class RecipeInfoFragment extends Fragment {
             public void onChanged(@Nullable Recipe recipe) {
                 if (recipe != null) {
                     mRecyclerViewAdapter.setRecipe(recipe);
+                    mRecipeTitle.setText(recipe.label);
                 }
             }
         });

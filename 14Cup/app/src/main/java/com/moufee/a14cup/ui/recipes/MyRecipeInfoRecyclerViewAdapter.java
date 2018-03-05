@@ -28,12 +28,8 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
     private final OnListFragmentInteractionListener mListener;
 
     public MyRecipeInfoRecyclerViewAdapter(Recipe recipe, OnListFragmentInteractionListener listener) {
-        ArrayList<String> ing_tortilla_soup = new ArrayList<String>(Arrays.asList("2 14- to 19-ounce cans chicken noodle soup",
-                "1 cup frozen corn kernels",
-                "1 teaspoon hot sauce",
-                "2 cups tortilla chips",
-                "1 avocado, cut into pieces"));
-        mRecipe = new Recipe("Tortilla Soup", "x", ing_tortilla_soup);
+     
+        mRecipe = recipe;
         mListener = listener;
     }
 
@@ -69,7 +65,7 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
     }
 
     public void setRecipe(Recipe recipe){
-        //mRecipe = recipe;
+        mRecipe = recipe;
         notifyDataSetChanged();
     }
 

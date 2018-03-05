@@ -30,10 +30,30 @@ public class Recipe {
     public Recipe(String label, String url, List<String> ingredientLines){
         this.label = label;
         this.ingredientLines = ingredientLines;
+
+        for(String ing : ingredientLines){
+            this.ingredients.add(new Ingredient(ing));
+        }
+    }
+
+    public List<Ingredient> getIngredients(){
+        return this.ingredients;
+    }
+
+    public String getIngredientText(int pos){
+        return this.ingredients.get(pos).getText();
     }
 }
 
-class Ingredient{
+/*class Ingredient{
 
     public String text;
-}
+
+    public Ingredient(String name){
+        this.text = name;
+    }
+
+    public String getText(){
+        return this.text;
+    }
+}*/

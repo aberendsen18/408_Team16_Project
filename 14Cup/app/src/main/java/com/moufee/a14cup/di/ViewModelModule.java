@@ -3,9 +3,9 @@ package com.moufee.a14cup.di;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
-import com.moufee.a14cup.ui.categorySorting.CategorySortListViewModel;
 import com.moufee.a14cup.ui.categorySorting.CategorySortViewModel;
 import com.moufee.a14cup.ui.list.ListViewModel;
+import com.moufee.a14cup.ui.recipes.RecipeViewModel;
 
 import dagger.Binds;
 import dagger.Module;
@@ -24,8 +24,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(CategorySortListViewModel.class)
-    abstract ViewModel bindSortListViewModel(CategorySortListViewModel categorySortListViewModel);
+    @ViewModelKey(RecipeViewModel.class)
+    abstract ViewModel bindRecipeViewModel(RecipeViewModel recipeViewModel);
 
     @Binds
     @IntoMap

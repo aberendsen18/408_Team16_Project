@@ -2,7 +2,7 @@ package com.moufee.a14cup.ui.categorySorting;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.moufee.a14cup.categorySorts.CategorySortList;
+import com.moufee.a14cup.categorySorts.CategorySortOrder;
 import com.moufee.a14cup.databinding.FragmentCategorysortingTitleBinding;
 
 /**
@@ -18,8 +18,8 @@ public class CategoryTitleHolder extends RecyclerView.ViewHolder{
         mBinding = binding;
     }
 
-    public void bind(CategorySortList list, CategorySortListFragment.OnListFragmentInteractionListener listener) {
-        mBinding.setCategorySortTitle(list);
+    public void bind(CategorySortOrder order, CategorySortListFragment.OnCategorySortListInteractionListener listener) {
+        mBinding.setCategorySortOrder(order);
         mBinding.setListener(listener);
         mBinding.executePendingBindings();
     }

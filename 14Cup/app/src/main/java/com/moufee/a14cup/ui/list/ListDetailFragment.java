@@ -4,12 +4,9 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,8 +29,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
-
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 /**
  * A fragment representing a list of Items.
@@ -115,33 +110,19 @@ public class ListDetailFragment extends Fragment {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                if (swipeDir == ItemTouchHelper.RIGHT || swipeDir == ItemTouchHelper.LEFT) {
-                    //int itemID = viewHolder.getItemId();
-                    String itemID = mRecyclerViewAdapter.getItems().get(viewHolder.getAdapterPosition()).id;
+                if (swipeDir == ItemTouchHelper.RIGHT) {
+                    int index = viewHolder.getAdapterPosition();
                     String listID = mViewModel.getSelectedListID().getValue();
-                    mListRepository.deleteItem(listID , itemID);
+                    ShoppingListItem item = mViewModel.getCurrentListItems().getValue().get(index);
+                    item.toggleCompletion();
+                    mListRepository.updateItem(listID, item);
+//                    mRecyclerViewAdapter.notifyItemChanged(index);
+                } else if (swipeDir == ItemTouchHelper.LEFT) {
+                    int index = viewHolder.getAdapterPosition();
+                    String listID = mViewModel.getSelectedListID().getValue();
+                    ShoppingListItem item = mViewModel.getCurrentListItems().getValue().get(index);
+                    mListRepository.deleteItem(listID, item.id);
                 }
-                //TODO ALTERNATIVE COLOR CHECK OFF HAS ISSUES
-                /*else if (swipeDir == ItemTouchHelper.LEFT) {
-                    mRecyclerViewAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-                    ColorDrawable bc = (ColorDrawable) viewHolder.itemView.getBackground();
-                    if (bc == null) {
-                        //viewHolder.itemView.setBackgroundColor(Color.GREEN);
-
-                        viewHolder.itemView.setBackgroundColor(Color.GREEN);
-                        //(viewHolder.getOldPosition()).setBackgroundColor(Color.GREEN);
-                        //viewHolder.itemView.setSelected(true);
-                    }
-                    else {
-                        if (bc.getColor() == Color.GREEN) {
-                            viewHolder.itemView.setBackgroundResource(0);
-                        }
-                        else {
-                            viewHolder.itemView.setBackgroundColor(Color.GREEN);
-                        }
-                    }
-                    mRecyclerViewAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-                }*/
             }
         };
 

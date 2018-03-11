@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,8 +28,6 @@ import android.widget.Toast;
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.categorySorts.CategorySortOrder;
 import com.moufee.a14cup.repository.CategoryRepository;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -48,7 +45,7 @@ import static com.moufee.a14cup.validation.DataValidation.validateCategoryName;
 public class CategorySortFragment extends Fragment {
 
     @Inject
-    CategoryRepository cListRepository;
+    CategoryRepository mCategoryRepository;
 
     @Inject
     ViewModelProvider.Factory mFactory;
@@ -111,7 +108,7 @@ public class CategorySortFragment extends Fragment {
                 CategorySortOrder order = viewModel.getCurrentSort().getValue();
                 String moved = order.categoryOrder.remove(fromPos);
                 order.categoryOrder.add(toPos, moved);
-                cListRepository.updateSortOrder(order);
+                mCategoryRepository.updateSortOrder(order);
                 recyclerViewAdapter.notifyItemMoved(fromPos, toPos);
                 return true;
             }
@@ -121,7 +118,7 @@ public class CategorySortFragment extends Fragment {
                 int pos = viewHolder.getAdapterPosition();
                 CategorySortOrder selectedOrder = viewModel.getCurrentSort().getValue();
                 selectedOrder.categoryOrder.remove(pos);
-                cListRepository.updateSortOrder(selectedOrder);
+                mCategoryRepository.updateSortOrder(selectedOrder);
                 recyclerViewAdapter.notifyItemRemoved(pos);
             }
 
@@ -149,7 +146,6 @@ public class CategorySortFragment extends Fragment {
             @Override
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
-                Log.d(TAG, "onChildDraw: dx" + dX + " dy " + dY);
                 // if we are dragging vertically
                 if (dX == 0 && dY != 0) {
                     // prevents default elevation change (?)
@@ -165,7 +161,6 @@ public class CategorySortFragment extends Fragment {
             @Override
             public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerView, viewHolder);
-                Log.d(TAG, "clearView: onClear");
                 updateElevation(viewHolder, false);
             }
 
@@ -232,7 +227,7 @@ public class CategorySortFragment extends Fragment {
                         if (valid.equals("valid")) {
                             CategorySortOrder selectedOrder = viewModel.getCurrentSort().getValue();
                             selectedOrder.categoryOrder.add(categoryName);
-                            cListRepository.updateSortOrder(selectedOrder);
+                            mCategoryRepository.updateSortOrder(selectedOrder);
                             // temporary fix by resetting the adapter and forcing it to render everything again
                             //todo: Find a better fix for the swiping graphic instead of text problem
                             recyclerView.setAdapter(recyclerViewAdapter);

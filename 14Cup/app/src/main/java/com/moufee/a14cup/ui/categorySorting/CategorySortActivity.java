@@ -27,6 +27,8 @@ import dagger.android.support.HasSupportFragmentInjector;
 
 public class CategorySortActivity extends SingleFragmentActivity implements HasSupportFragmentInjector, CategorySortListFragment.OnCategorySortListInteractionListener {
 
+    private static final String TAG = "CategorySortActivity";
+
     @Inject
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidInjector;
 

@@ -44,6 +44,7 @@ import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
 import com.moufee.a14cup.ui.recipes.RecipeFragment;
 import com.moufee.a14cup.ui.recipes.RecipeInfoFragment;
 import com.moufee.a14cup.ui.recipes.RecipeViewModel;
+import com.moufee.a14cup.ui.settings.ListSettingsActivity;
 import com.moufee.a14cup.ui.settings.SettingsActivity;
 import com.moufee.a14cup.validation.DataValidation;
 
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     private ActivityMainBinding mBinding;
 
     @Override
-    public void onRecipeFragmentInteraction(Recipe item){
+    public void onRecipeFragmentInteraction(Recipe item) {
         RecipeInfoFragment fragment = RecipeInfoFragment.newInstance(1);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, fragment)
@@ -303,6 +304,9 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 return true;
             case R.id.action_settings:
                 startActivity(SettingsActivity.getIntent(getApplicationContext()));
+                return true;
+            case R.id.action_list_settings:
+                startActivity(ListSettingsActivity.getIntent(getApplicationContext()));
                 return true;
         }
 

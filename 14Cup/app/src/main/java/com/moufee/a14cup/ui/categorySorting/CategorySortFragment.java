@@ -55,7 +55,7 @@ public class CategorySortFragment extends Fragment {
 
     private CategorySortViewModel viewModel;
     private RecyclerView recyclerView;
-    private CategorySortRecyclerViewAdapter recyclerViewAdapter = new CategorySortRecyclerViewAdapter(new ArrayList<String>());
+    private CategorySortRecyclerViewAdapter recyclerViewAdapter = new CategorySortRecyclerViewAdapter();
     private static final String TAG = "CategorySortFragment";
 
     public CategorySortFragment() {
@@ -91,10 +91,8 @@ public class CategorySortFragment extends Fragment {
         viewModel.getCurrentSort().observe(this, new Observer<CategorySortOrder>() {
             @Override
             public void onChanged(@Nullable CategorySortOrder categorySortOrder) {
-                if (categorySortOrder != null && categorySortOrder.categoryOrder != null)
-                    recyclerViewAdapter.setCategories(categorySortOrder.categoryOrder);
-                else
-                    recyclerViewAdapter.setCategories(new ArrayList<String>());
+                if (categorySortOrder != null)
+                    recyclerViewAdapter.submitList(categorySortOrder.categoryOrder);
             }
         });
 
@@ -219,8 +217,6 @@ public class CategorySortFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_category:
-                //todo: handle creating a category
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
                 builder.setTitle("Add Category");
                 final View myView = getLayoutInflater().inflate(R.layout.add_new_category, null);
@@ -237,7 +233,6 @@ public class CategorySortFragment extends Fragment {
                             CategorySortOrder selectedOrder = viewModel.getCurrentSort().getValue();
                             selectedOrder.categoryOrder.add(categoryName);
                             cListRepository.updateSortOrder(selectedOrder);
-                            recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.getItemCount());
                             // temporary fix by resetting the adapter and forcing it to render everything again
                             //todo: Find a better fix for the swiping graphic instead of text problem
                             recyclerView.setAdapter(recyclerViewAdapter);

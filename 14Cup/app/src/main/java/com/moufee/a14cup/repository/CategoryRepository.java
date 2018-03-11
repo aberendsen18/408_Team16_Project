@@ -13,6 +13,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moufee.a14cup.categorySorts.CategorySortOrder;
+import com.moufee.a14cup.ui.categorySorting.CategorySortFragment;
+import com.moufee.a14cup.util.FirestoreDocumentLiveData;
 import com.moufee.a14cup.util.FirestoreQueryLiveData;
 
 import java.util.ArrayList;
@@ -83,8 +85,25 @@ public class CategoryRepository {
         });
     }
 
+    public LiveData<CategorySortOrder> getSortOrder(String sortOrderID) {
+        return Transformations.map(new FirestoreDocumentLiveData(categorySortCollection.document(sortOrderID)), new Function<DocumentSnapshot, CategorySortOrder>() {
+            @Override
+            public CategorySortOrder apply(DocumentSnapshot input) {
+                return input.toObject(CategorySortOrder.class);
+            }
+        });
+    }
+
     public void updateSortOrder(CategorySortOrder sortOrder) {
         categorySortCollection.document(sortOrder.id).set(sortOrder);
+    }
+
+    public void addSortOrder(CategorySortOrder sortOrder) {
+        categorySortCollection.add(sortOrder);
+    }
+
+    public void deleteSortOrder(CategorySortOrder sortOrder) {
+        categorySortCollection.document(sortOrder.id).delete();
     }
 
 

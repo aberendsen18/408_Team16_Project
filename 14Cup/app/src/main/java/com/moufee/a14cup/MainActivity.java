@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -34,11 +35,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.ui.list.ListDetailFragment;
 import com.moufee.a14cup.ui.list.ListViewModel;
 import com.moufee.a14cup.ui.list.MyListsFragment;
 import com.moufee.a14cup.ui.list.MyListsRecyclerViewAdapter;
+import com.moufee.a14cup.ui.recipes.RecipeFragment;
+import com.moufee.a14cup.ui.recipes.RecipeInfoFragment;
+import com.moufee.a14cup.ui.recipes.RecipeViewModel;
 import com.moufee.a14cup.ui.settings.SettingsActivity;
 import com.moufee.a14cup.validation.DataValidation;
 
@@ -53,7 +58,9 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
 
-public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector, MyListsFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector,
+        MyListsFragment.OnListFragmentInteractionListener,
+        RecipeFragment.OnRecipeFragmentInteractionListener {
 
     @Inject
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidInjector;
@@ -63,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     ShoppingListRepository mListRepository;
 
     private ListViewModel mViewModel;
+    private RecipeViewModel rViewModel;
     private static final String TAG = "MAIN_ACTIVITY";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -72,6 +80,19 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     private Toolbar mToolbar;
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
     private ActivityMainBinding mBinding;
+
+    @Override
+    public void onRecipeFragmentInteraction(Recipe item){
+        RecipeInfoFragment fragment = RecipeInfoFragment.newInstance(1);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+        //mDrawerLayout.closeDrawer(GravityCompat.START);
+        mToolbar.setTitle("Add A Recipe"); // write a get recipe label method.
+
+        rViewModel.setSelectedRecipe(item);
+    }
 
     @Override
     public void onListFragmentInteraction(ShoppingList list) {
@@ -105,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel = ViewModelProviders.of(this, viewModelFactory).get(ListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
 
+        rViewModel = ViewModelProviders.of(this, viewModelFactory).get(RecipeViewModel.class);
         mBinding.newListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -161,6 +183,19 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             mRecyclerView.setAdapter(recyclerViewAdapter);
         }
+
+        // Set the recipes link in nav bar to open the recipies fragment
+        LinearLayout recipeButton = findViewById(R.id.recipeButton);
+        recipeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RecipeFragment fragment = RecipeFragment.newInstance(1);
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                mToolbar.setTitle("Search For Recipes");
+            }
+        });
+
 
         setListeners();
 

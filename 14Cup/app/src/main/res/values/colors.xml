@@ -6,4 +6,5 @@
     <color name="colorTextPrimary">#000000</color>
     <color name="colorTextSecondary">#ffffff</color>
     <color name="colorDeleteBackground">#f44336</color>
+    <color name="colorBackground">#fafafa</color>
 </resources>

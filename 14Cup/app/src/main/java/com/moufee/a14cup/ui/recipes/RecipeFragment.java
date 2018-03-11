@@ -1,9 +1,13 @@
 package com.moufee.a14cup.ui.recipes;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +16,11 @@ import android.view.ViewGroup;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.recipes.Recipe;
-import com.moufee.a14cup.ui.recipes.dummy.DummyRecipes;
+import com.moufee.a14cup.recipes.RecipesList;
+
+import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 
@@ -24,11 +32,14 @@ import dagger.android.support.AndroidSupportInjection;
  */
 public class RecipeFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
     private OnRecipeFragmentInteractionListener mListener;
+
+    @Inject
+    RecipeViewModel mRecipeViewModel;
+    @Inject
+    ViewModelProvider.Factory mFactory;
+    private RecyclerView mRecyclerView;
+    private MyRecipeRecyclerViewAdapter mAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -40,20 +51,12 @@ public class RecipeFragment extends Fragment {
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static RecipeFragment newInstance(int columnCount) {
-        RecipeFragment fragment = new RecipeFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
+        return new RecipeFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -64,13 +67,12 @@ public class RecipeFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyRecipeRecyclerViewAdapter(DummyRecipes.ITEMS, mListener));
+            mRecyclerView = (RecyclerView) view;
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+            mAdapter = new MyRecipeRecyclerViewAdapter(new ArrayList<RecipesList.Hit>(), mListener);
+            mRecyclerView.setAdapter(mAdapter);
+            setListeners();
+            mRecipeViewModel.setQuery("apple");
         }
         return view;
     }
@@ -78,15 +80,28 @@ public class RecipeFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        //AndroidSupportInjection.inject(this);
+        AndroidSupportInjection.inject(this);
         super.onAttach(context);
         if (context instanceof OnRecipeFragmentInteractionListener) {
             mListener = (OnRecipeFragmentInteractionListener) context;
         }
+        mRecipeViewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(RecipeViewModel.class);
+
         /*else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }*/
+    }
+
+
+    private void setListeners() {
+        mRecipeViewModel.getRecipesList().observe(this, new Observer<RecipesList>() {
+            @Override
+            public void onChanged(@Nullable RecipesList recipesList) {
+                if (recipesList != null && recipesList.getHits() != null)
+                    mAdapter.setValues(recipesList.getHits());
+            }
+        });
     }
 
     @Override

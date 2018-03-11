@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.recipes.Recipe;
+import com.moufee.a14cup.recipes.RecipesList;
 import com.moufee.a14cup.ui.recipes.RecipeFragment.OnRecipeFragmentInteractionListener;
 import com.moufee.a14cup.ui.recipes.dummy.DummyContent.DummyItem;
 
@@ -20,10 +21,10 @@ import java.util.List;
  */
 public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Recipe> mValues;
+    private List<RecipesList.Hit> mValues;
     private final OnRecipeFragmentInteractionListener mListener;
 
-    public MyRecipeRecyclerViewAdapter(List<Recipe> items, OnRecipeFragmentInteractionListener listener) {
+    public MyRecipeRecyclerViewAdapter(List<RecipesList.Hit> items, OnRecipeFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -35,11 +36,16 @@ public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRe
         return new ViewHolder(view);
     }
 
+    public void setValues(List<RecipesList.Hit> values) {
+        mValues = values;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
+        holder.mItem = mValues.get(position).getRecipe();
         holder.mIdView.setText(Integer.toString(position+1));
-        holder.mContentView.setText(mValues.get(position).label);
+        holder.mContentView.setText(mValues.get(position).getRecipe().label);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

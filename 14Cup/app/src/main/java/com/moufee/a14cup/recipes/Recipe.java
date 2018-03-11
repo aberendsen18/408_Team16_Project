@@ -45,7 +45,14 @@ public class Recipe {
     public String getIngredientText(int pos){
         return this.ingredients.get(pos).getText();
     }
+
+    @Override
+    public String toString() {
+        return label;
+    }
 }
+
+
 
 /*class Ingredient{
 

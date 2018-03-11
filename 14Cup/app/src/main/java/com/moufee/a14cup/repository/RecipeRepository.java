@@ -1,16 +1,17 @@
 package com.moufee.a14cup.repository;
 
-import com.moufee.a14cup.recipes.Recipe;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.moufee.a14cup.api.EdamamService;
+import com.moufee.a14cup.recipes.RecipesList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A repository for recipes
@@ -22,12 +23,11 @@ public class RecipeRepository {
     private static RecipeRepository sRecipeRepository;
     private String ApplicationID;
     private String ApplicationKey;
-    private String RecipeURL = "https://api.edamam.com/search?";
+    private EdamamService mEdamamService;
 
     @Inject
-    public RecipeRepository(String ID, String Key) {
-        ApplicationID = ID;
-        ApplicationKey = Key;
+    public RecipeRepository(EdamamService edamamService) {
+        mEdamamService = edamamService;
     }
 
     public boolean UpdateRepository(String ID, String Key) {
@@ -42,28 +42,22 @@ public class RecipeRepository {
     *  2.) Start - The starting location (Should be zero unless you are continuing a search)
     *  3.) Finish - The finishing location (Should be the number of items unless you are continuing a search)
     */
-    public String GetRecipies(String Search, Integer Start, Integer Finish) throws IOException {
-        String SearchURL = RecipeURL + "app_id=" + ApplicationID + "&app_key=" + ApplicationKey +
-                "&from=" + Start + "&to=" + Finish + "&q=" + Search;
+    public LiveData<RecipesList> GetRecipies(String search, Integer start, Integer finish) {
+        final MutableLiveData<RecipesList> result = new MutableLiveData<>();
+        Call<RecipesList> recipesListCall = mEdamamService.searchRecipes(search, start, finish);
+        recipesListCall.enqueue(new Callback<RecipesList>() {
+            @Override
+            public void onResponse(Call<RecipesList> call, Response<RecipesList> response) {
+                result.setValue(response.body());
+            }
 
+            @Override
+            public void onFailure(Call<RecipesList> call, Throwable t) {
 
-        URL url = new URL(SearchURL);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
+            }
+        });
+        return result;
 
-        con.setConnectTimeout(5000);
-        con.setReadTimeout(5000);
-
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
-        in.close();
-
-        return content.toString();
     }
 
 

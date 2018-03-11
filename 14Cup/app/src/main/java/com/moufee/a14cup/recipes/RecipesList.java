@@ -8,13 +8,30 @@ import java.util.List;
 
 public class RecipesList {
 
-    public List<Recipe> recipeList;
-
-    public List<Recipe> getRecipeList() {
-        return recipeList;
+    public RecipesList() {
     }
 
-    public void setRecipeList(List<Recipe> recipeList) {
-        this.recipeList = recipeList;
+    public List<Hit> hits;
+
+    public List<Hit> getHits() {
+        return hits;
+    }
+
+    public class Hit {
+        Recipe recipe;
+
+        public Recipe getRecipe() {
+            return recipe;
+        }
+
+        @Override
+        public String toString() {
+            return recipe.toString();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return hits.toString();
     }
 }

@@ -29,13 +29,13 @@ public class RecipeViewModel extends ViewModel {
     private RecipeRepository mRecipeRepository;
 
     private LiveData<List<ShoppingList>> mListLiveData;
-    //private Recipe mSelectedRecipe;
     private MutableLiveData<Recipe> mSelectedRecipe = new MutableLiveData<>();
-    private MutableLiveData<RecipesList> mRecipesList = new MutableLiveData<>();
+    private LiveData<RecipesList> mRecipesList;
     private LiveData<FirebaseUser> mCurrentUser;
+    private MutableLiveData<String> mQuery = new MutableLiveData<>();
 
     @Inject
-    public RecipeViewModel(RecipeRepository recipeRepository, ShoppingListRepository shoppingListRepository, UserRepository userRepository){
+    public RecipeViewModel(RecipeRepository recipeRepository, ShoppingListRepository shoppingListRepository, UserRepository userRepository) {
         mShoppingListRepository = shoppingListRepository;
         mUserRepository = userRepository;
         mRecipeRepository = recipeRepository;
@@ -49,31 +49,33 @@ public class RecipeViewModel extends ViewModel {
             }
         });
 
-        // Get list of recipes from the user query (LiveData)
-        // Store the query string
-
-
+        mRecipesList = Transformations.switchMap(mQuery, new Function<String, LiveData<RecipesList>>() {
+            @Override
+            public LiveData<RecipesList> apply(String input) {
+                return mRecipeRepository.GetRecipies(input, 0, 10);
+            }
+        });
 
     }
 
     // Store the state of the selected recipe from the RecipeFragment
-    public void setSelectedRecipe(Recipe recipe){
+    public void setSelectedRecipe(Recipe recipe) {
         mSelectedRecipe.setValue(recipe);
     }
 
-    public void setRecipesList(RecipesList recipeList){
-        mRecipesList.setValue(recipeList);
-    }
-
-    public LiveData<RecipesList> getRecipesList(){
+    public LiveData<RecipesList> getRecipesList() {
         return mRecipesList;
     }
 
-    public Recipe getSelectedRecipe(){
+    public void setQuery(String query) {
+        mQuery.setValue(query);
+    }
+
+    public Recipe getSelectedRecipe() {
         return mSelectedRecipe.getValue();
     }
 
-    public LiveData<Recipe> getSelectedLiveDataRecipe(){
+    public LiveData<Recipe> getSelectedLiveDataRecipe() {
         return mSelectedRecipe;
     }
 }

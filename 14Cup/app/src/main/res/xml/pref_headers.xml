@@ -14,7 +14,8 @@
 
     <header
         android:title="Sorting"
-        android:icon="@drawable/ic_sort_black_24dp" />
+        android:icon="@drawable/ic_sort_black_24dp"
+        android:fragment="com.moufee.a14cup.ui.settings.SortingPreferenceFragment" />
 
     <header
         android:title="Sharing"

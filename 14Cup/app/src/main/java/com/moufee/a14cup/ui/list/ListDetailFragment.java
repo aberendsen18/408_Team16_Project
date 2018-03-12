@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +21,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.moufee.a14cup.R;
+import com.moufee.a14cup.categorySorts.CategoryComparator;
+import com.moufee.a14cup.categorySorts.CategorySortOrder;
 import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.validation.DataValidation;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,6 +47,7 @@ public class ListDetailFragment extends Fragment {
     private ListViewModel mViewModel;
     private ListDetailRecyclerViewAdapter mRecyclerViewAdapter = new ListDetailRecyclerViewAdapter();
     private RecyclerView mRecyclerView;
+    private static final String TAG = "LIST_DETAIL_FRAGMENT";
     @Inject
     ViewModelProvider.Factory mFactory;
     @Inject
@@ -116,7 +122,7 @@ public class ListDetailFragment extends Fragment {
                     ShoppingListItem item = mViewModel.getCurrentListItems().getValue().get(index);
                     item.toggleCompletion();
                     mListRepository.updateItem(listID, item);
-//                    mRecyclerViewAdapter.notifyItemChanged(index);
+                    mRecyclerViewAdapter.notifyItemChanged(index);
                 } else if (swipeDir == ItemTouchHelper.LEFT) {
                     int index = viewHolder.getAdapterPosition();
                     String listID = mViewModel.getSelectedListID().getValue();
@@ -153,8 +159,26 @@ public class ListDetailFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<ShoppingListItem> shoppingListItems) {
                 if (shoppingListItems != null) {
-                    mRecyclerViewAdapter.setItems(shoppingListItems);
+                    CategorySortOrder sortOrder = mViewModel.getCurrentSortOrder().getValue();
+                    if (sortOrder != null) {
+                        Collections.sort(shoppingListItems, new CategoryComparator(sortOrder));
+                    }
+                    List<ShoppingListItem> newItems = new ArrayList<>(shoppingListItems);
+                    mRecyclerViewAdapter.submitList(newItems);
                 }
+            }
+        });
+        mViewModel.getCurrentSortOrder().observe(this, new Observer<CategorySortOrder>() {
+            @Override
+            public void onChanged(@Nullable CategorySortOrder categorySortOrder) {
+                Log.d(TAG, "onChanged: category sort order changed");
+                if (categorySortOrder == null)
+                    return;
+                List<ShoppingListItem> items = mViewModel.getCurrentListItems().getValue();
+                Collections.sort(items, new CategoryComparator(categorySortOrder));
+                List<ShoppingListItem> newItems = new ArrayList<>(items);
+                mRecyclerViewAdapter.submitList(newItems);
+                // for some reason, it doesn't update until this is called
             }
         });
     }

@@ -3,6 +3,7 @@ package com.moufee.a14cup.lists;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,7 +16,8 @@ public class ShoppingList {
     public String owner;
     @ServerTimestamp
     public Date createdDate;
-    public Map<String, Boolean> sharedWith;
+    public Map<String, Boolean> sharedWith = new HashMap<>();
+    public Map<String, String> sortOrders = new HashMap<>();
 
     public ShoppingList() {
     }
@@ -31,6 +33,6 @@ public class ShoppingList {
 
     @Override
     public String toString() {
-        return id + " : " + name;
+        return id + " : " + name + " " + sortOrders;
     }
 }

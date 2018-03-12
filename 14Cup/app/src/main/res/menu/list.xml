@@ -2,10 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_choose_sort_order"
+        android:orderInCategory="0"
+        android:title="Sort Order"
+        app:showAsAction="never" />
+    <!--<item
         android:id="@+id/action_list_settings"
         android:orderInCategory="100"
         android:title="List Settings"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="200"
@@ -17,4 +22,5 @@
         android:title="Logout"
         android:visible="true"
         app:showAsAction="never" />
+
 </menu>

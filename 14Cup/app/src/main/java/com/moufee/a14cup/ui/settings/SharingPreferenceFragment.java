@@ -3,6 +3,7 @@ package com.moufee.a14cup.ui.settings;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,7 +21,7 @@ import java.util.List;
  * Use the {@link SharingPreferenceFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SharingPreferenceFragment extends PreferenceFragment {
+public class SharingPreferenceFragment extends Fragment {
 
     private SharedUserAdapter mUserAdapter;
     private static final String KEY_LIST_ID = "list_id";
@@ -70,5 +71,6 @@ public class SharingPreferenceFragment extends PreferenceFragment {
 
         return view;
     }
+
 
 }

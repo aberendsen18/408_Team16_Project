@@ -7,6 +7,7 @@ import com.moufee.a14cup.validation.DataValidation;
 
 import org.junit.Test;
 
+import static com.moufee.a14cup.validation.DataValidation.validateCategoryName;
 import static com.moufee.a14cup.validation.DataValidation.validateShoppingList;
 import static com.moufee.a14cup.validation.DataValidation.validateShoppingListItem;
 import static org.junit.Assert.*;
@@ -88,6 +89,33 @@ public class TestValidation {
         newListItem.name = "list_item01";
         String str = validateShoppingListItem(newListItem);
         assertEquals("valid", str);
+    }
+
+    @Test
+    public void validCategorySortName() throws Exception {
+
+        String name = "list_item01";
+        String str = validateCategoryName(name);
+        assertEquals("valid", str);
+    }
+
+    @Test
+    public void nullCategorySortName() throws Exception {
+        String name = null;
+        String str = validateCategoryName(name);
+        assertEquals("Please enter an category name!", str);
+    }
+    @Test
+    public void emptyCategorySortName() throws Exception {
+        String name = "";
+        String str = validateCategoryName(name);
+        assertEquals("Please enter an category name!", str);
+    }
+    @Test
+    public void spacesCategorySortName() throws Exception {
+        String name = "    ";
+        String str = validateCategoryName(name);
+        assertEquals("Please enter an category name!", str);
     }
 
 

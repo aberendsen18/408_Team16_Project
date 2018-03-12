@@ -9,21 +9,37 @@
             type="com.moufee.a14cup.lists.ShoppingListItem" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@{item.completed ? @color/colorPrimary : @color/colorBackground }"
         android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal">
+        android:focusable="true">
 
         <TextView
             android:id="@+id/item_name_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="false"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginTop="8dp"
             android:text="@{item.name}"
             android:textAppearance="?attr/textAppearanceListItem"
             tools:text="Item Name" />
-    </LinearLayout>
+
+        <TextView
+            android:id="@+id/categoryTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/item_name_text_view"
+            android:layout_alignStart="@+id/item_name_text_view"
+            android:layout_below="@+id/item_name_text_view"
+            android:layout_marginBottom="8dp"
+            android:text="@{item.category}"
+            tools:text="Category" />
+    </RelativeLayout>
 </layout>

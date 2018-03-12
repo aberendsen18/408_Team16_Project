@@ -10,16 +10,19 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
+import com.moufee.a14cup.validation.DataValidation;
 
 import java.util.List;
 
@@ -38,6 +41,7 @@ public class ListDetailFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private ListViewModel mViewModel;
     private ListDetailRecyclerViewAdapter mRecyclerViewAdapter = new ListDetailRecyclerViewAdapter();
+    private RecyclerView mRecyclerView;
     @Inject
     ViewModelProvider.Factory mFactory;
     @Inject
@@ -64,13 +68,13 @@ public class ListDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shoppinglistitem_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_shoppinglistitem_list, container, false);
 
         // Set the adapter
         Context context = view.getContext();
-        RecyclerView recyclerView = view.findViewById(R.id.list_items_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(mRecyclerViewAdapter);
+        mRecyclerView = view.findViewById(R.id.list_items_recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
 
         final TextView newItemEdit = view.findViewById(R.id.item_name_input);
@@ -80,13 +84,50 @@ public class ListDetailFragment extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     ShoppingListItem NewItem = new ShoppingListItem();
                     NewItem.name = newItemEdit.getText().toString();
-                    mListRepository.addItem(mViewModel.getSelectedListID().getValue(), NewItem);
-                    newItemEdit.setText("");
-                    return true;
+
+                    //do the data validation
+                    String str = DataValidation.validateShoppingListItem(NewItem);
+                    if (str.equals("valid")) {
+                        mListRepository.addItem(mViewModel.getSelectedListID().getValue(), NewItem);
+                        newItemEdit.setText("");
+                        return true;
+                    } else {
+                        //print the error to the screen
+                        Toast.makeText(getActivity(), str,
+                                Toast.LENGTH_LONG).show();
+                    }
+
                 }
                 return false;
             }
         });
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                if (swipeDir == ItemTouchHelper.RIGHT) {
+                    int index = viewHolder.getAdapterPosition();
+                    String listID = mViewModel.getSelectedListID().getValue();
+                    ShoppingListItem item = mViewModel.getCurrentListItems().getValue().get(index);
+                    item.toggleCompletion();
+                    mListRepository.updateItem(listID, item);
+//                    mRecyclerViewAdapter.notifyItemChanged(index);
+                } else if (swipeDir == ItemTouchHelper.LEFT) {
+                    int index = viewHolder.getAdapterPosition();
+                    String listID = mViewModel.getSelectedListID().getValue();
+                    ShoppingListItem item = mViewModel.getCurrentListItems().getValue().get(index);
+                    mListRepository.deleteItem(listID, item.id);
+                }
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         return view;
     }

@@ -67,11 +67,27 @@ public class ShoppingListRepository {
         });
     }
 
-    public void addList(ShoppingList Item) {
-        listsCollection.add(Item);
+    public void addList(ShoppingList list) {
+        listsCollection.add(list);
+    }
+
+    public void updateList(ShoppingList list) {
+        listsCollection.document(list.id).set(list);
     }
 
     public void addItem(String listID, ShoppingListItem item) {
         listsCollection.document(listID).collection("items").add(item);
+    }
+
+    public void updateItem(String listID, ShoppingListItem item) {
+        listsCollection.document(listID).collection("items").document(item.id).set(item);
+    }
+
+    public void deleteItem(String listID, String itemID) {
+        listsCollection.document(listID).collection("items").document(itemID).delete();
+    }
+
+    public void deleteList(String listID) {
+        listsCollection.document(listID).delete();
     }
 }

@@ -1,7 +1,5 @@
 package com.moufee.a14cup.ui.categorySorting;
 
-import android.util.Log;
-
 import com.moufee.a14cup.categorySorts.CategoryComparator;
 import com.moufee.a14cup.categorySorts.CategorySortOrder;
 import com.moufee.a14cup.lists.ShoppingList;

@@ -1,12 +1,5 @@
 package com.moufee.a14cup.repository;
 
-import android.arch.core.util.Function;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
-import android.arch.lifecycle.ViewModelProvider;
-
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -15,17 +8,9 @@ import com.moufee.a14cup.lists.ShoppingListItem;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.List;
-
-import javax.inject.Inject;
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -47,7 +32,7 @@ public class ShoppingListRepositoryTest {
 
 
     @Before
-    public void setup(){
+    public void setup() {
         mCollectionReference = mock(CollectionReference.class);
         //mUserRepository = mock(UserRepository.class);
         mFirebaseFirestore = mock(FirebaseFirestore.class);
@@ -56,9 +41,9 @@ public class ShoppingListRepositoryTest {
     }
 
     @Test
-    public void createNewShoppingList() throws Exception{
+    public void createNewShoppingList() throws Exception {
         // add new shopping list
-        ShoppingList TestList = new ShoppingList("test_name","test_user" );
+        ShoppingList TestList = new ShoppingList("test_name", "test_user");
 
         // verfiy shopping addList calls add method of Firebase CollectionReference
         mShoppingListRepository.addList(TestList);
@@ -66,7 +51,7 @@ public class ShoppingListRepositoryTest {
     }
 
     @Test
-    public void addItemToShoppingList() throws Exception{
+    public void addItemToShoppingList() throws Exception {
 
         ShoppingListItem testItem = new ShoppingListItem();
         testItem.name = "test_item";

@@ -3,20 +3,19 @@ package com.moufee.a14cup.util;
 
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.lists.ShoppingListItem;
-import com.moufee.a14cup.validation.DataValidation;
 
 import org.junit.Test;
 
 import static com.moufee.a14cup.validation.DataValidation.validateShoppingList;
 import static com.moufee.a14cup.validation.DataValidation.validateShoppingListItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 /**
  * Created by andrewberendsen on 2/18/18.
+ * Contains tests for the {@link com.moufee.a14cup.validation.DataValidation} class
  */
 
 public class TestValidation {
-
-
 
 
     @Test

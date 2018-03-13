@@ -20,20 +20,12 @@ import retrofit2.Response;
 @Singleton
 public class RecipeRepository {
 
-    private static RecipeRepository sRecipeRepository;
-    private String ApplicationID;
-    private String ApplicationKey;
+
     private EdamamService mEdamamService;
 
     @Inject
     public RecipeRepository(EdamamService edamamService) {
         mEdamamService = edamamService;
-    }
-
-    public boolean UpdateRepository(String ID, String Key) {
-        ApplicationID = ID;
-        ApplicationKey = Key;
-        return true;
     }
 
 

@@ -13,11 +13,12 @@ import com.moufee.a14cup.lists.ShoppingListItem;
  */
 public class ListDetailRecyclerViewAdapter extends ListAdapter<ShoppingListItem, ListItemHolder> {
 
-    protected ListDetailRecyclerViewAdapter() {
+    public ListDetailRecyclerViewAdapter(OnListItemInteractionListener listener) {
         super(ShoppingListItem.DIFF_CALLBACK);
+        mListener = listener;
     }
 
-//    private final MyListsFragment.OnListFragmentInteractionListener mListener;
+    private final OnListItemInteractionListener mListener;
 
 
     @Override
@@ -29,6 +30,6 @@ public class ListDetailRecyclerViewAdapter extends ListAdapter<ShoppingListItem,
 
     @Override
     public void onBindViewHolder(final ListItemHolder holder, int position) {
-        ((ListItemHolder) holder).bind(getItem(position));
+        holder.bind(getItem(position), mListener);
     }
 }

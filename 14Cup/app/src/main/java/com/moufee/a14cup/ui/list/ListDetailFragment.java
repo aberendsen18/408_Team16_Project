@@ -4,9 +4,11 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,16 +38,13 @@ import javax.inject.Inject;
 import dagger.android.support.AndroidSupportInjection;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * A fragment that displays a list of Items on a shopping list.
  */
 public class ListDetailFragment extends Fragment {
 
-    private OnListFragmentInteractionListener mListener;
+    private OnListItemInteractionListener mListener;
     private ListViewModel mViewModel;
-    private ListDetailRecyclerViewAdapter mRecyclerViewAdapter = new ListDetailRecyclerViewAdapter();
+    private ListDetailRecyclerViewAdapter mRecyclerViewAdapter;
     private RecyclerView mRecyclerView;
     private static final String TAG = "LIST_DETAIL_FRAGMENT";
     @Inject
@@ -146,12 +145,6 @@ public class ListDetailFragment extends Fragment {
             mViewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(ListViewModel.class);
             setListeners();
         }
-        /*if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }*/
     }
 
     private void setListeners() {
@@ -181,6 +174,22 @@ public class ListDetailFragment extends Fragment {
                 // for some reason, it doesn't update until this is called
             }
         });
+        mListener = new OnListItemInteractionListener() {
+            @Override
+            public boolean onLongClick(ShoppingListItem item) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Choose a Category")
+                        .setItems(R.array.list_preference_entries, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+                return true;
+            }
+        };
+        mRecyclerViewAdapter = new ListDetailRecyclerViewAdapter(mListener);
     }
 
     @Override
@@ -189,17 +198,4 @@ public class ListDetailFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(ShoppingListItem item);
-    }
 }

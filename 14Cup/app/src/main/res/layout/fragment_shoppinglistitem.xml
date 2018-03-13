@@ -4,17 +4,25 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <import type="com.moufee.a14cup.lists.ShoppingListItem" />
+
         <variable
             name="item"
             type="com.moufee.a14cup.lists.ShoppingListItem" />
+
+        <variable
+            name="listener"
+            type="com.moufee.a14cup.ui.list.OnListItemInteractionListener" />
     </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:longClickable="true"
         android:background="@{item.completed ? @color/colorPrimary : @color/colorBackground }"
-        android:clickable="true"
-        android:focusable="true">
+        android:onLongClick="@{() -> listener.onLongClick(item)}">
 
         <TextView
             android:id="@+id/item_name_text_view"

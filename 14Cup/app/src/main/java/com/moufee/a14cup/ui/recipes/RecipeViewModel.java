@@ -28,7 +28,7 @@ public class RecipeViewModel extends ViewModel {
     private UserRepository mUserRepository;
     private RecipeRepository mRecipeRepository;
 
-    private LiveData<List<ShoppingList>> mListLiveData;
+    private LiveData<List<ShoppingList>> mShoppingListLiveData;
     private MutableLiveData<Recipe> mSelectedRecipe = new MutableLiveData<>();
     private LiveData<RecipesList> mRecipesList;
     private LiveData<FirebaseUser> mCurrentUser;
@@ -40,7 +40,7 @@ public class RecipeViewModel extends ViewModel {
         mUserRepository = userRepository;
         mRecipeRepository = recipeRepository;
         mCurrentUser = mUserRepository.getCurrentUser();
-        mListLiveData = Transformations.switchMap(mCurrentUser, new Function<FirebaseUser, LiveData<List<ShoppingList>>>() {
+        mShoppingListLiveData = Transformations.switchMap(mCurrentUser, new Function<FirebaseUser, LiveData<List<ShoppingList>>>() {
             @Override
             public LiveData<List<ShoppingList>> apply(FirebaseUser input) {
                 if (input == null)
@@ -77,5 +77,13 @@ public class RecipeViewModel extends ViewModel {
 
     public LiveData<Recipe> getSelectedLiveDataRecipe() {
         return mSelectedRecipe;
+    }
+
+    public LiveData<List<ShoppingList>> getShoppingLists() {
+        return mShoppingListLiveData;
+    }
+
+    public LiveData<FirebaseUser> getCurrentUser() {
+        return mCurrentUser;
     }
 }

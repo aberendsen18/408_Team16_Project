@@ -14,11 +14,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.moufee.a14cup.R;
+import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.lists.ShoppingListItem;
+import com.moufee.a14cup.recipes.Ingredient;
 import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.repository.RecipeRepository;
+import com.moufee.a14cup.repository.ShoppingListRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -40,11 +50,15 @@ public class RecipeInfoFragment extends Fragment {
     private RecipeViewModel mViewModel;
     private OnListFragmentInteractionListener mListener;
     private TextView mRecipeTitle;
+    private Spinner mShoppingListSpinner;
+    private Button mSubmittButton;
 
     @Inject
     ViewModelProvider.Factory mFactory;
     @Inject
     RecipeRepository mRecipeRepo;
+    @Inject
+    ShoppingListRepository mShoppingListRepo;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -78,11 +92,21 @@ public class RecipeInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_info_list, container, false);
+        Context context = view.getContext();
+
 
         mRecipeTitle = (TextView) view.findViewById(R.id.textViewRecipeName);
+        mSubmittButton = (Button) view.findViewById(R.id.buttonAddRecipe);
 
-                // Set the adapter
-            Context context = view.getContext();
+        // User shopping list spinner
+        mShoppingListSpinner = (Spinner) view.findViewById(R.id.shoppingListSpinner);
+        List<ShoppingList> userShoppingLists = mViewModel.getShoppingLists().getValue();
+        
+        ArrayAdapter<ShoppingList> adapter = new ArrayAdapter<ShoppingList>(context, android.R.layout.simple_spinner_item, userShoppingLists);
+        mShoppingListSpinner.setAdapter(adapter);
+
+
+        // Set the adapter
         RecyclerView recyclerView = view.findViewById(R.id.ingredientsListRecyclerView);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -90,7 +114,9 @@ public class RecipeInfoFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             //mRecyclerViewAdapter = new MyRecipeInfoRecyclerViewAdapter(mViewModel.getSelectedRecipe(), mListener);
-            recyclerView.setAdapter(mRecyclerViewAdapter);
+
+
+        setListeners();
 
         return view;
     }
@@ -103,7 +129,6 @@ public class RecipeInfoFragment extends Fragment {
         if (context instanceof AppCompatActivity) {
             mViewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(RecipeViewModel.class);
             mRecyclerViewAdapter = new MyRecipeInfoRecyclerViewAdapter(mViewModel.getSelectedRecipe(), mListener);
-            setListeners();
         }
         /*if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
@@ -123,6 +148,19 @@ public class RecipeInfoFragment extends Fragment {
                 }
             }
         });
+
+        mSubmittButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShoppingList userList = (ShoppingList) mShoppingListSpinner.getSelectedItem();
+                List<String> checkedIngs = mRecyclerViewAdapter.getCheckedIngrediants();
+
+                for (String ing : checkedIngs){
+                    mShoppingListRepo.addItem(userList.id, new ShoppingListItem(ing));
+                }
+            }
+        });
+
     }
 
     @Override

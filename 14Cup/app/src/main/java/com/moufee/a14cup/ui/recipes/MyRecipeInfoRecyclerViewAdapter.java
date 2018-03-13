@@ -41,20 +41,17 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = mRecipe.getIngredients().get(position);
         holder.mIdView.setText(Integer.toString(position+1));
         holder.mContentView.setText(mRecipe.getIngredientText(position));
+        holder.mContentView.setChecked(mRecipe.getIngredients().get(position).isChecked());
 
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    //mListener.onListFragmentInteraction(holder.mItem);
-                }
+                mRecipe.getIngredients().get(position).toggleChecked();
             }
         });
     }
@@ -62,6 +59,18 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
     @Override
     public int getItemCount() {
         return mRecipe.getIngredients().size();
+    }
+
+    public List<String> getCheckedIngrediants(){
+        List<String> checkedIngs = new ArrayList<>();
+
+        for(Ingredient ing : mRecipe.getIngredients()){
+            if(ing.isChecked()){
+                checkedIngs.add(ing.getText());
+            }
+        }
+
+        return checkedIngs;
     }
 
     public void setRecipe(Recipe recipe){

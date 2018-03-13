@@ -36,13 +36,16 @@ public class RecipeRepository {
         return true;
     }
 
-    /*
-    *  Arguments:
-    *  1.) Search - The type of item you are looking for (ie chicken, beef, salt, etc)
-    *  2.) Start - The starting location (Should be zero unless you are continuing a search)
-    *  3.) Finish - The finishing location (Should be the number of items unless you are continuing a search)
-    */
-    public LiveData<RecipesList> GetRecipies(String search, Integer start, Integer finish) {
+
+    /**
+     * Gets recipes for a given query
+     *
+     * @param search The query string, the type of recipe to search for (ie chicken, beef, salt, etc)
+     * @param start  The starting location (Should be zero unless you are continuing a search)
+     * @param finish The finishing location (Should be the number of items unless you are continuing a search)
+     * @return A LiveData containing the RecipesList of results
+     */
+    public LiveData<RecipesList> getRecipes(String search, Integer start, Integer finish) {
         final MutableLiveData<RecipesList> result = new MutableLiveData<>();
         Call<RecipesList> recipesListCall = mEdamamService.searchRecipes(search, start, finish);
         recipesListCall.enqueue(new Callback<RecipesList>() {

@@ -7,16 +7,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.moufee.a14cup.R;
+import com.moufee.a14cup.recipes.Ingredient;
 import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.recipes.RecipesList;
 import com.moufee.a14cup.ui.recipes.RecipeFragment.OnRecipeFragmentInteractionListener;
-import com.moufee.a14cup.ui.recipes.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnRecipeFragmentInteractionListener}.
+ * Displays {@link Ingredient} from a {@link Recipe}
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRecyclerViewAdapter.ViewHolder> {
@@ -44,7 +43,7 @@ public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position).getRecipe();
-        holder.mIdView.setText(Integer.toString(position+1));
+        holder.mIdView.setText(Integer.toString(position + 1));
         holder.mContentView.setText(mValues.get(position).getRecipe().label);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -73,8 +72,8 @@ public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRe
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mIdView = view.findViewById(R.id.id);
+            mContentView = view.findViewById(R.id.content);
         }
 
         @Override

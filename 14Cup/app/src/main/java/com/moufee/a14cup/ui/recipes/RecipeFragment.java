@@ -80,15 +80,14 @@ public class RecipeFragment extends Fragment {
         });
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            mRecyclerView = (RecyclerView) view;
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-            mAdapter = new MyRecipeRecyclerViewAdapter(new ArrayList<RecipesList.Hit>(), mListener);
-            mRecyclerView.setAdapter(mAdapter);
-            setListeners();
-            mRecipeViewModel.setQuery("apple");
-        }
+        Context context = view.getContext();
+        mRecyclerView = view.findViewById(R.id.list);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mAdapter = new MyRecipeRecyclerViewAdapter(new ArrayList<RecipesList.Hit>(), mListener);
+        mRecyclerView.setAdapter(mAdapter);
+        setListeners();
+        
+
         return view;
     }
 

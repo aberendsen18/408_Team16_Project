@@ -172,6 +172,7 @@ public class ListDetailFragment extends Fragment {
                     return;
                 mCategoryAdapter.addAll(categorySortOrder.categoryOrder);
                 List<ShoppingListItem> items = mViewModel.getCurrentListItems().getValue();
+                if (items == null) return;
                 Collections.sort(items, new CategoryComparator(categorySortOrder));
                 // it doesn't detect the sorting change if the new list refers to the same object
                 List<ShoppingListItem> newItems = new ArrayList<>(items);

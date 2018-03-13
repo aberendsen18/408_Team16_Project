@@ -3,6 +3,7 @@ package com.moufee.a14cup.util;
 
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.lists.ShoppingListItem;
+import com.moufee.a14cup.validation.DataValidation;
 
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Created by andrewberendsen on 2/18/18.
- * Contains tests for the {@link com.moufee.a14cup.validation.DataValidation} class
+ * Contains tests for the {@link DataValidation} class
  */
 
 public class TestValidation {
@@ -104,12 +105,14 @@ public class TestValidation {
         String str = validateCategoryName(name);
         assertEquals("Please enter an category name!", str);
     }
+
     @Test
     public void emptyCategorySortName() throws Exception {
         String name = "";
         String str = validateCategoryName(name);
         assertEquals("Please enter an category name!", str);
     }
+
     @Test
     public void spacesCategorySortName() throws Exception {
         String name = "    ";

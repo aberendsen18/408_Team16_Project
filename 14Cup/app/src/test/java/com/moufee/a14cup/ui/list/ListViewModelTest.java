@@ -7,6 +7,7 @@ import android.arch.lifecycle.Observer;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.repository.CategoryRepository;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.repository.UserRepository;
 import com.moufee.a14cup.util.TestUtil;
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * Created by Ben on 2/10/18.
+ * Tests for the {@link ListViewModel}
  */
 @SuppressWarnings("unchecked")
 @RunWith(JUnit4.class)
@@ -39,6 +41,7 @@ public class ListViewModelTest {
     private ListViewModel mListViewModel;
     private UserRepository mUserRepository;
     private ShoppingListRepository mListRepository;
+    private CategoryRepository mCategoryRepository;
     private FirebaseUser mFirebaseUser;
     private MutableLiveData<FirebaseUser> mFirebaseUserLiveData;
 
@@ -51,12 +54,14 @@ public class ListViewModelTest {
         mFirebaseUser = mock(FirebaseUser.class);
         mUserRepository = mock(UserRepository.class);
         mListRepository = mock(ShoppingListRepository.class);
+        mCategoryRepository = mock(CategoryRepository.class);
+
         mFirebaseUserLiveData = new MutableLiveData<>();
 
         when(mFirebaseUser.getUid()).thenReturn("foo");
         when(mUserRepository.getCurrentUser()).thenReturn(mFirebaseUserLiveData);
 
-        mListViewModel = new ListViewModel(mListRepository, mUserRepository);
+        mListViewModel = new ListViewModel(mListRepository, mUserRepository, mCategoryRepository);
     }
 
     @Test
@@ -79,7 +84,7 @@ public class ListViewModelTest {
     public void sendResultToUI() {
         MutableLiveData<List<ShoppingList>> listsLiveData = new MutableLiveData<>();
         when(mListRepository.getShoppingLists(anyString())).thenReturn(listsLiveData);
-        mListViewModel = new ListViewModel(mListRepository, mUserRepository);
+        mListViewModel = new ListViewModel(mListRepository, mUserRepository, mCategoryRepository);
         LiveData<List<ShoppingList>> resultLists = mListViewModel.getLists();
         Observer<List<ShoppingList>> listObserver = mock(Observer.class);
         resultLists.observeForever(listObserver);

@@ -1,5 +1,8 @@
 package com.moufee.a14cup.ui.categorySorting;
 
+import android.support.annotation.NonNull;
+import android.support.v7.recyclerview.extensions.ListAdapter;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -12,32 +15,31 @@ import java.util.List;
  * Created by Travis Kovacic on 2/16/2018.
  */
 
-public class CategorySortRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<String> categories;
+public class CategorySortRecyclerViewAdapter extends ListAdapter<String, CategorySortHolder> {
 
-    public CategorySortRecyclerViewAdapter(List<String> categories) {
-        this.categories = categories;
-    }
+    protected CategorySortRecyclerViewAdapter() {
+        super(new DiffUtil.ItemCallback<String>() {
+            @Override
+            public boolean areItemsTheSame(String oldItem, String newItem) {
+                return oldItem.equals(newItem);
+            }
 
-    public void setCategories(List<String> categories) {
-        this.categories = categories;
-        notifyDataSetChanged();
+            @Override
+            public boolean areContentsTheSame(String oldItem, String newItem) {
+                return true;
+            }
+        });
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CategorySortHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         FragmentCategorysortingSortBinding binding = FragmentCategorysortingSortBinding.inflate(inflater, parent, false);
         return new CategorySortHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        ((CategorySortHolder) holder).bind(categories.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return categories.size();
+    public void onBindViewHolder(@NonNull CategorySortHolder holder, int position) {
+        holder.bind(getItem(position));
     }
 }

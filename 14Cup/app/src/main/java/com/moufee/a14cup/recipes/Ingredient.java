@@ -6,6 +6,19 @@ package com.moufee.a14cup.recipes;
 
 public class Ingredient {
     public String text;
+    public boolean checked;
+
+    Ingredient(){
+        this.checked = true;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void toggleChecked() {
+        this.checked = !this.checked;
+    }
 
     public Ingredient(String name){
         this.text = name;

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.moufee.a14cup.R;
@@ -43,10 +44,10 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
         holder.mContentView.setChecked(mRecipe.getIngredients().get(position).isChecked());
 
 
-        holder.mContentView.setOnClickListener(new View.OnClickListener() {
+        holder.mContentView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                mRecipe.getIngredients().get(holder.getAdapterPosition()).toggleChecked();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mRecipe.getIngredients().get(holder.getAdapterPosition()).checked = isChecked;
             }
         });
     }

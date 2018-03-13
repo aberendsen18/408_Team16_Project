@@ -52,7 +52,7 @@ public class CategorySortFragment extends Fragment {
 
     private CategorySortViewModel viewModel;
     private RecyclerView recyclerView;
-    private CategorySortRecyclerViewAdapter recyclerViewAdapter = new CategorySortRecyclerViewAdapter();
+    private CategorySortRecyclerViewAdapter recyclerViewAdapter;
     private static final String TAG = "CategorySortFragment";
 
     public CategorySortFragment() {
@@ -77,6 +77,7 @@ public class CategorySortFragment extends Fragment {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerViewAdapter = new CategorySortRecyclerViewAdapter();
             recyclerView.setAdapter(recyclerViewAdapter);
         }
         setListeners();

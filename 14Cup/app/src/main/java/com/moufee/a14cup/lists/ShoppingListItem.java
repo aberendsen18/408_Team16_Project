@@ -1,5 +1,7 @@
 package com.moufee.a14cup.lists;
 
+import android.support.v7.util.DiffUtil;
+
 /**
  * An item on a shopping list
  */
@@ -7,8 +9,10 @@ package com.moufee.a14cup.lists;
 public class ShoppingListItem {
     public String name;
     public String id;
-    public String category;
+    public String category = "";
     public boolean completed = false;
+    public static final DiffCallback DIFF_CALLBACK = new DiffCallback();
+
 
     public ShoppingListItem() {
     }
@@ -29,5 +33,18 @@ public class ShoppingListItem {
     @Override
     public String toString() {
         return name;
+    }
+
+    private static class DiffCallback extends DiffUtil.ItemCallback<ShoppingListItem> {
+        @Override
+        public boolean areItemsTheSame(ShoppingListItem oldItem, ShoppingListItem newItem) {
+            return oldItem.id.equals(newItem.id);
+        }
+
+        @Override
+        public boolean areContentsTheSame(ShoppingListItem oldItem, ShoppingListItem newItem) {
+            return false;
+//            return oldItem.name.equals(newItem.name) && oldItem.category.equals(newItem.category);
+        }
     }
 }

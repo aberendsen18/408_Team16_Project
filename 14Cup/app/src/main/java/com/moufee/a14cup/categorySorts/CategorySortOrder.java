@@ -29,6 +29,10 @@ public class CategorySortOrder {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 
     private static class DiffCallback extends DiffUtil.ItemCallback<CategorySortOrder> {
         @Override

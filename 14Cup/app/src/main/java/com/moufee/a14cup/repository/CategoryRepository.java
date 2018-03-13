@@ -75,6 +75,7 @@ public class CategoryRepository {
         return Transformations.map(new FirestoreDocumentLiveData(categorySortCollection.document(sortOrderID)), new Function<DocumentSnapshot, CategorySortOrder>() {
             @Override
             public CategorySortOrder apply(DocumentSnapshot input) {
+                if (input == null || !input.exists()) return null;
                 CategorySortOrder order = input.toObject(CategorySortOrder.class);
                 order.id = input.getId();
                 return order;

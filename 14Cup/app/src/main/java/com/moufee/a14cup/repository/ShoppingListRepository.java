@@ -72,6 +72,7 @@ public class ShoppingListRepository {
         return Transformations.map(new FirestoreDocumentLiveData(listsCollection.document(listID)), new Function<DocumentSnapshot, ShoppingList>() {
             @Override
             public ShoppingList apply(DocumentSnapshot input) {
+                if (input == null || !input.exists()) return null;
                 ShoppingList list = input.toObject(ShoppingList.class);
                 list.id = input.getId();
                 return list;

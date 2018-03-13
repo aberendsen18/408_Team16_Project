@@ -10,9 +10,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.recipes.Recipe;
@@ -62,18 +65,29 @@ public class RecipeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_recipe_list, container, false);
 
+        final TextView searchRecipeName = view.findViewById(R.id.recipe_search_input);
+        searchRecipeName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    mRecipeViewModel.setQuery(searchRecipeName.getText().toString());
+                }
+                return false;
+            }
+        });
+
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            mRecyclerView = (RecyclerView) view;
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-            mAdapter = new MyRecipeRecyclerViewAdapter(new ArrayList<RecipesList.Hit>(), mListener);
-            mRecyclerView.setAdapter(mAdapter);
-            setListeners();
-            mRecipeViewModel.setQuery("apple");
-        }
+        Context context = view.getContext();
+        mRecyclerView = view.findViewById(R.id.list);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mAdapter = new MyRecipeRecyclerViewAdapter(new ArrayList<RecipesList.Hit>(), mListener);
+        mRecyclerView.setAdapter(mAdapter);
+        setListeners();
+        
+
         return view;
     }
 

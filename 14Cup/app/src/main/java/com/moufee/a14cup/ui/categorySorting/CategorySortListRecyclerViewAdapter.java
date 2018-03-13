@@ -1,5 +1,7 @@
 package com.moufee.a14cup.ui.categorySorting;
 
+import android.support.annotation.NonNull;
+import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -13,34 +15,24 @@ import java.util.List;
  * Created by Travis Kovacic on 2/12/2018.
  */
 
-public class CategorySortListRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<CategorySortOrder> lists;
+public class CategorySortListRecyclerViewAdapter extends ListAdapter<CategorySortOrder, CategoryTitleHolder> {
     private final CategorySortListFragment.OnCategorySortListInteractionListener mListener;
 
-    public CategorySortListRecyclerViewAdapter(List<CategorySortOrder> lists, CategorySortListFragment.OnCategorySortListInteractionListener listener) {
-        this.lists = lists;
+    public CategorySortListRecyclerViewAdapter(CategorySortListFragment.OnCategorySortListInteractionListener listener) {
+        super(CategorySortOrder.DIFF_CALLBACK);
         mListener = listener;
     }
 
-    public void setSortList(List<CategorySortOrder> lists) {
-        this.lists = lists;
-        notifyDataSetChanged();
-    }
-
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CategoryTitleHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         FragmentCategorysortingTitleBinding binding = FragmentCategorysortingTitleBinding.inflate(inflater, parent, false);
         return new CategoryTitleHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        ((CategoryTitleHolder) holder).bind(lists.get(position), mListener);
-    }
-
-    @Override
-    public int getItemCount() {
-        return lists.size();
+    public void onBindViewHolder(@NonNull CategoryTitleHolder holder, int position) {
+        holder.bind(getItem(position), mListener);
     }
 }

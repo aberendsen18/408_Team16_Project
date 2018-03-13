@@ -71,11 +71,7 @@ public class RecipeViewModel extends ViewModel {
         mQuery.setValue(query);
     }
 
-    public Recipe getSelectedRecipe() {
-        return mSelectedRecipe.getValue();
-    }
-
-    public LiveData<Recipe> getSelectedLiveDataRecipe() {
+    public LiveData<Recipe> getSelectedRecipe() {
         return mSelectedRecipe;
     }
 

@@ -23,12 +23,10 @@ import android.widget.Toast;
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.lists.ShoppingListItem;
-import com.moufee.a14cup.recipes.Ingredient;
 import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.repository.RecipeRepository;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,7 +34,7 @@ import javax.inject.Inject;
 import dagger.android.support.AndroidSupportInjection;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment that displays information about a {@link Recipe}
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnRecipeInfoFragmentInteractionListener}
  * interface.
@@ -54,7 +52,6 @@ public class RecipeInfoFragment extends Fragment {
     private Spinner mShoppingListSpinner;
     private Button mSubmittButton;
     private ArrayAdapter<ShoppingList> mAdapter;
-    private View mView;
 
     @Inject
     ViewModelProvider.Factory mFactory;
@@ -94,22 +91,22 @@ public class RecipeInfoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_recipe_info_list, container, false);
-        Context context = mView.getContext();
+        View view = inflater.inflate(R.layout.fragment_recipe_info_list, container, false);
+        Context context = view.getContext();
 
 
-        mRecipeTitle = (TextView) mView.findViewById(R.id.textViewRecipeName);
-        mSubmittButton = (Button) mView.findViewById(R.id.buttonAddRecipe);
+        mRecipeTitle = view.findViewById(R.id.textViewRecipeName);
+        mSubmittButton = view.findViewById(R.id.buttonAddRecipe);
 
         // User shopping list spinner
-        mShoppingListSpinner = (Spinner) mView.findViewById(R.id.shoppingListSpinner);
+        mShoppingListSpinner = view.findViewById(R.id.shoppingListSpinner);
 
-        mAdapter = new ArrayAdapter<ShoppingList>(context, android.R.layout.simple_spinner_dropdown_item);
+        mAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item);
         mShoppingListSpinner.setAdapter(mAdapter);
 
 
         // Set the adapter
-        RecyclerView recyclerView = mView.findViewById(R.id.ingredientsListRecyclerView);
+        RecyclerView recyclerView = view.findViewById(R.id.ingredientsListRecyclerView);
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         } else {
@@ -120,7 +117,7 @@ public class RecipeInfoFragment extends Fragment {
 
         setListeners();
 
-        return mView;
+        return view;
     }
 
 
@@ -130,7 +127,7 @@ public class RecipeInfoFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof AppCompatActivity) {
             mViewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(RecipeViewModel.class);
-            mRecyclerViewAdapter = new MyRecipeInfoRecyclerViewAdapter(mViewModel.getSelectedRecipe());
+            mRecyclerViewAdapter = new MyRecipeInfoRecyclerViewAdapter();
         }
         if (context instanceof OnRecipeInfoFragmentInteractionListener) {
             mListener = (OnRecipeInfoFragmentInteractionListener) context;
@@ -140,8 +137,8 @@ public class RecipeInfoFragment extends Fragment {
         }*/
     }
 
-    private void setListeners(){
-        mViewModel.getSelectedLiveDataRecipe().observe(this, new Observer<Recipe>() {
+    private void setListeners() {
+        mViewModel.getSelectedRecipe().observe(this, new Observer<Recipe>() {
             @Override
             public void onChanged(@Nullable Recipe recipe) {
                 if (recipe != null) {
@@ -155,7 +152,7 @@ public class RecipeInfoFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
                 mAdapter.clear();
-                if(shoppingLists != null){
+                if (shoppingLists != null) {
                     mAdapter.addAll(shoppingLists);
                 }
                 mShoppingListSpinner.setAdapter(mAdapter);
@@ -168,7 +165,7 @@ public class RecipeInfoFragment extends Fragment {
                 ShoppingList userList = (ShoppingList) mShoppingListSpinner.getSelectedItem();
                 List<String> checkedIngs = mRecyclerViewAdapter.getCheckedIngrediants();
 
-                for (String ing : checkedIngs){
+                for (String ing : checkedIngs) {
                     mShoppingListRepo.addItem(userList.id, new ShoppingListItem(ing));
                 }
 
@@ -176,7 +173,7 @@ public class RecipeInfoFragment extends Fragment {
                     mListener.onRecipeInfoFragmentSubmit(userList);
                 }
                 else{
-                    Toast.makeText(mView.getContext(), "You must select at least one ingredient to add to the shopping list.", Toast.LENGTH_LONG);
+                    Toast.makeText(getActivity(), "You must select at least one ingredient to add to the shopping list.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -186,7 +183,6 @@ public class RecipeInfoFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     /**

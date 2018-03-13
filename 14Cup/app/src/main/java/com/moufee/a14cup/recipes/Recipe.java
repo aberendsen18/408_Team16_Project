@@ -19,7 +19,9 @@ public class Recipe {
     public double calories;
 
     public Recipe(){
-
+        label = "";
+        ingredients = new ArrayList<>();
+        ingredientLines = new ArrayList<>();
     }
 
 

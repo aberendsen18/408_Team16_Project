@@ -52,6 +52,7 @@ public class RecipeInfoFragment extends Fragment {
     private TextView mRecipeTitle;
     private Spinner mShoppingListSpinner;
     private Button mSubmittButton;
+    private ArrayAdapter<ShoppingList> mAdapter;
 
     @Inject
     ViewModelProvider.Factory mFactory;
@@ -100,10 +101,9 @@ public class RecipeInfoFragment extends Fragment {
 
         // User shopping list spinner
         mShoppingListSpinner = (Spinner) view.findViewById(R.id.shoppingListSpinner);
-        List<ShoppingList> userShoppingLists = mViewModel.getShoppingLists().getValue();
-        
-        ArrayAdapter<ShoppingList> adapter = new ArrayAdapter<ShoppingList>(context, android.R.layout.simple_spinner_item, userShoppingLists);
-        mShoppingListSpinner.setAdapter(adapter);
+
+        mAdapter = new ArrayAdapter<ShoppingList>(context, android.R.layout.simple_spinner_dropdown_item);
+        mShoppingListSpinner.setAdapter(mAdapter);
 
 
         // Set the adapter
@@ -146,6 +146,17 @@ public class RecipeInfoFragment extends Fragment {
                     mRecyclerViewAdapter.setRecipe(recipe);
                     mRecipeTitle.setText(recipe.label);
                 }
+            }
+        });
+
+        mViewModel.getShoppingLists().observe(this, new Observer<List<ShoppingList>>() {
+            @Override
+            public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
+                mAdapter.clear();
+                if(shoppingLists != null){
+                    mAdapter.addAll(shoppingLists);
+                }
+                mShoppingListSpinner.setAdapter(mAdapter);
             }
         });
 

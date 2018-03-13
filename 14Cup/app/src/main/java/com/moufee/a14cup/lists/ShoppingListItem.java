@@ -9,7 +9,7 @@ import android.support.v7.util.DiffUtil;
 public class ShoppingListItem {
     public String name;
     public String id;
-    public String category;
+    public String category = "";
     public boolean completed = false;
     public static final DiffCallback DIFF_CALLBACK = new DiffCallback();
 
@@ -43,7 +43,8 @@ public class ShoppingListItem {
 
         @Override
         public boolean areContentsTheSame(ShoppingListItem oldItem, ShoppingListItem newItem) {
-            return oldItem.name.equals(newItem.name);
+            return false;
+//            return oldItem.name.equals(newItem.name) && oldItem.category.equals(newItem.category);
         }
     }
 }

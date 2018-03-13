@@ -13,12 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +46,7 @@ public class ListDetailFragment extends Fragment {
     private ListViewModel mViewModel;
     private ListDetailRecyclerViewAdapter mRecyclerViewAdapter;
     private RecyclerView mRecyclerView;
+    private ArrayAdapter<String> mCategoryAdapter;
     private static final String TAG = "LIST_DETAIL_FRAGMENT";
     @Inject
     ViewModelProvider.Factory mFactory;
@@ -121,7 +122,7 @@ public class ListDetailFragment extends Fragment {
                     ShoppingListItem item = mViewModel.getCurrentListItems().getValue().get(index);
                     item.toggleCompletion();
                     mListRepository.updateItem(listID, item);
-                    mRecyclerViewAdapter.notifyItemChanged(index);
+//                    mRecyclerViewAdapter.notifyItemChanged(index);
                 } else if (swipeDir == ItemTouchHelper.LEFT) {
                     int index = viewHolder.getAdapterPosition();
                     String listID = mViewModel.getSelectedListID().getValue();
@@ -143,6 +144,7 @@ public class ListDetailFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof AppCompatActivity) {
             mViewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(ListViewModel.class);
+            mCategoryAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1);
             setListeners();
         }
     }
@@ -158,34 +160,42 @@ public class ListDetailFragment extends Fragment {
                     }
                     List<ShoppingListItem> newItems = new ArrayList<>(shoppingListItems);
                     mRecyclerViewAdapter.submitList(newItems);
+                    mRecyclerViewAdapter.notifyDataSetChanged();
                 }
             }
         });
         mViewModel.getCurrentSortOrder().observe(this, new Observer<CategorySortOrder>() {
             @Override
             public void onChanged(@Nullable CategorySortOrder categorySortOrder) {
-                Log.d(TAG, "onChanged: category sort order changed");
+                mCategoryAdapter.clear();
                 if (categorySortOrder == null)
                     return;
+                mCategoryAdapter.addAll(categorySortOrder.categoryOrder);
                 List<ShoppingListItem> items = mViewModel.getCurrentListItems().getValue();
                 Collections.sort(items, new CategoryComparator(categorySortOrder));
+                // it doesn't detect the sorting change if the new list refers to the same object
                 List<ShoppingListItem> newItems = new ArrayList<>(items);
                 mRecyclerViewAdapter.submitList(newItems);
-                // for some reason, it doesn't update until this is called
             }
         });
         mListener = new OnListItemInteractionListener() {
             @Override
-            public boolean onLongClick(ShoppingListItem item) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("Choose a Category")
-                        .setItems(R.array.list_preference_entries, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .show();
+            public boolean onLongClick(final ShoppingListItem item) {
+                if (mCategoryAdapter.getCount() != 0)
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(item.name + ": Choose a Category")
+                            .setAdapter(mCategoryAdapter, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String category = mCategoryAdapter.getItem(which);
+                                    item.category = category;
+                                    mListRepository.updateItem(mViewModel.getSelectedListID().getValue(), item);
+                                }
+                            })
+                            .show();
+                else {
+                    Toast.makeText(getActivity(), "Choose a sort order first.", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
         };

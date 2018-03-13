@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.lists.ShoppingListItem;
+import com.moufee.a14cup.util.FirestoreDocumentLiveData;
 import com.moufee.a14cup.util.FirestoreQueryLiveData;
 
 import java.util.ArrayList;
@@ -63,6 +64,18 @@ public class ShoppingListRepository {
                         }
                     }
                 return items;
+            }
+        });
+    }
+
+    public LiveData<ShoppingList> getList(String listID) {
+        return Transformations.map(new FirestoreDocumentLiveData(listsCollection.document(listID)), new Function<DocumentSnapshot, ShoppingList>() {
+            @Override
+            public ShoppingList apply(DocumentSnapshot input) {
+                if (input == null || !input.exists()) return null;
+                ShoppingList list = input.toObject(ShoppingList.class);
+                list.id = input.getId();
+                return list;
             }
         });
     }

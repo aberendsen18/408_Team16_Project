@@ -23,8 +23,7 @@ import javax.inject.Inject;
 public class CategorySortViewModel extends ViewModel {
 
     private LiveData<List<CategorySortOrder>> mSortOrders;
-    private LiveData<Map<String, CategorySortOrder>> mSortOrdersMap;
-    private MutableLiveData<CategorySortOrder> mCurrentSort;
+    private LiveData<CategorySortOrder> mCurrentSort;
     private MutableLiveData<String> mCurrentSortID = new MutableLiveData<>();
     private CategoryRepository mCategoryRepository;
     private UserRepository mUserRepository;
@@ -40,13 +39,12 @@ public class CategorySortViewModel extends ViewModel {
                 return mCategoryRepository.getSortOrders(input.getUid());
             }
         });
-        mSortOrdersMap = Transformations.switchMap(mUserRepository.getCurrentUser(), new Function<FirebaseUser, LiveData<Map<String, CategorySortOrder>>>() {
+        mCurrentSort = Transformations.switchMap(mCurrentSortID, new Function<String, LiveData<CategorySortOrder>>() {
             @Override
-            public LiveData<Map<String, CategorySortOrder>> apply(FirebaseUser input) {
-                return mCategoryRepository.getSortOrdersMap(input.getUid());
+            public LiveData<CategorySortOrder> apply(String input) {
+                return mCategoryRepository.getSortOrder(input);
             }
         });
-        mCurrentSort = new MutableLiveData<>();
     }
 
 
@@ -58,7 +56,7 @@ public class CategorySortViewModel extends ViewModel {
         return mCurrentSort;
     }
 
-    public void setCurrentSort(CategorySortOrder order) {
-        mCurrentSort.setValue(order);
+    public void setCurrentSort(String orderID) {
+        mCurrentSortID.setValue(orderID);
     }
 }

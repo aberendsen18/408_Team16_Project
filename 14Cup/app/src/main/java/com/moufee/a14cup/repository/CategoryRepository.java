@@ -3,16 +3,13 @@ package com.moufee.a14cup.repository;
 import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
-import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moufee.a14cup.categorySorts.CategorySortOrder;
+import com.moufee.a14cup.util.FirestoreDocumentLiveData;
 import com.moufee.a14cup.util.FirestoreQueryLiveData;
 
 import java.util.ArrayList;
@@ -36,13 +33,6 @@ public class CategoryRepository {
     @Inject
     public CategoryRepository(FirebaseFirestore firebaseFirestore) {
         this.categorySortCollection = firebaseFirestore.collection("sortOrders");
-        categorySortCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                Log.d("SADF", "onComplete: ");
-
-            }
-        });
     }
 
 
@@ -54,7 +44,6 @@ public class CategoryRepository {
                 if (input != null)
                     for (DocumentSnapshot doc : input) {
                         if (doc.get("name") != null) {
-                            Log.d("SAF", "apply: " + doc.toString() + doc.get("name"));
                             CategorySortOrder order = doc.toObject(CategorySortOrder.class);
                             order.id = doc.getId();
                             result.add(order);
@@ -72,7 +61,6 @@ public class CategoryRepository {
                 Map<String, CategorySortOrder> result = new HashMap<>();
                 for (DocumentSnapshot doc : input) {
                     if (doc.get("name") != null) {
-                        Log.d("SAF", "apply2: " + doc.toString() + doc.get("name"));
                         CategorySortOrder order = doc.toObject(CategorySortOrder.class);
                         order.id = doc.getId();
                         result.put(doc.getId(), order);
@@ -83,8 +71,28 @@ public class CategoryRepository {
         });
     }
 
+    public LiveData<CategorySortOrder> getSortOrder(String sortOrderID) {
+        return Transformations.map(new FirestoreDocumentLiveData(categorySortCollection.document(sortOrderID)), new Function<DocumentSnapshot, CategorySortOrder>() {
+            @Override
+            public CategorySortOrder apply(DocumentSnapshot input) {
+                if (input == null || !input.exists()) return null;
+                CategorySortOrder order = input.toObject(CategorySortOrder.class);
+                order.id = input.getId();
+                return order;
+            }
+        });
+    }
+
     public void updateSortOrder(CategorySortOrder sortOrder) {
         categorySortCollection.document(sortOrder.id).set(sortOrder);
+    }
+
+    public void addSortOrder(CategorySortOrder sortOrder) {
+        categorySortCollection.add(sortOrder);
+    }
+
+    public void deleteSortOrder(CategorySortOrder sortOrder) {
+        categorySortCollection.document(sortOrder.id).delete();
     }
 
 

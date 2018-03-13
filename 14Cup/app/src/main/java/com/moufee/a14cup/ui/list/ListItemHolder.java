@@ -18,8 +18,9 @@ public class ListItemHolder extends RecyclerView.ViewHolder {
         mBinding = binding;
     }
 
-    public void bind(ShoppingListItem item) {
+    public void bind(ShoppingListItem item, OnListItemInteractionListener listener) {
         mBinding.setItem(item);
+        mBinding.setListener(listener);
         mBinding.executePendingBindings();
     }
 }

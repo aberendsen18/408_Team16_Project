@@ -23,7 +23,6 @@ import static junit.framework.Assert.assertEquals;
 @RunWith(JUnit4.class)
 public class CategoryComparatorTest {
 
-
     @Test
     public void sortsCorrectly() {
         List<String> categoryOrder = new ArrayList<>(Arrays.asList("Produce", "Dairy", "Bakery", "Frozen"));

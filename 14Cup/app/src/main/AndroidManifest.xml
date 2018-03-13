@@ -32,6 +32,14 @@
         <activity
             android:name=".ui.categorySorting.CategorySortActivity"
             android:parentActivityName=".ui.settings.SettingsActivity" />
+        <activity
+            android:name=".ui.settings.ListSettingsActivity"
+            android:label="@string/title_activity_list_settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.moufee.a14cup.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

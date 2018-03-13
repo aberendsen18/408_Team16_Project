@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.recipes.Ingredient;
 import com.moufee.a14cup.recipes.Recipe;
-import com.moufee.a14cup.ui.recipes.RecipeInfoFragment.OnListFragmentInteractionListener;
 import com.moufee.a14cup.ui.recipes.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
@@ -18,19 +17,16 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * {@link RecyclerView.Adapter} that can display a {@link Ingredient}
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeInfoRecyclerViewAdapter.ViewHolder> {
 
     private Recipe mRecipe;
-    private final OnListFragmentInteractionListener mListener;
 
-    public MyRecipeInfoRecyclerViewAdapter(Recipe recipe, OnListFragmentInteractionListener listener) {
+    public MyRecipeInfoRecyclerViewAdapter(Recipe recipe) {
 
         mRecipe = recipe;
-        mListener = listener;
     }
 
     @Override

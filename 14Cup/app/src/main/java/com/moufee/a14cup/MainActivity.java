@@ -60,7 +60,8 @@ import dagger.android.support.HasSupportFragmentInjector;
 
 public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector,
         MyListsFragment.OnListFragmentInteractionListener,
-        RecipeFragment.OnRecipeFragmentInteractionListener {
+        RecipeFragment.OnRecipeFragmentInteractionListener,
+        RecipeInfoFragment.OnRecipeInfoFragmentInteractionListener {
 
     @Inject
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidInjector;
@@ -92,6 +93,22 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mToolbar.setTitle("Add A Recipe"); // write a get recipe label method.
 
         rViewModel.setSelectedRecipe(item);
+    }
+
+    @Override
+    public void onRecipeInfoFragmentSubmit(ShoppingList list){
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
+
+        // Resets fragment if on a different fragment, IE SortOrders/Settings/etc
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
+        if (!(f instanceof ListDetailFragment)) {
+            ListDetailFragment fragment = ListDetailFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
+        }
+
+        mToolbar.setTitle(list.name);
+        mViewModel.setSelectedListID(list.id);
     }
 
     @Override

@@ -2,6 +2,10 @@ package com.moufee.a14cup.lists;
 
 import android.support.v7.util.DiffUtil;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
+
 /**
  * An item on a shopping list
  */
@@ -9,6 +13,8 @@ import android.support.v7.util.DiffUtil;
 public class ShoppingListItem {
     public String name;
     public String id;
+    @ServerTimestamp
+    public Date createdDate;
     public String category = "";
     public boolean completed = false;
     public static final DiffCallback DIFF_CALLBACK = new DiffCallback();

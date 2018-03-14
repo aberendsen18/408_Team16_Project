@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     }
 
     @Override
-    public void onRecipeInfoFragmentSubmit(ShoppingList list){
+    public void onRecipeInfoFragmentSubmit(ShoppingList list) {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
 
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 view = (LayoutInflater.from(MainActivity.this)).inflate(R.layout.add_new_list, null);
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
                 alertBuilder.setView(view);
-                final EditText ListName = (EditText) view.findViewById(R.id.list_name);
+                final EditText ListName = view.findViewById(R.id.list_name);
 
                 alertBuilder.setCancelable(true)
                         .setPositiveButton(R.string.action_new_list_positive, new DialogInterface.OnClickListener() {
@@ -232,21 +232,25 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel.getLists().observe(this, new Observer<List<ShoppingList>>() {
             @Override
             public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
-                if (shoppingLists != null) {
-                    recyclerViewAdapter.setLists(shoppingLists);
-                    if (shoppingLists.size() != 0) {
-                        ShoppingList firstList = shoppingLists.get(0);
-                        if (mViewModel.getSelectedListID().getValue() == null) {
-                            mViewModel.setSelectedListID(firstList.id);
-                            onListFragmentInteraction(firstList);
-                        } else {
-//                            onListFragmentInteraction(mViewModel.CurrentList);
-                        }
-                    } else {
-                        //TODO NO LISTS
-                    }
-                } else
+
+                MenuItem sortMenuItem = mToolbar.getMenu().findItem(R.id.action_choose_sort_order);
+
+                if (shoppingLists == null || shoppingLists.size() == 0) {
+                    mViewModel.setSelectedListID(null);
                     recyclerViewAdapter.setLists(new ArrayList<ShoppingList>());
+                    mToolbar.setTitle("My Lists");
+                    sortMenuItem.setVisible(false);
+                    return;
+                }
+
+                recyclerViewAdapter.setLists(shoppingLists);
+                sortMenuItem.setVisible(true);
+                ShoppingList firstList = shoppingLists.get(0);
+                if (mViewModel.getSelectedListID().getValue() == null) {
+                    mViewModel.setSelectedListID(firstList.id);
+                    onListFragmentInteraction(firstList);
+                }
+
             }
         });
         mViewModel.getCurrentUser().observe(this, new Observer<FirebaseUser>() {

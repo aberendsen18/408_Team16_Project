@@ -43,6 +43,7 @@ public class ListViewModel extends ViewModel {
         mCategoryRepository = categoryRepository;
         mUserRepository = userRepository;
         mCurrentUser = mUserRepository.getCurrentUser();
+        mSelectedListID.setValue(null);
         mListLiveData = Transformations.switchMap(mCurrentUser, new Function<FirebaseUser, LiveData<List<ShoppingList>>>() {
             @Override
             public LiveData<List<ShoppingList>> apply(FirebaseUser input) {
@@ -62,6 +63,7 @@ public class ListViewModel extends ViewModel {
         mSelectedList = Transformations.switchMap(mSelectedListID, new Function<String, LiveData<ShoppingList>>() {
             @Override
             public LiveData<ShoppingList> apply(String input) {
+                if (input == null) return null;
                 return mShoppingListRepository.getList(input);
             }
         });

@@ -39,6 +39,7 @@ public class RecipeRepository {
      */
     public LiveData<RecipesList> getRecipes(String search, Integer start, Integer finish) {
         final MutableLiveData<RecipesList> result = new MutableLiveData<>();
+        result.setValue(null);
         Call<RecipesList> recipesListCall = mEdamamService.searchRecipes(search, start, finish);
         recipesListCall.enqueue(new Callback<RecipesList>() {
             @Override

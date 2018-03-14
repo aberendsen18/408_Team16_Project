@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.lists.ShoppingList;
@@ -15,11 +16,13 @@ import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.repository.UserRepository;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 /**
  * Created by tyler on 3/4/18.
+ * A ViewModel that holds Recipe search results
  */
 
 public class RecipeViewModel extends ViewModel {
@@ -67,8 +70,12 @@ public class RecipeViewModel extends ViewModel {
         return mRecipesList;
     }
 
-    public void setQuery(String query) {
-        mQuery.setValue(query);
+    public void setQuery(@NonNull String query) {
+
+        String newQuery = query.toLowerCase(Locale.getDefault()).trim();
+        if (newQuery.equals(mQuery.getValue()))
+            return;
+        mQuery.setValue(newQuery);
     }
 
     public LiveData<Recipe> getSelectedRecipe() {

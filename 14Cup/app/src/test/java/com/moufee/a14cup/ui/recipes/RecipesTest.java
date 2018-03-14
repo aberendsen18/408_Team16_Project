@@ -28,7 +28,9 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 
@@ -99,6 +101,22 @@ public class RecipesTest {
         verify(mRecipeRepository).getRecipes(queryCaptor.capture(), anyInt(), anyInt());
         assertThat(queryCaptor.getValue(), is("apples"));
         verify(listObserver).onChanged(recipesList);
+    }
+
+
+    @Test
+    public void resetSameQuery() {
+        ArgumentCaptor<String> queryCaptor = ArgumentCaptor.forClass(String.class);
+        mRecipeViewModel.getRecipesList().observeForever(mock(Observer.class));
+        mRecipeViewModel.setQuery("APPLES");
+        verify(mRecipeRepository).getRecipes(queryCaptor.capture(), anyInt(), anyInt());
+        assertEquals(queryCaptor.getValue(), "apples");
+        reset(mRecipeRepository);
+        mRecipeViewModel.setQuery("apples");
+        verifyNoMoreInteractions(mRecipeRepository);
+        mRecipeViewModel.setQuery("Oranges");
+        verify(mRecipeRepository).getRecipes(queryCaptor.capture(), anyInt(), anyInt());
+        assertEquals(queryCaptor.getValue(), "oranges");
     }
 
 

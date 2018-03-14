@@ -33,6 +33,6 @@ public class ShoppingList {
 
     @Override
     public String toString() {
-        return id + " : " + name + " " + sortOrders;
+        return name;
     }
 }

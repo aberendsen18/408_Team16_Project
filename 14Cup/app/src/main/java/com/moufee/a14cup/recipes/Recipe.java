@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Created by tyler on 2/18/18.
+ * Represents a recipe from the Edamam API
  */
 
 public class Recipe {
@@ -18,44 +19,22 @@ public class Recipe {
     public List<Ingredient> ingredients; // list of ingredients for the recipe
     public double calories;
 
-    public Recipe(){
-
+    public Recipe() {
+        label = "";
+        ingredients = new ArrayList<>();
     }
 
 
-    public Recipe(String label, List<String> ingredientLines){
-        this.label = label;
-        this.ingredientLines = ingredientLines;
-    }
-
-    public Recipe(String label, String url, List<String> ingredientLines){
-        this.label = label;
-        this.ingredientLines = ingredientLines;
-        this.ingredients = new ArrayList<>();
-
-        for(String ing : ingredientLines){
-            this.ingredients.add(new Ingredient(ing));
-        }
-    }
-
-    public List<Ingredient> getIngredients(){
+    public List<Ingredient> getIngredients() {
         return this.ingredients;
     }
 
-    public String getIngredientText(int pos){
+    public String getIngredientText(int pos) {
         return this.ingredients.get(pos).getText();
     }
+
+    @Override
+    public String toString() {
+        return label;
+    }
 }
-
-/*class Ingredient{
-
-    public String text;
-
-    public Ingredient(String name){
-        this.text = name;
-    }
-
-    public String getText(){
-        return this.text;
-    }
-}*/

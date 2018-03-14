@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.recipes.Recipe;
@@ -90,7 +91,6 @@ public class RecipeFragment extends Fragment {
         mAdapter = new MyRecipeRecyclerViewAdapter(new ArrayList<RecipesList.Hit>(), mListener);
         mRecyclerView.setAdapter(mAdapter);
         setListeners();
-        
 
         return view;
     }
@@ -116,12 +116,14 @@ public class RecipeFragment extends Fragment {
         mRecipeViewModel.getRecipesList().observe(this, new Observer<RecipesList>() {
             @Override
             public void onChanged(@Nullable RecipesList recipesList) {
-                if (recipesList != null && recipesList.getHits() != null){
+                if (recipesList != null && recipesList.getHits() != null) {
+                    if (recipesList.hits.size() == 0) {
+                        Toast.makeText(getActivity(), "Looks like you hit the API limit.", Toast.LENGTH_LONG).show();
+                    }
                     mAdapter.setValues(recipesList.getHits());
                     mProgressBar.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     mProgressBar.setVisibility(View.VISIBLE);
                     mRecyclerView.setVisibility(View.INVISIBLE);
                 }

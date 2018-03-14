@@ -2,6 +2,7 @@ package com.moufee.a14cup.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.util.Log;
 
 import com.moufee.a14cup.api.EdamamService;
 import com.moufee.a14cup.recipes.RecipesList;
@@ -22,6 +23,7 @@ public class RecipeRepository {
 
 
     private EdamamService mEdamamService;
+    private static final String TAG = "RECIPE_REPOSITORY";
 
     @Inject
     public RecipeRepository(EdamamService edamamService) {
@@ -44,12 +46,16 @@ public class RecipeRepository {
         recipesListCall.enqueue(new Callback<RecipesList>() {
             @Override
             public void onResponse(Call<RecipesList> call, Response<RecipesList> response) {
-                result.setValue(response.body());
+                if (!response.isSuccessful())
+                    result.setValue(new RecipesList());
+                else
+                    result.setValue(response.body());
             }
 
             @Override
             public void onFailure(Call<RecipesList> call, Throwable t) {
-
+                Log.e(TAG, "onFailure: ", t);
+                result.setValue(new RecipesList());
             }
         });
         return result;

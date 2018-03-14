@@ -1,6 +1,8 @@
 package com.moufee.a14cup.util;
 
 import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.recipes.Recipe;
+import com.moufee.a14cup.recipes.RecipesList;
 
 import java.util.ArrayList;
 import java.util.List;

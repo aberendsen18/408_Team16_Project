@@ -17,7 +17,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -81,6 +83,7 @@ public class RecipesTest {
 
     @Test
     public void sendResultToUI() {
+        ArgumentCaptor<String> queryCaptor = ArgumentCaptor.forClass(String.class);
         MutableLiveData<RecipesList> recipesLiveData = new MutableLiveData<>();
         when(mRecipeRepository.getRecipes(anyString(), anyInt(), anyInt())).thenReturn(recipesLiveData);
         mRecipeViewModel = new RecipeViewModel(mRecipeRepository, mListRepository, mUserRepository);
@@ -93,7 +96,8 @@ public class RecipesTest {
         recipesLiveData.setValue(recipesList);
         verify(listObserver, never()).onChanged(recipesList);
         mRecipeViewModel.setQuery("apples");
-        verify(mRecipeRepository).getRecipes(anyString(), anyInt(), anyInt());
+        verify(mRecipeRepository).getRecipes(queryCaptor.capture(), anyInt(), anyInt());
+        assertThat(queryCaptor.getValue(), is("apples"));
         verify(listObserver).onChanged(recipesList);
     }
 

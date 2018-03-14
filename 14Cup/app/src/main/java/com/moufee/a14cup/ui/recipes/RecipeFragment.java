@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.moufee.a14cup.R;
@@ -43,6 +44,7 @@ public class RecipeFragment extends Fragment {
     ViewModelProvider.Factory mFactory;
     private RecyclerView mRecyclerView;
     private MyRecipeRecyclerViewAdapter mAdapter;
+    private ProgressBar mProgressBar;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -74,6 +76,7 @@ public class RecipeFragment extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     mRecipeViewModel.setQuery(searchRecipeName.getText().toString());
+                    searchRecipeName.setText("");
                 }
                 return false;
             }
@@ -81,6 +84,7 @@ public class RecipeFragment extends Fragment {
 
         // Set the adapter
         Context context = view.getContext();
+        mProgressBar = view.findViewById(R.id.loadingPanel);
         mRecyclerView = view.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mAdapter = new MyRecipeRecyclerViewAdapter(new ArrayList<RecipesList.Hit>(), mListener);
@@ -112,8 +116,16 @@ public class RecipeFragment extends Fragment {
         mRecipeViewModel.getRecipesList().observe(this, new Observer<RecipesList>() {
             @Override
             public void onChanged(@Nullable RecipesList recipesList) {
-                if (recipesList != null && recipesList.getHits() != null)
+                if (recipesList != null && recipesList.getHits() != null){
                     mAdapter.setValues(recipesList.getHits());
+                    mProgressBar.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                }
+                else {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.INVISIBLE);
+                }
+
             }
         });
     }

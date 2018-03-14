@@ -164,6 +164,10 @@ public class RecipeInfoFragment extends Fragment {
             public void onClick(View view) {
                 ShoppingList userList = (ShoppingList) mShoppingListSpinner.getSelectedItem();
                 List<String> checkedIngs = mRecyclerViewAdapter.getCheckedIngrediants();
+                if (userList == null){
+                    Toast.makeText(getActivity(), "Select a valid list.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 for (String ing : checkedIngs) {
                     mShoppingListRepo.addItem(userList.id, new ShoppingListItem(ing));
@@ -173,7 +177,7 @@ public class RecipeInfoFragment extends Fragment {
                     mListener.onRecipeInfoFragmentSubmit(userList);
                 }
                 else{
-                    Toast.makeText(getActivity(), "You must select at least one ingredient to add to the shopping list.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "You must select at least one ingredient.", Toast.LENGTH_LONG).show();
                 }
             }
         });

@@ -13,9 +13,7 @@ import com.moufee.a14cup.util.FirestoreDocumentLiveData;
 import com.moufee.a14cup.util.FirestoreQueryLiveData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -37,7 +35,7 @@ public class CategoryRepository {
 
 
     public LiveData<List<CategorySortOrder>> getSortOrders(String userID) {
-        return Transformations.map(new FirestoreQueryLiveData(categorySortCollection), new Function<QuerySnapshot, List<CategorySortOrder>>() {
+        return Transformations.map(new FirestoreQueryLiveData(categorySortCollection.whereEqualTo("owner", userID)), new Function<QuerySnapshot, List<CategorySortOrder>>() {
             @Override
             public List<CategorySortOrder> apply(QuerySnapshot input) {
                 List<CategorySortOrder> result = new ArrayList<>();
@@ -49,23 +47,6 @@ public class CategoryRepository {
                             result.add(order);
                         }
                     }
-                return result;
-            }
-        });
-    }
-
-    public LiveData<Map<String, CategorySortOrder>> getSortOrdersMap(String userID) {
-        return Transformations.map(new FirestoreQueryLiveData(categorySortCollection), new Function<QuerySnapshot, Map<String, CategorySortOrder>>() {
-            @Override
-            public Map<String, CategorySortOrder> apply(QuerySnapshot input) {
-                Map<String, CategorySortOrder> result = new HashMap<>();
-                for (DocumentSnapshot doc : input) {
-                    if (doc.get("name") != null) {
-                        CategorySortOrder order = doc.toObject(CategorySortOrder.class);
-                        order.id = doc.getId();
-                        result.put(doc.getId(), order);
-                    }
-                }
                 return result;
             }
         });

@@ -7,6 +7,7 @@ import android.arch.lifecycle.Transformations;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.lists.ShoppingListItem;
@@ -25,6 +26,7 @@ import javax.inject.Singleton;
 @Singleton
 public class ShoppingListRepository {
     private final CollectionReference listsCollection;
+    private static final String TAG = "LIST REPOSITORY";
 
 
     @Inject
@@ -33,7 +35,7 @@ public class ShoppingListRepository {
     }
 
     public LiveData<List<ShoppingList>> getShoppingLists(String userID) {
-        return Transformations.map(new FirestoreQueryLiveData(listsCollection.whereEqualTo("owner", userID)), new Function<QuerySnapshot, List<ShoppingList>>() {
+        return Transformations.map(new FirestoreQueryLiveData(listsCollection.whereEqualTo("owner", userID).orderBy("createdDate", Query.Direction.ASCENDING)), new Function<QuerySnapshot, List<ShoppingList>>() {
             @Override
             public List<ShoppingList> apply(QuerySnapshot input) {
                 List<ShoppingList> lists = new ArrayList<>();
@@ -51,7 +53,7 @@ public class ShoppingListRepository {
     }
 
     public LiveData<List<ShoppingListItem>> getItemsForList(String listID) {
-        return Transformations.map(new FirestoreQueryLiveData(listsCollection.document(listID).collection("items")), new Function<QuerySnapshot, List<ShoppingListItem>>() {
+        return Transformations.map(new FirestoreQueryLiveData(listsCollection.document(listID).collection("items").orderBy("createdDate", Query.Direction.DESCENDING)), new Function<QuerySnapshot, List<ShoppingListItem>>() {
             @Override
             public List<ShoppingListItem> apply(QuerySnapshot input) {
                 List<ShoppingListItem> items = new ArrayList<>();

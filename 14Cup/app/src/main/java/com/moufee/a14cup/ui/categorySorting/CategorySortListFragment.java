@@ -21,20 +21,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.categorySorts.CategorySortOrder;
 import com.moufee.a14cup.repository.CategoryRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
-
-import static com.moufee.a14cup.validation.DataValidation.validateCategoryName;
 
 /**
  * Created by Travis Kovacic on 2/12/2018.
@@ -83,7 +79,7 @@ public class CategorySortListFragment extends Fragment {
             recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(recyclerViewAdapter);
-            ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
                 @Override
                 public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                     return false;
@@ -131,6 +127,7 @@ public class CategorySortListFragment extends Fragment {
                         EditText input = myView.findViewById(R.id.category_name);
                         String sortName = input.getText().toString();
                         CategorySortOrder order = new CategorySortOrder(sortName);
+                        order.owner = mViewModel.getCurrentUser().getUid();
                         cListRepository.addSortOrder(order);
                     }
                 });
@@ -154,10 +151,10 @@ public class CategorySortListFragment extends Fragment {
     }
 
     public void showSoftKeyboard(View view) {
-        if (view.requestFocus() || true) {
+        if (view.requestFocus()) {
             InputMethodManager imm = (InputMethodManager)
                     getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         }
     }
 

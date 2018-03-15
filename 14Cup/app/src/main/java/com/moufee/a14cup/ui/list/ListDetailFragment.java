@@ -52,6 +52,7 @@ public class ListDetailFragment extends Fragment {
     ViewModelProvider.Factory mFactory;
     @Inject
     ShoppingListRepository mListRepository;
+    private TextView mNewItemEdit;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -83,19 +84,24 @@ public class ListDetailFragment extends Fragment {
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
 
-        final TextView newItemEdit = view.findViewById(R.id.item_name_input);
-        newItemEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mNewItemEdit = view.findViewById(R.id.item_name_input);
+        mNewItemEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     ShoppingListItem NewItem = new ShoppingListItem();
-                    NewItem.name = newItemEdit.getText().toString();
+                    NewItem.name = mNewItemEdit.getText().toString();
 
                     //do the data validation
                     String str = DataValidation.validateShoppingListItem(NewItem);
                     if (str.equals("valid")) {
-                        mListRepository.addItem(mViewModel.getSelectedListID().getValue(), NewItem);
-                        newItemEdit.setText("");
+                        String selectedList = mViewModel.getSelectedListID().getValue();
+                        if (selectedList == null) {
+                            Toast.makeText(getActivity(), "Select A List", Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                        mListRepository.addItem(selectedList, NewItem);
+                        mNewItemEdit.setText("");
                         return true;
                     } else {
                         //print the error to the screen
@@ -144,7 +150,7 @@ public class ListDetailFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof AppCompatActivity) {
             mViewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(ListViewModel.class);
-            mCategoryAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1);
+            mCategoryAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1);
             setListeners();
         }
     }
@@ -160,6 +166,9 @@ public class ListDetailFragment extends Fragment {
                     }
                     List<ShoppingListItem> newItems = new ArrayList<>(shoppingListItems);
                     mRecyclerViewAdapter.submitList(newItems);
+                    mRecyclerViewAdapter.notifyDataSetChanged();
+                } else {
+                    mRecyclerViewAdapter.submitList(new ArrayList<ShoppingListItem>());
                     mRecyclerViewAdapter.notifyDataSetChanged();
                 }
             }
@@ -179,17 +188,28 @@ public class ListDetailFragment extends Fragment {
                 mRecyclerViewAdapter.submitList(newItems);
             }
         });
+        mViewModel.getSelectedListID().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                if (s == null) {
+                    mNewItemEdit.setVisibility(View.INVISIBLE);
+                    mRecyclerView.setVisibility(View.INVISIBLE);
+                } else {
+                    mNewItemEdit.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         mListener = new OnListItemInteractionListener() {
             @Override
             public boolean onLongClick(final ShoppingListItem item) {
                 if (mCategoryAdapter.getCount() != 0)
                     new AlertDialog.Builder(getActivity())
-                            .setTitle(item.name + ": Choose a Category")
+                            .setTitle(R.string.prompt_choose_category)
                             .setAdapter(mCategoryAdapter, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    String category = mCategoryAdapter.getItem(which);
-                                    item.category = category;
+                                    item.category = mCategoryAdapter.getItem(which);
                                     mListRepository.updateItem(mViewModel.getSelectedListID().getValue(), item);
                                 }
                             })

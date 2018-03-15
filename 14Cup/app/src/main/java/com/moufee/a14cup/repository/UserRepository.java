@@ -34,5 +34,9 @@ public class UserRepository {
         });
     }
 
+    public FirebaseUser getUserSync() {
+        return mFirebaseAuth.getCurrentUser();
+    }
+
 
 }

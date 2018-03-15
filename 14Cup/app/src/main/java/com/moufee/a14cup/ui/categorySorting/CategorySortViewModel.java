@@ -12,7 +12,6 @@ import com.moufee.a14cup.repository.CategoryRepository;
 import com.moufee.a14cup.repository.UserRepository;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -58,5 +57,9 @@ public class CategorySortViewModel extends ViewModel {
 
     public void setCurrentSort(String orderID) {
         mCurrentSortID.setValue(orderID);
+    }
+
+    public FirebaseUser getCurrentUser() {
+        return mUserRepository.getUserSync();
     }
 }

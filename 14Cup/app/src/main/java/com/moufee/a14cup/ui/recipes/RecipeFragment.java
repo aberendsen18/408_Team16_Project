@@ -118,7 +118,7 @@ public class RecipeFragment extends Fragment {
             public void onChanged(@Nullable RecipesList recipesList) {
                 if (recipesList != null && recipesList.getHits() != null) {
                     if (recipesList.hits.size() == 0) {
-                        Toast.makeText(getActivity(), "Looks like you hit the API limit.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Try again in a minute.", Toast.LENGTH_LONG).show();
                     }
                     mAdapter.setValues(recipesList.getHits());
                     mProgressBar.setVisibility(View.GONE);

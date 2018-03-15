@@ -1,5 +1,6 @@
 package com.moufee.a14cup.recipes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,6 +10,7 @@ import java.util.List;
 public class RecipesList {
 
     public RecipesList() {
+        hits = new ArrayList<>();
     }
 
     public List<Hit> hits;

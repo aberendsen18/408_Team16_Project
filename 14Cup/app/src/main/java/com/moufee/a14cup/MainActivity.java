@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.moufee.a14cup.categorySorts.CategorySortOrder;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
 import com.moufee.a14cup.recipes.Recipe;
@@ -48,6 +50,7 @@ import com.moufee.a14cup.ui.settings.SettingsActivity;
 import com.moufee.a14cup.validation.DataValidation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -60,7 +63,8 @@ import dagger.android.support.HasSupportFragmentInjector;
 
 public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector,
         MyListsFragment.OnListFragmentInteractionListener,
-        RecipeFragment.OnRecipeFragmentInteractionListener {
+        RecipeFragment.OnRecipeFragmentInteractionListener,
+        RecipeInfoFragment.OnRecipeInfoFragmentInteractionListener {
 
     @Inject
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidInjector;
@@ -80,9 +84,10 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     private Toolbar mToolbar;
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
     private ActivityMainBinding mBinding;
+    private ArrayAdapter<CategorySortOrder> mCategoryAdapter;
 
     @Override
-    public void onRecipeFragmentInteraction(Recipe item){
+    public void onRecipeFragmentInteraction(Recipe item) {
         RecipeInfoFragment fragment = RecipeInfoFragment.newInstance(1);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, fragment)
@@ -92,6 +97,22 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mToolbar.setTitle("Add A Recipe"); // write a get recipe label method.
 
         rViewModel.setSelectedRecipe(item);
+    }
+
+    @Override
+    public void onRecipeInfoFragmentSubmit(ShoppingList list) {
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
+
+        // Resets fragment if on a different fragment, IE SortOrders/Settings/etc
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
+        if (!(f instanceof ListDetailFragment)) {
+            ListDetailFragment fragment = ListDetailFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
+        }
+
+        mToolbar.setTitle(list.name);
+        mViewModel.setSelectedListID(list.id);
     }
 
     @Override
@@ -126,6 +147,9 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel = ViewModelProviders.of(this, viewModelFactory).get(ListViewModel.class);
         recyclerViewAdapter = new MyListsRecyclerViewAdapter(new ArrayList<ShoppingList>(), this);
 
+        mCategoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+
+
         rViewModel = ViewModelProviders.of(this, viewModelFactory).get(RecipeViewModel.class);
         mBinding.newListButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 view = (LayoutInflater.from(MainActivity.this)).inflate(R.layout.add_new_list, null);
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
                 alertBuilder.setView(view);
-                final EditText ListName = (EditText) view.findViewById(R.id.list_name);
+                final EditText ListName = view.findViewById(R.id.list_name);
 
                 alertBuilder.setCancelable(true)
                         .setPositiveButton(R.string.action_new_list_positive, new DialogInterface.OnClickListener() {
@@ -208,21 +232,25 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mViewModel.getLists().observe(this, new Observer<List<ShoppingList>>() {
             @Override
             public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
-                if (shoppingLists != null) {
-                    recyclerViewAdapter.setLists(shoppingLists);
-                    if (shoppingLists.size() != 0) {
-                        ShoppingList firstList = shoppingLists.get(0);
-                        if (mViewModel.getSelectedListID().getValue() == null) {
-                            mViewModel.setSelectedListID(firstList.id);
-                            onListFragmentInteraction(firstList);
-                        } else {
-//                            onListFragmentInteraction(mViewModel.CurrentList);
-                        }
-                    } else {
-                        //TODO NO LISTS
-                    }
-                } else
+
+                MenuItem sortMenuItem = mToolbar.getMenu().findItem(R.id.action_choose_sort_order);
+
+                if (shoppingLists == null || shoppingLists.size() == 0) {
+                    mViewModel.setSelectedListID(null);
                     recyclerViewAdapter.setLists(new ArrayList<ShoppingList>());
+                    mToolbar.setTitle("My Lists");
+                    sortMenuItem.setVisible(false);
+                    return;
+                }
+
+                recyclerViewAdapter.setLists(shoppingLists);
+                sortMenuItem.setVisible(true);
+                ShoppingList firstList = shoppingLists.get(0);
+                if (mViewModel.getSelectedListID().getValue() == null) {
+                    mViewModel.setSelectedListID(firstList.id);
+                    onListFragmentInteraction(firstList);
+                }
+
             }
         });
         mViewModel.getCurrentUser().observe(this, new Observer<FirebaseUser>() {
@@ -235,6 +263,23 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                     mBinding.setUser(firebaseUser);
             }
         });
+        mViewModel.getSortOrders().observe(this, new Observer<List<CategorySortOrder>>() {
+            @Override
+            public void onChanged(@Nullable List<CategorySortOrder> categorySortOrders) {
+                mCategoryAdapter.clear();
+                if (categorySortOrders != null)
+                    mCategoryAdapter.addAll(categorySortOrders);
+            }
+        });
+
+        mViewModel.getSelectedList().observe(this, new Observer<ShoppingList>() {
+            @Override
+            public void onChanged(@Nullable ShoppingList shoppingList) {
+                if (shoppingList != null)
+                    mToolbar.setTitle(shoppingList.name);
+            }
+        });
+
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -304,6 +349,22 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             case R.id.action_settings:
                 startActivity(SettingsActivity.getIntent(getApplicationContext()));
                 return true;
+            case R.id.action_choose_sort_order:
+                new AlertDialog.Builder(this).setAdapter(mCategoryAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        CategorySortOrder selectedOrder = mCategoryAdapter.getItem(which);
+                        ShoppingList currentList = mViewModel.getSelectedList().getValue();
+                        if (currentList == null) return;
+                        if (currentList.sortOrders == null)
+                            currentList.sortOrders = new HashMap<>();
+                        currentList.sortOrders.put(mViewModel.getCurrentUser().getValue().getUid(), selectedOrder.id);
+                        mListRepository.updateList(currentList);
+                    }
+                })
+                        .setTitle(R.string.title_choose_sort_order)
+                        .show();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -313,4 +374,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return mDispatchingAndroidInjector;
     }
+
+
 }

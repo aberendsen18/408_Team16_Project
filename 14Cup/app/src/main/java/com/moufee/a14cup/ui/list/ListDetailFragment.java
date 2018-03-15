@@ -4,9 +4,11 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,14 +18,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.moufee.a14cup.R;
+import com.moufee.a14cup.categorySorts.CategoryComparator;
+import com.moufee.a14cup.categorySorts.CategorySortOrder;
 import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.validation.DataValidation;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -31,21 +38,21 @@ import javax.inject.Inject;
 import dagger.android.support.AndroidSupportInjection;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * A fragment that displays a list of Items on a shopping list.
  */
 public class ListDetailFragment extends Fragment {
 
-    private OnListFragmentInteractionListener mListener;
+    private OnListItemInteractionListener mListener;
     private ListViewModel mViewModel;
-    private ListDetailRecyclerViewAdapter mRecyclerViewAdapter = new ListDetailRecyclerViewAdapter();
+    private ListDetailRecyclerViewAdapter mRecyclerViewAdapter;
     private RecyclerView mRecyclerView;
+    private ArrayAdapter<String> mCategoryAdapter;
+    private static final String TAG = "LIST_DETAIL_FRAGMENT";
     @Inject
     ViewModelProvider.Factory mFactory;
     @Inject
     ShoppingListRepository mListRepository;
+    private TextView mNewItemEdit;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -77,19 +84,24 @@ public class ListDetailFragment extends Fragment {
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
 
-        final TextView newItemEdit = view.findViewById(R.id.item_name_input);
-        newItemEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mNewItemEdit = view.findViewById(R.id.item_name_input);
+        mNewItemEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     ShoppingListItem NewItem = new ShoppingListItem();
-                    NewItem.name = newItemEdit.getText().toString();
+                    NewItem.name = mNewItemEdit.getText().toString();
 
                     //do the data validation
                     String str = DataValidation.validateShoppingListItem(NewItem);
                     if (str.equals("valid")) {
-                        mListRepository.addItem(mViewModel.getSelectedListID().getValue(), NewItem);
-                        newItemEdit.setText("");
+                        String selectedList = mViewModel.getSelectedListID().getValue();
+                        if (selectedList == null) {
+                            Toast.makeText(getActivity(), "Select A List", Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                        mListRepository.addItem(selectedList, NewItem);
+                        mNewItemEdit.setText("");
                         return true;
                     } else {
                         //print the error to the screen
@@ -138,14 +150,9 @@ public class ListDetailFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof AppCompatActivity) {
             mViewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(ListViewModel.class);
+            mCategoryAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1);
             setListeners();
         }
-        /*if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }*/
     }
 
     private void setListeners() {
@@ -153,10 +160,67 @@ public class ListDetailFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<ShoppingListItem> shoppingListItems) {
                 if (shoppingListItems != null) {
-                    mRecyclerViewAdapter.setItems(shoppingListItems);
+                    CategorySortOrder sortOrder = mViewModel.getCurrentSortOrder().getValue();
+                    if (sortOrder != null) {
+                        Collections.sort(shoppingListItems, new CategoryComparator(sortOrder));
+                    }
+                    List<ShoppingListItem> newItems = new ArrayList<>(shoppingListItems);
+                    mRecyclerViewAdapter.submitList(newItems);
+                    mRecyclerViewAdapter.notifyDataSetChanged();
+                } else {
+                    mRecyclerViewAdapter.submitList(new ArrayList<ShoppingListItem>());
+                    mRecyclerViewAdapter.notifyDataSetChanged();
                 }
             }
         });
+        mViewModel.getCurrentSortOrder().observe(this, new Observer<CategorySortOrder>() {
+            @Override
+            public void onChanged(@Nullable CategorySortOrder categorySortOrder) {
+                mCategoryAdapter.clear();
+                if (categorySortOrder == null)
+                    return;
+                mCategoryAdapter.addAll(categorySortOrder.categoryOrder);
+                List<ShoppingListItem> items = mViewModel.getCurrentListItems().getValue();
+                if (items == null) return;
+                Collections.sort(items, new CategoryComparator(categorySortOrder));
+                // it doesn't detect the sorting change if the new list refers to the same object
+                List<ShoppingListItem> newItems = new ArrayList<>(items);
+                mRecyclerViewAdapter.submitList(newItems);
+            }
+        });
+        mViewModel.getSelectedListID().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                if (s == null) {
+                    mNewItemEdit.setVisibility(View.INVISIBLE);
+                    mRecyclerView.setVisibility(View.INVISIBLE);
+                } else {
+                    mNewItemEdit.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        mListener = new OnListItemInteractionListener() {
+            @Override
+            public boolean onLongClick(final ShoppingListItem item) {
+                if (mCategoryAdapter.getCount() != 0)
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.prompt_choose_category)
+                            .setAdapter(mCategoryAdapter, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    item.category = mCategoryAdapter.getItem(which);
+                                    mListRepository.updateItem(mViewModel.getSelectedListID().getValue(), item);
+                                }
+                            })
+                            .show();
+                else {
+                    Toast.makeText(getActivity(), "Choose a sort order first.", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        };
+        mRecyclerViewAdapter = new ListDetailRecyclerViewAdapter(mListener);
     }
 
     @Override
@@ -165,17 +229,4 @@ public class ListDetailFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(ShoppingListItem item);
-    }
 }

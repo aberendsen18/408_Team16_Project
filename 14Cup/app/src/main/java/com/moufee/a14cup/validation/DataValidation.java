@@ -11,7 +11,7 @@ public abstract class DataValidation {
 
     //private method that validates a shopping list
     public static String validateShoppingList(ShoppingList s) {
-        if (s.name == null || s.name.length() == 0 || s.name.isEmpty()) {
+        if (s.name == null || s.name.length() == 0 || s.name.isEmpty() || s.name.trim().length() == 0) {
             return "Please enter a list title!";
         } else if (s.name.length() > 256) {
             return "The title that you entered is too long!";
@@ -22,7 +22,7 @@ public abstract class DataValidation {
 
     //private method that validates a shopping list item
     public static String validateShoppingListItem(ShoppingListItem s) {
-        if (s.name == null || s.name.length() == 0 || s.name.isEmpty()) {
+        if (s.name == null || s.name.length() == 0 || s.name.isEmpty() || s.name.trim().length() == 0) {
             return "Please enter an item name!";
         } else if (s.name.length() > 256) {
             return "The item that you entered is too long!";
@@ -33,7 +33,7 @@ public abstract class DataValidation {
 
     //private method that validates a shopping list item
     public static String validateCategoryName(String category) {
-        if (category == null || category.length() == 0 || category.isEmpty()) {
+        if (category == null || category.length() == 0 || category.isEmpty() || category.trim().length() == 0) {
             return "Please enter an category name!";
         } else if (category.length() > 256) {
             return "The category that you entered is too long!";

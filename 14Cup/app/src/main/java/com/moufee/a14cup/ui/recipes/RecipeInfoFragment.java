@@ -14,20 +14,29 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.moufee.a14cup.R;
+import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.repository.RecipeRepository;
+import com.moufee.a14cup.repository.ShoppingListRepository;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment that displays information about a {@link Recipe}
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnRecipeInfoFragmentInteractionListener}
  * interface.
  */
 public class RecipeInfoFragment extends Fragment {
@@ -38,13 +47,18 @@ public class RecipeInfoFragment extends Fragment {
     private int mColumnCount = 1;
     private MyRecipeInfoRecyclerViewAdapter mRecyclerViewAdapter;
     private RecipeViewModel mViewModel;
-    private OnListFragmentInteractionListener mListener;
+    private OnRecipeInfoFragmentInteractionListener mListener;
     private TextView mRecipeTitle;
+    private Spinner mShoppingListSpinner;
+    private Button mSubmittButton;
+    private ArrayAdapter<ShoppingList> mAdapter;
 
     @Inject
     ViewModelProvider.Factory mFactory;
     @Inject
     RecipeRepository mRecipeRepo;
+    @Inject
+    ShoppingListRepository mShoppingListRepo;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -78,19 +92,30 @@ public class RecipeInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_info_list, container, false);
+        Context context = view.getContext();
 
-        mRecipeTitle = (TextView) view.findViewById(R.id.textViewRecipeName);
 
-                // Set the adapter
-            Context context = view.getContext();
+        mRecipeTitle = view.findViewById(R.id.textViewRecipeName);
+        mSubmittButton = view.findViewById(R.id.buttonAddRecipe);
+
+        // User shopping list spinner
+        mShoppingListSpinner = view.findViewById(R.id.shoppingListSpinner);
+
+        mAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item);
+        mShoppingListSpinner.setAdapter(mAdapter);
+
+
+        // Set the adapter
         RecyclerView recyclerView = view.findViewById(R.id.ingredientsListRecyclerView);
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            //mRecyclerViewAdapter = new MyRecipeInfoRecyclerViewAdapter(mViewModel.getSelectedRecipe(), mListener);
-            recyclerView.setAdapter(mRecyclerViewAdapter);
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+        }
+        //mRecyclerViewAdapter = new MyRecipeInfoRecyclerViewAdapter(mViewModel.getSelectedRecipe(), mListener);
+        recyclerView.setAdapter(mRecyclerViewAdapter);
+
+        setListeners();
 
         return view;
     }
@@ -102,19 +127,18 @@ public class RecipeInfoFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof AppCompatActivity) {
             mViewModel = ViewModelProviders.of((AppCompatActivity) context, mFactory).get(RecipeViewModel.class);
-            mRecyclerViewAdapter = new MyRecipeInfoRecyclerViewAdapter(mViewModel.getSelectedRecipe(), mListener);
-            setListeners();
+            mRecyclerViewAdapter = new MyRecipeInfoRecyclerViewAdapter();
         }
-        /*if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
+        if (context instanceof OnRecipeInfoFragmentInteractionListener) {
+            mListener = (OnRecipeInfoFragmentInteractionListener) context;
+        } /*else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }*/
     }
 
-    private void setListeners(){
-        mViewModel.getSelectedLiveDataRecipe().observe(this, new Observer<Recipe>() {
+    private void setListeners() {
+        mViewModel.getSelectedRecipe().observe(this, new Observer<Recipe>() {
             @Override
             public void onChanged(@Nullable Recipe recipe) {
                 if (recipe != null) {
@@ -123,12 +147,46 @@ public class RecipeInfoFragment extends Fragment {
                 }
             }
         });
+
+        mViewModel.getShoppingLists().observe(this, new Observer<List<ShoppingList>>() {
+            @Override
+            public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
+                mAdapter.clear();
+                if (shoppingLists != null) {
+                    mAdapter.addAll(shoppingLists);
+                }
+                mShoppingListSpinner.setAdapter(mAdapter);
+            }
+        });
+
+        mSubmittButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShoppingList userList = (ShoppingList) mShoppingListSpinner.getSelectedItem();
+                List<String> checkedIngs = mRecyclerViewAdapter.getCheckedIngrediants();
+                if (userList == null){
+                    Toast.makeText(getActivity(), "Select a valid list.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                for (String ing : checkedIngs) {
+                    mShoppingListRepo.addItem(userList.id, new ShoppingListItem(ing));
+                }
+
+                if(checkedIngs.size() > 0){
+                    mListener.onRecipeInfoFragmentSubmit(userList);
+                }
+                else{
+                    Toast.makeText(getActivity(), "You must select at least one ingredient.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     /**
@@ -141,8 +199,8 @@ public class RecipeInfoFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+    public interface OnRecipeInfoFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Recipe item);
+        void onRecipeInfoFragmentSubmit(ShoppingList list);
     }
 }

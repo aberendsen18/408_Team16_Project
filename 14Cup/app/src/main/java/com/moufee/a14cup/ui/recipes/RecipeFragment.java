@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.recipes.RecipesList;
+import com.moufee.a14cup.util.Resource;
 
 import java.util.ArrayList;
 
@@ -66,7 +68,7 @@ public class RecipeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_recipe_list, container, false);
@@ -113,21 +115,26 @@ public class RecipeFragment extends Fragment {
 
 
     private void setListeners() {
-        mRecipeViewModel.getRecipesList().observe(this, new Observer<RecipesList>() {
+        mRecipeViewModel.getRecipesList().observe(this, new Observer<Resource<RecipesList>>() {
             @Override
-            public void onChanged(@Nullable RecipesList recipesList) {
-                if (recipesList != null && recipesList.getHits() != null) {
-                    if (recipesList.hits.size() == 0) {
-                        Toast.makeText(getActivity(), "Try again in a minute.", Toast.LENGTH_LONG).show();
-                    }
-                    mAdapter.setValues(recipesList.getHits());
-                    mProgressBar.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                } else {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.INVISIBLE);
-                }
+            public void onChanged(@Nullable Resource<RecipesList> recipesListResource) {
+                // should never be null now
+                if (recipesListResource == null) return;
 
+                switch (recipesListResource.status) {
+                    case LOADING:
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.INVISIBLE);
+                        break;
+                    case ERROR:
+                        Toast.makeText(getActivity(), recipesListResource.message, Toast.LENGTH_LONG).show();
+                        mAdapter.setValues(new ArrayList<RecipesList.Hit>());
+                    case SUCCESS:
+                        mProgressBar.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        if (recipesListResource.data != null)
+                            mAdapter.setValues(recipesListResource.data.getHits());
+                }
             }
         });
     }

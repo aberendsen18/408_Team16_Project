@@ -14,6 +14,7 @@ import com.moufee.a14cup.recipes.RecipesList;
 import com.moufee.a14cup.repository.RecipeRepository;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.repository.UserRepository;
+import com.moufee.a14cup.util.Resource;
 
 import java.util.List;
 import java.util.Locale;
@@ -33,7 +34,7 @@ public class RecipeViewModel extends ViewModel {
 
     private LiveData<List<ShoppingList>> mShoppingListLiveData;
     private MutableLiveData<Recipe> mSelectedRecipe = new MutableLiveData<>();
-    private LiveData<RecipesList> mRecipesList;
+    private LiveData<Resource<RecipesList>> mRecipesList;
     private LiveData<FirebaseUser> mCurrentUser;
     private MutableLiveData<String> mQuery = new MutableLiveData<>();
 
@@ -52,13 +53,12 @@ public class RecipeViewModel extends ViewModel {
             }
         });
 
-        mRecipesList = Transformations.switchMap(mQuery, new Function<String, LiveData<RecipesList>>() {
+        mRecipesList = Transformations.switchMap(mQuery, new Function<String, LiveData<Resource<RecipesList>>>() {
             @Override
-            public LiveData<RecipesList> apply(String input) {
+            public LiveData<Resource<RecipesList>> apply(String input) {
                 return mRecipeRepository.getRecipes(input, 0, 25);
             }
         });
-
     }
 
     // Store the state of the selected recipe from the RecipeFragment
@@ -66,7 +66,7 @@ public class RecipeViewModel extends ViewModel {
         mSelectedRecipe.setValue(recipe);
     }
 
-    public LiveData<RecipesList> getRecipesList() {
+    public LiveData<Resource<RecipesList>> getRecipesList() {
         return mRecipesList;
     }
 

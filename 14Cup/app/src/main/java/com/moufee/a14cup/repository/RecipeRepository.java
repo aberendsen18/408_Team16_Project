@@ -2,10 +2,12 @@ package com.moufee.a14cup.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.moufee.a14cup.api.EdamamService;
 import com.moufee.a14cup.recipes.RecipesList;
+import com.moufee.a14cup.util.Resource;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -39,23 +41,23 @@ public class RecipeRepository {
      * @param finish The finishing location (Should be the number of items unless you are continuing a search)
      * @return A LiveData containing the RecipesList of results
      */
-    public LiveData<RecipesList> getRecipes(String search, Integer start, Integer finish) {
-        final MutableLiveData<RecipesList> result = new MutableLiveData<>();
-        result.setValue(null);
+    public LiveData<Resource<RecipesList>> getRecipes(String search, Integer start, Integer finish) {
+        final MutableLiveData<Resource<RecipesList>> result = new MutableLiveData<>();
+        result.setValue(Resource.<RecipesList>loading(null));
         Call<RecipesList> recipesListCall = mEdamamService.searchRecipes(search, start, finish);
         recipesListCall.enqueue(new Callback<RecipesList>() {
             @Override
-            public void onResponse(Call<RecipesList> call, Response<RecipesList> response) {
+            public void onResponse(@NonNull Call<RecipesList> call, @NonNull Response<RecipesList> response) {
                 if (!response.isSuccessful())
-                    result.setValue(new RecipesList());
+                    result.setValue(Resource.<RecipesList>error("API Error.", null));
                 else
-                    result.setValue(response.body());
+                    result.setValue(Resource.success(response.body()));
             }
 
             @Override
-            public void onFailure(Call<RecipesList> call, Throwable t) {
+            public void onFailure(@NonNull Call<RecipesList> call, @NonNull Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
-                result.setValue(new RecipesList());
+                result.setValue(Resource.<RecipesList>error("HTTP Error", null));
             }
         });
         return result;

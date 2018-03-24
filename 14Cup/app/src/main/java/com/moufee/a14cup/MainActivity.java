@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         RecipeInfoFragment fragment = RecipeInfoFragment.newInstance(1);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, fragment)
-                .addToBackStack(null)
+                //removed addToBackStack to create defect
                 .commit();
         //mDrawerLayout.closeDrawer(GravityCompat.START);
         mToolbar.setTitle("Add A Recipe"); // write a get recipe label method.

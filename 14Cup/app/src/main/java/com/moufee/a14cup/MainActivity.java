@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                     mViewModel.setSelectedListID(null);
                     recyclerViewAdapter.setLists(new ArrayList<ShoppingList>());
                     mToolbar.setTitle("My Lists");
-                    sortMenuItem.setVisible(false);
+//                    sortMenuItem.setVisible(false);
                     return;
                 }
 

@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                 if (shoppingLists == null || shoppingLists.size() == 0) {
                     mViewModel.setSelectedListID(null);
                     recyclerViewAdapter.setLists(new ArrayList<ShoppingList>());
-                    mToolbar.setTitle("My Lists");
+//                    mToolbar.setTitle("My Lists");
 //                    sortMenuItem.setVisible(false);
                     return;
                 }

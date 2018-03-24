@@ -164,9 +164,10 @@ public class ListDetailFragment extends Fragment {
                     if (sortOrder != null) {
                         Collections.sort(shoppingListItems, new CategoryComparator(sortOrder));
                     }
+                    // changed to create defect (but doesn't seem to have any effect)
                     List<ShoppingListItem> newItems = new ArrayList<>(shoppingListItems);
-                    mRecyclerViewAdapter.submitList(newItems);
-                    mRecyclerViewAdapter.notifyDataSetChanged();
+                    mRecyclerViewAdapter.submitList(shoppingListItems);
+//                    mRecyclerViewAdapter.notifyDataSetChanged();
                 } else {
                     mRecyclerViewAdapter.submitList(new ArrayList<ShoppingListItem>());
                     mRecyclerViewAdapter.notifyDataSetChanged();
@@ -185,7 +186,8 @@ public class ListDetailFragment extends Fragment {
                 Collections.sort(items, new CategoryComparator(categorySortOrder));
                 // it doesn't detect the sorting change if the new list refers to the same object
                 List<ShoppingListItem> newItems = new ArrayList<>(items);
-                mRecyclerViewAdapter.submitList(newItems);
+                // this does create a defect
+                mRecyclerViewAdapter.submitList(items);
             }
         });
         mViewModel.getSelectedListID().observe(this, new Observer<String>() {

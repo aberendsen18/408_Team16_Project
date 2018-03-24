@@ -231,7 +231,7 @@ public class CategorySortFragment extends Fragment {
                             mCategoryRepository.updateSortOrder(selectedOrder);
                             // temporary fix by resetting the adapter and forcing it to render everything again
                             //todo: Find a better fix for the swiping graphic instead of text problem
-                            recyclerView.setAdapter(recyclerViewAdapter);
+                            // removed to create defect
                         } else {
                             //print the error to the screen
                             Toast.makeText(getActivity(), valid,

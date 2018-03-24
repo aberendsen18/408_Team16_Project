@@ -26,9 +26,9 @@ public class CategoryComparator implements Comparator<ShoppingListItem> {
         if (firstItemIndex == -1 && secondItemIndex == -1)
             return 0;
         if (firstItemIndex == -1)
-            return 1;
-        if (secondItemIndex == -1)
             return -1;
+        if (secondItemIndex == -1)
+            return 1;
 
         if (firstItemIndex > secondItemIndex) {
             return 1;

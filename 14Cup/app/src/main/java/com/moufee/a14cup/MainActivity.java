@@ -289,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 mListRepository.deleteList(mViewModel.getLists().getValue().get(viewHolder.getAdapterPosition()).id);
+                onListFragmentInteraction(mViewModel.getLists().getValue().get(0));
             }
         };
 

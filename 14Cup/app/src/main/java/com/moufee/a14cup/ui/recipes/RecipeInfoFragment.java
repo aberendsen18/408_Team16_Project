@@ -154,7 +154,7 @@ public class RecipeInfoFragment extends Fragment {
                 mAdapter.clear();
                 if (shoppingLists != null) {
                     // Bug Number 12
-                    shoppingLists.remove(shoppingLists.size() - 1);
+                    if(shoppingLists.size() > 0) shoppingLists.remove(shoppingLists.size() - 1);
                     mAdapter.addAll(shoppingLists);
                 }
                 mShoppingListSpinner.setAdapter(mAdapter);
@@ -166,11 +166,11 @@ public class RecipeInfoFragment extends Fragment {
             public void onClick(View view) {
                 ShoppingList userList = (ShoppingList) mShoppingListSpinner.getSelectedItem();
                 List<String> checkedIngs = mRecyclerViewAdapter.getCheckedIngrediants();
-                // Bug number 21 (not active)
-                if (userList == null){
+                // Bug number 21
+                /*if (userList == null){
                     Toast.makeText(getActivity(), "Select a valid list.", Toast.LENGTH_SHORT).show();
                     return;
-                }
+                }*/
 
                 for (String ing : checkedIngs) {
                     mShoppingListRepo.addItem(userList.id, new ShoppingListItem(ing));

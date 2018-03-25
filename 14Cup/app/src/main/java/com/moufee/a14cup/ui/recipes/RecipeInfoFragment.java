@@ -153,6 +153,8 @@ public class RecipeInfoFragment extends Fragment {
             public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
                 mAdapter.clear();
                 if (shoppingLists != null) {
+                    // Bug Number 12
+                    if(shoppingLists.size() > 0) shoppingLists.remove(shoppingLists.size() - 1);
                     mAdapter.addAll(shoppingLists);
                 }
                 mShoppingListSpinner.setAdapter(mAdapter);
@@ -164,21 +166,24 @@ public class RecipeInfoFragment extends Fragment {
             public void onClick(View view) {
                 ShoppingList userList = (ShoppingList) mShoppingListSpinner.getSelectedItem();
                 List<String> checkedIngs = mRecyclerViewAdapter.getCheckedIngrediants();
-                if (userList == null){
+                // Bug number 21
+                /*if (userList == null){
                     Toast.makeText(getActivity(), "Select a valid list.", Toast.LENGTH_SHORT).show();
                     return;
-                }
+                }*/
 
                 for (String ing : checkedIngs) {
                     mShoppingListRepo.addItem(userList.id, new ShoppingListItem(ing));
                 }
 
-                if(checkedIngs.size() > 0){
+                // Bug number 8
+                /*if(checkedIngs.size() > 0){
                     mListener.onRecipeInfoFragmentSubmit(userList);
                 }
                 else{
                     Toast.makeText(getActivity(), "You must select at least one ingredient.", Toast.LENGTH_LONG).show();
-                }
+                }*/
+                mListener.onRecipeInfoFragmentSubmit(userList);
             }
         });
 

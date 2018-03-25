@@ -48,10 +48,14 @@ public class RecipeRepository {
         recipesListCall.enqueue(new Callback<RecipesList>() {
             @Override
             public void onResponse(@NonNull Call<RecipesList> call, @NonNull Response<RecipesList> response) {
-                if (!response.isSuccessful())
-                    result.setValue(Resource.<RecipesList>error("API Error.", null));
-                else
+                if (!response.isSuccessful()){
+                    // Bug Number 9
+                    //result.setValue(Resource.<RecipesList>error("API Error.", null));
+                }
+                else{
                     result.setValue(Resource.success(response.body()));
+                }
+
             }
 
             @Override

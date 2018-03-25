@@ -24,7 +24,7 @@ public abstract class DataValidation {
 
     //private method that validates a shopping list item
     public static String validateShoppingListItem(ShoppingListItem s) {
-        if (s.name == null || s.name.length() == 0 || s.name.isEmpty() || s.name.trim().length() == 0) {
+        if (s.name == null || s.name.length() == 0 || s.name.isEmpty()) {
             return "Please enter an item name!";
         } else if (s.name.length() > 256) {
             return "The item that you entered is too long, it must be less than 100 characters!";

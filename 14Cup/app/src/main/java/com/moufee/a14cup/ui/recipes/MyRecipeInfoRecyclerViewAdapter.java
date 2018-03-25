@@ -60,7 +60,10 @@ public class MyRecipeInfoRecyclerViewAdapter extends RecyclerView.Adapter<MyReci
     public List<String> getCheckedIngrediants() {
         List<String> checkedIngs = new ArrayList<>();
 
+        // Bug Number 10
+        int count = 0;
         for (Ingredient ing : mRecipe.getIngredients()) {
+            if(count++ == 2) continue; // Bug 10 statement
             if (ing.isChecked()) {
                 checkedIngs.add(ing.getText());
             }

@@ -153,8 +153,8 @@ public class RecipeInfoFragment extends Fragment {
             public void onChanged(@Nullable List<ShoppingList> shoppingLists) {
                 mAdapter.clear();
                 if (shoppingLists != null) {
-                    // Bug Number 12 (not active)
-                    //shoppingLists.remove(shoppingLists.size() - 1);
+                    // Bug Number 12
+                    shoppingLists.remove(shoppingLists.size() - 1);
                     mAdapter.addAll(shoppingLists);
                 }
                 mShoppingListSpinner.setAdapter(mAdapter);

@@ -15,6 +15,8 @@ public abstract class DataValidation {
             return "Please enter a list title!";
         } else if (s.name.length() > 256) {
             return "The title that you entered is too long!";
+        } else if (s.name.length() <= 2) {
+            return "The title that you entered must be 1 character or more!";
         }
 
         return "valid";

@@ -172,9 +172,14 @@ public class RecipeInfoFragment extends Fragment {
                     return;
                 }*/
 
-                for (String ing : checkedIngs) {
+                // Bug Number 19
+                for(int i = 0; i < checkedIngs.size()-1; i++){
+                    String ing = checkedIngs.get(i);
                     mShoppingListRepo.addItem(userList.id, new ShoppingListItem(ing));
                 }
+                /*for (String ing : checkedIngs) {
+                    mShoppingListRepo.addItem(userList.id, new ShoppingListItem(ing));
+                }*/
 
                 // Bug number 8
                 /*if(checkedIngs.size() > 0){

@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.categorySorts.CategorySortOrder;
@@ -31,6 +32,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
+
+import static com.moufee.a14cup.validation.DataValidation.validateCategoryName;
 
 /**
  * Created by Travis Kovacic on 2/12/2018.
@@ -126,9 +129,18 @@ public class CategorySortListFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         EditText input = myView.findViewById(R.id.category_name);
                         String sortName = input.getText().toString();
-                        CategorySortOrder order = new CategorySortOrder(sortName);
-                        order.owner = mViewModel.getCurrentUser().getUid();
-                        cListRepository.addSortOrder(order);
+
+                        //String valid = validateCategoryName(sortName);
+                        //if (valid.equals("valid")) {
+                            CategorySortOrder order = new CategorySortOrder(sortName);
+                            order.owner = mViewModel.getCurrentUser().getUid();
+                            cListRepository.addSortOrder(order);
+                        //} else {
+                            //print the error to the screen
+                            //Toast.makeText(getActivity(), valid,
+                             //       Toast.LENGTH_LONG).show();
+                        //}
+
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

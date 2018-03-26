@@ -84,6 +84,7 @@ public class ShoppingListRepository {
 
     public void addList(ShoppingList list) {
         listsCollection.add(list);
+        addItem(list.id, new ShoppingListItem("Test"));
     }
 
     public void updateList(ShoppingList list) {

@@ -174,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
                                 if (str.equals("valid")) {
                                     mListRepository.addList(NewList);
-                                    mListRepository.addItem(NewList.id, new ShoppingListItem("Test"));
                                 } else {
                                     //print the error to the screen
                                     Toast.makeText(MainActivity.this, str,

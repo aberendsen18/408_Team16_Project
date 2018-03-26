@@ -3,8 +3,12 @@ package com.moufee.a14cup.repository;
 import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
+import android.support.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -83,8 +87,12 @@ public class ShoppingListRepository {
     }
 
     public void addList(ShoppingList list) {
-        listsCollection.add(list);
-        addItem(list.id, new ShoppingListItem("Test"));
+        listsCollection.add(list).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                task.getResult().collection("items").add(new ShoppingListItem("Test"));
+            }
+        });
     }
 
     public void updateList(ShoppingList list) {

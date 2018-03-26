@@ -46,16 +46,18 @@ public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRe
         holder.mIdView.setText(Integer.toString(position + 1));
         holder.mContentView.setText(mValues.get(position).getRecipe().label);
 
+        //bug number 25
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onRecipeFragmentInteraction(holder.mItem);
+                    if(holder.getAdapterPosition() > 1) mListener.onRecipeFragmentInteraction(holder.mItem);
                 }
             }
         });
+
     }
 
     @Override

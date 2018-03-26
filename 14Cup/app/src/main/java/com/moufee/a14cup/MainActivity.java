@@ -37,6 +37,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.moufee.a14cup.categorySorts.CategorySortOrder;
 import com.moufee.a14cup.databinding.ActivityMainBinding;
 import com.moufee.a14cup.lists.ShoppingList;
+import com.moufee.a14cup.lists.ShoppingListItem;
 import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.repository.ShoppingListRepository;
 import com.moufee.a14cup.ui.list.ListDetailFragment;
@@ -173,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
                                 if (str.equals("valid")) {
                                     mListRepository.addList(NewList);
+                                    mListRepository.addItem(NewList.id, new ShoppingListItem("Test"));
                                 } else {
                                     //print the error to the screen
                                     Toast.makeText(MainActivity.this, str,
@@ -288,6 +290,12 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                if (mViewModel.getLists().getValue().get(viewHolder.getAdapterPosition()).id.equals(0)) {
+                    onListFragmentInteraction(mViewModel.getLists().getValue().get(1));
+                }
+                else {
+                    onListFragmentInteraction(mViewModel.getLists().getValue().get(0));
+                }
                 mListRepository.deleteList(mViewModel.getLists().getValue().get(viewHolder.getAdapterPosition()).id);
             }
         };

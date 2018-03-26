@@ -70,7 +70,6 @@ public class ListViewModel extends ViewModel {
         mSortOrders = Transformations.switchMap(mCurrentUser, new Function<FirebaseUser, LiveData<List<CategorySortOrder>>>() {
             @Override
             public LiveData<List<CategorySortOrder>> apply(FirebaseUser input) {
-                if (input == null) return null;
                 return mCategoryRepository.getSortOrders(input.getUid());
             }
         });

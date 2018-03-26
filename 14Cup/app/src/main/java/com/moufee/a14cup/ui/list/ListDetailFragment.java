@@ -97,7 +97,8 @@ public class ListDetailFragment extends Fragment {
                     if (str.equals("valid")) {
                         String selectedList = mViewModel.getSelectedListID().getValue();
                         if (selectedList == null) {
-                            Toast.makeText(getActivity(), "Select A List", Toast.LENGTH_SHORT).show();
+                            getActivity().finish();
+//                            Toast.makeText(getActivity(), "Select A List", Toast.LENGTH_SHORT).show();
                             return false;
                         }
                         mListRepository.addItem(selectedList, NewItem);
@@ -193,13 +194,13 @@ public class ListDetailFragment extends Fragment {
         mViewModel.getSelectedListID().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                if (s == null) {
-                    mNewItemEdit.setVisibility(View.INVISIBLE);
-                    mRecyclerView.setVisibility(View.INVISIBLE);
-                } else {
-                    mNewItemEdit.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                }
+//                if (s == null) {
+//                    mNewItemEdit.setVisibility(View.INVISIBLE);
+//                    mRecyclerView.setVisibility(View.INVISIBLE);
+//                } else {
+//                    mNewItemEdit.setVisibility(View.VISIBLE);
+//                    mRecyclerView.setVisibility(View.VISIBLE);
+//                }
             }
         });
         mListener = new OnListItemInteractionListener() {

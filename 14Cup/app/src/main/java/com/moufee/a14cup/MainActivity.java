@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     private MyListsRecyclerViewAdapter recyclerViewAdapter;
     private ActivityMainBinding mBinding;
     private ArrayAdapter<CategorySortOrder> mCategoryAdapter;
+    private MenuItem mSortMenuItem;
 
     @Override
     public void onRecipeFragmentInteraction(Recipe item) {
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     public void onListFragmentInteraction(ShoppingList list) {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
-
+        mSortMenuItem.setVisible(true);
         // Resets fragment if on a different fragment, IE SortOrders/Settings/etc
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
         if (!(f instanceof ListDetailFragment)) {
@@ -213,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         recipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mSortMenuItem.setVisible(false);
                 RecipeFragment fragment = RecipeFragment.newInstance(1);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
                 mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -338,6 +340,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.list, menu);
+        mSortMenuItem = menu.findItem(R.id.action_choose_sort_order);
         return true;
     }
 

@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.moufee.a14cup.MainActivity;
 import com.moufee.a14cup.R;
 import com.moufee.a14cup.recipes.Recipe;
 import com.moufee.a14cup.recipes.RecipesList;
@@ -78,6 +79,10 @@ public class RecipeFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    if (searchRecipeName.getText().toString().equals("")) {
+                        Toast.makeText(getActivity(), "Please enter a search query",
+                                Toast.LENGTH_LONG).show();
+                    }
                     mRecipeViewModel.setQuery(searchRecipeName.getText().toString());
                     searchRecipeName.setText("");
                 }

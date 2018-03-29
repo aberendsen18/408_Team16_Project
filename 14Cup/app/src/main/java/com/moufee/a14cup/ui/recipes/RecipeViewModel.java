@@ -56,7 +56,7 @@ public class RecipeViewModel extends ViewModel {
         mRecipesList = Transformations.switchMap(mQuery, new Function<String, LiveData<Resource<RecipesList>>>() {
             @Override
             public LiveData<Resource<RecipesList>> apply(String input) {
-                return mRecipeRepository.getRecipes(input, 0, 25);
+                return mRecipeRepository.getRecipes(input, 0, 20);
             }
         });
     }
